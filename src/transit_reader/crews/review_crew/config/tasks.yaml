@@ -1,0 +1,115 @@
+report_review_task:
+  description: >
+    Conduct a full-spectrum quality review of the finalized astrological report to ensure it meets the highest standards of technical accuracy, psychological depth, thematic coherence, and reader accessibility.
+
+    Review Focus:
+    - **Technical Validation**:
+      - Verify all planetary positions, aspects, dignities, house placements, and transit-to-natal activations against embedded data.
+      - Confirm timing arcs (start, peak, culmination) for major transits and returns are accurately represented.
+      - Explicitly check that the orb measurements used for each aspect are stated and consistently applied. Verify clarity and accuracy of nodal house references.
+    - **Interpretive Integrity**:
+      - Assess the consistent application of classical, modern, and psychological astrological frameworks.
+      - Confirm correct prioritization: long-term outers, angles, returns, and tight aspects over minor influences.
+      - Evaluate the depth of psychological and archetypal interpretation, ensuring it goes beyond surface-level keywords.
+    - **Narrative Coherence**:
+      - Ensure clear sequencing: Transit Climate ➔ Natal Foundations ➔ Transit-to-Natal Activations ➔ Practical Guidance.
+      - Validate that thematic arcs are logical, interconnected, and flow naturally across sections.
+      - Assess how well the interaction between the main developmental themes is synthesized.
+    - **Emotional Resonance and Accessibility**:
+      - Evaluate emotional tone: is it empowering, psychologically intelligent, and non-deterministic?
+      - Confirm technical details are embedded fluently without disrupting readability.
+      - Explicitly check if challenging aspects/periods are framed as opportunities for growth.
+      - Assess whether real-world relevance and timing strategies are clearly conveyed for varying experience levels.
+
+    Critique Instructions:
+    - Organize feedback under clear headings: Technical Accuracy, Interpretive Integrity, Narrative Coherence, Emotional Resonance and Accessibility.
+    - Provide specific, actionable bullet points under each heading.
+    - Remain concise, discerning, and solution-focused — no rewriting.
+    - Maintain a solution-focused tone: identify weaknesses or missed opportunities, but offer guidance for refinement without rewriting or reinterpreting.
+
+    Today's date is {today}
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Location of Birth: {birthplace}
+    - Current Location: {location}
+
+    Report for Review:
+    {report}
+    
+  expected_output: >
+    A structured, thematically organized, actionable critique in clean markdown (no backticks), providing precise guidance to enhance technical precision, narrative development, psychological richness, and reader relevance.
+    
+  agent: report_critic
+
+report_enhancement_task:
+  description: >
+    Refine, deepen, and polish the finalized astrological report based on structured critique feedback, ensuring complete alignment with the enhanced modular report structure and maximizing psychological, technical, and practical excellence.
+
+    Enhancement Focus:
+    - Expand and deepen psychological insight where critiques highlight gaps, particularly within personalized Transit-to-Natal developmental arcs.
+    - Strengthen narrative coherence across all major report sections:
+      - Transit Climate Overview
+      - Subject's Natal Foundations
+      - Personalized Growth Themes
+      - Technical Overview
+      - Actionable Life Guidance
+    - Ensure each Personalized Theme:
+      - Is fully linked to exact transits, aspects, degrees, houses.
+      - Includes estimated timing arcs (start, peak, resolution).
+      - Embeds life-domain activation and practical relevance.
+    - Enrich symbolic metaphors, real-world examples, and psychologically empowering language without disrupting technical accuracy.
+    - Smooth narrative transitions between sections while preserving modular structure and thematic sequencing.
+    - Maintain clear, empowering emotional tone suitable for intermediate-to-advanced readers without oversimplifying astrological symbolism.
+
+    Enhancement Guidelines:
+    1. **Planning First**:
+        - Read the full report and the structured critique carefully.
+        - Identify specific sections requiring expansion, clarification, thematic reinforcement, or timing refinement.
+        - Prioritize edits that enhance developmental arcs, technical anchoring, psychological richness, and practical application.
+    2. **Enhance with Precision**:
+        - Expand interpretations only where feedback indicates underdevelopment or potential enrichment.
+        - Use verified technical data (planet, degree, house, aspect) to ground all new insights and metaphoric framing.
+        - Integrate emotional nuance, archetypal symbolism, and real-world strategies tied to active life domains.
+    3. **Maintain Voice and Flow**:
+        - Preserve the original emotional tone and narrative style.
+        - Avoid duplicating existing content or introducing new chart points unless justified by critique.
+        - Ensure fluent integration of technical information into readable narrative arcs.
+
+    Special Instructions:
+    - Insert the standardized placeholder '[transit_chart]' immediately after the Cover Page header.
+    - Do not invent or speculate beyond validated transit, natal, or transit-to-natal data.
+    - Maintain clean modular markdown formatting without code blocks, notes, or meta-commentary.
+    - Ensure every main section and each developmental theme is logically headed and internally consistent.
+
+    Output Instructions:
+    - Deliver a fully polished, psychologically sophisticated, technically rigorous astrological report, ready for client delivery.
+    - Follow the modular sectioning and narrative arc outlined in the enhanced report structure.
+
+    Today's date is {today}
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Location of Birth: {birthplace}
+    - Current Location: {location}
+
+    Report for Enhancement:
+    {report}
+
+    Transit chart:
+    {transit_chart}
+
+    Natal chart:
+    {natal_chart}
+
+    Transit to Natal chart:
+    {transit_to_natal_chart}
+
+
+    
+  expected_output: >
+    A refined, fully modular, psychologically resonant, technically precise astrological report enhanced according to structured critique feedback, formatted cleanly in markdown with the '[transit_chart]' placeholder correctly inserted.
+    
+  agent: report_enhancer

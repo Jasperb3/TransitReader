@@ -1,0 +1,65 @@
+current_transits_task:
+  description: >
+    Perform a comprehensive technical analysis of today's transiting planetary positions and configurations to provide complete structural and energetic data for downstream interpretive synthesis.
+
+    Your objective is to systematically extract and prioritize:
+    - Exact planetary positions: degree, sign, house (Placidus), motion (direct/retrograde), and essential dignity or debility.
+    - Chart Shape Type: classify the current transit chart shape (Bundle, Bowl, Locomotive, etc.).
+    - Diurnality: note whether the majority of transiting planets are above or below the horizon.
+    - Significant transiting aspects among planets: prioritize conjunctions, oppositions, squares (within ~2° orb), and strong harmonic trines/sextiles where applicable.
+    - Geometric transit patterns formed by transiting planets (T-square, Grand Trine, Stellium, Yod).
+    - Elemental (Fire, Earth, Air, Water) and modality (Cardinal, Fixed, Mutable) distributions across the current chart.
+    - Current Moon Phase and Moon’s key aspects.
+    - Any outer planets (Saturn–Pluto, Chiron) slowing, stationing, or recently stationing (within ±5 days).
+    
+    Structure the findings logically in the following hierarchy:
+    1. Planetary Positions (alphabetical or by planetary speed)
+    2. Chart Shape and Diurnality Summary
+    3. Transit-to-Transit Aspects with orb measurements
+    4. Transit Geometric Patterns (if present)
+    5. Elemental and Modality Distribution Summary
+    6. Current Moon Phase and Key Aspects
+    7. Stationing Outer Planets
+
+    Today's date is {today}.
+    The subject's name is {name}.
+    Their current location is {location}.
+
+    Current Transits data:
+    {current_transits}
+  expected_output: >
+    A cleanly structured, degree-precise, and orb-prioritized summary of the current transiting planetary landscape, including chart shape, diurnality, elemental balance, Moon phase, and stationing planets, ready for downstream integration with natal analysis.
+    
+  agent: current_transits_reader
+
+
+current_transits_interpretation_task:
+  description: >
+    Analyze today's extracted transit data to identify collective psychological themes, archetypal patterns, emotional climates, and developmental tensions reflected by the current planetary configurations, without reference to the subject’s natal chart.
+    Ensure all explicitly noted transit factors are included in the synthesis.
+
+    Interpretation Focus:
+    - Synthesize current aspects, planetary conditions (dignities, retrogrades, speed changes), and geometric patterns into 2–4 major collective psychological or symbolic storylines.
+    - Interpret the elemental and modality balance (Fire/Earth/Air/Water; Cardinal/Fixed/Mutable) to describe the dominant energetic climate and psychological tone.
+    - Assess the emotional atmosphere implied by the Moon’s phase and key Lunar aspects to other transiting planets.
+    - Identify any collective developmental tensions or opportunities suggested by:
+        - Stationing planets
+        - Heavy outer planet configurations
+        - Transit stelliums clustering around sensitive points.
+    - Frame the energetic atmosphere in psychological and symbolic terms (e.g., contraction, volatility, release, innovation) rather than forecasting specific external events.
+    - Highlight areas of **collective friction, release, or opportunity** likely to color the emotional backdrop for personal and societal experiences.
+    
+    Output Instructions:
+    - Organize findings under thematic headings: Collective Themes, Energetic Climate, Emotional Tone, Developmental Opportunities and Challenges.
+    - Weave technical anchor points (e.g., specific aspects, stationing planets) naturally into symbolic narrative.
+    - Maintain a psychologically rich, empowering, and technically precise tone.
+    - Format in clean modular markdown with no code blocks.
+
+    Today's date is {today}.
+    The subject's name is {name}.
+    Their current location is {location}.
+    
+  expected_output: >
+    A structured, psychologically insightful interpretation of today's collective astrological landscape, mapping major collective archetypal themes, emotional climates, and developmental opportunities, formatted in clean modular markdown for downstream integration.
+    
+  agent: current_transits_interpreter

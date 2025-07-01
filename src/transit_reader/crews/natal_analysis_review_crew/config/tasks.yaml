@@ -1,0 +1,89 @@
+natal_interpretation_critic_task:
+  description: >
+    Critically review the provided natal chart interpretation for technical precision, psychological richness, symbolic depth, thematic coherence, and empowering emotional resonance, based strictly on the extracted natal chart structure.
+
+    Critique Focus:
+    - **Thematic and Narrative Structure**:
+      - Assess whether psychological archetypes, developmental arcs, and symbolic life themes are logically organized, clearly interconnected, and reflective of the chart's internal coherence.
+    - **Technical Anchoring**:
+      - Verify that all interpretations are directly grounded in extracted natal features:
+        - Planetary positions, dignities, house placements, aspects, elemental/modal balances, configurations (T-squares, Grand Trines, Stelliums), chart shape, diurnality, Moon phase.
+      - Confirm no speculative additions beyond the provided data.
+    - **Psychological and Symbolic Depth**:
+      - Evaluate whether placements and configurations are interpreted with rich archetypal imagery, developmental framing, and life-relevant symbolism, exploring deeper archetypal layers.
+      - Check for nuanced layering rather than surface-level keyword interpretations.
+    - **Emotional Intelligence and Growth Orientation**:
+      - Ensure the emotional tone fosters self-awareness, conscious agency, and psychological empowerment.
+      - Guard against deterministic, pathologizing, or fatalistic framing.
+
+    Critique Instructions:
+    - Structure feedback under clear modular headings:
+        - Thematic Structure
+        - Technical Accuracy
+        - Psychological and Symbolic Depth
+        - Emotional Resonance
+    - Under each heading, provide actionable bullet points highlighting strengths and suggesting targeted improvements.
+    - Maintain a solution-focused tone: identify weaknesses or missed opportunities, but offer guidance for refinement without rewriting or reinterpreting.
+
+    Important:
+    - Evaluate only chart features explicitly present in the extracted natal chart data.
+    - Do not suggest additions unrelated to verified chart content.
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Location of Birth: {birthplace}
+
+    Natal Analysis for Review:
+    {natal_analysis}
+
+    Raw Natal Chart Data for reference:
+    {natal_chart}
+    
+  expected_output: >
+    A structured, thematically organized critique formatted in clean markdown (no backticks), providing precise, actionable guidance for enhancing technical fidelity, psychological richness, symbolic resonance, and narrative clarity without rewriting the original analysis.
+    
+  agent: natal_interpretation_critic
+
+
+natal_interpretation_enhancement_task:
+  description: >
+    Refine, enrich, and deepen the provided natal chart interpretation based on structured critique feedback, enhancing psychological sophistication, deeper archetypal insights, symbolic resonance, thematic clarity, and developmental relevance while strictly preserving the extracted chart structure and original interpretive voice.
+
+    Enhancement Focus:
+    - Expand and deepen psychological insights where critiques highlight underdeveloped or thin areas:
+        - Integrate richer archetypal symbolism, developmental framing, and emotionally resonant metaphors linked precisely to natal features.
+    - Strengthen thematic cohesion:
+        - Smooth transitions between sections.
+        - Clarify narrative arcs that trace life potentials, internal growth trajectories, and psychological balancing processes.
+    - Maintain strict technical fidelity:
+        - Ground all expansions directly in extracted planets, houses, aspects, configurations, elemental/modal distributions, chart shape, sect condition, and Moon phase.
+        - Do not introduce new factors not present in the natal extraction unless explicitly directed by the critique.
+    - Enhance emotional resonance:
+        - Emphasize empowerment, conscious growth, psychological agency, and life-positive framing.
+
+    Enhancement Instructions:
+    - Expand or refine only the sections identified in the structured critique.
+    - Enrich symbolic meaning, practical relevance, and psychological strategy wherever naturally supportable by the chart structure.
+    - Maintain clean modular markdown organization, psychologically intelligent language, and emotional sophistication.
+
+    Output Instructions:
+    - Deliver the fully enhanced interpretation in clean modular markdown (no code blocks or meta-notes).
+    - Structure output logically under thematic headings.
+    - Ensure fluent transitions, rich symbolic depth, technical precision, and consistent narrative voice.
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Location of Birth: {birthplace}
+
+    Natal Analysis for Enhancement:
+    {natal_analysis}
+
+    Raw Natal Chart Data:
+    {natal_chart}
+    
+  expected_output: >
+    A polished, psychologically sophisticated, symbolically rich, technically anchored natal chart interpretation, refined precisely according to structured critique feedback and formatted cleanly for seamless downstream integration.
+    
+  agent: natal_interpretation_enhancer

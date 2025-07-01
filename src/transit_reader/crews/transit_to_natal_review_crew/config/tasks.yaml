@@ -1,0 +1,85 @@
+transits_to_natal_interpretation_critic_task:
+  description: >
+    Critically review the provided transit-to-natal interpretation for full technical accuracy, psychological richness, thematic coherence, developmental framing, and actionable timing relevance, based exclusively on embedded data and established astrological best practices.
+
+    Critique Focus:
+    - **Technical Anchoring**:
+      - Verify that all interpretations are correctly grounded in specific transit-to-natal aspects, degrees, orb tightness, house activations, planetary dignities, and motion states.
+      - Confirm that applying/separating aspect status and retrograde effects are accurately reflected where relevant.
+    - **Psychological Depth**:
+      - Evaluate whether each developmental theme explores internal growth dynamics and frames life domains meaningfully.
+      - Check that planetary archetypes are interpreted symbolically, not superficially or deterministically.
+    - **Thematic and Narrative Coherence**:
+      - Assess the logical integration of simultaneous transits into unified psychological growth arcs.
+      - Verify that activated houses and life domains are meaningfully tied to the developmental storyline.
+    - **Timing Clarity and Arc Mapping**:
+      - Ensure that each major activation specifies clear timing windows (onset, peak, resolution) and appropriately references stations, retrogrades, or multiple transit passes.
+    - **Emotional Resonance and Ethical Framing**:
+      - Confirm that the emotional tone remains empowering, psychologically intelligent, and supportive of conscious agency.
+      - Guard against deterministic, pathologizing, or fear-based interpretations.
+
+    Critique Instructions:
+    - Structure feedback under clear headings:
+        - Technical Accuracy
+        - Psychological Depth
+        - Thematic Coherence
+        - Timing Clarity
+        - Emotional Resonance
+    - Provide targeted, actionable bullet-point recommendations under each heading.
+    - Remain concise, discerning, and solution-focused — no rewriting or adding interpretation content yourself.
+    - Maintain a solution-focused tone: identify weaknesses or missed opportunities, but offer guidance for refinement without rewriting or reinterpreting.
+
+    Today's date is {today}
+    
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Birth Location: {birthplace}
+    - Current Location: {current_location}
+
+    Transit-to-Natal Interpretation for Review:
+    {transit_to_natal_analysis}
+
+    Raw Transit-to-Natal Data for reference:
+    {transit_to_natal_chart}
+    
+  expected_output: >
+    A structured, thematically organized critique formatted in clean modular markdown, providing specific, actionable recommendations to enhance technical precision (including nodal houses), psychological insight (retrogrades/stations), narrative integration, and emotional empowerment, without rewriting the original analysis.
+    
+  agent: transits_to_natal_interpretation_critic
+
+transits_to_natal_interpretation_enhancement_task:
+  description: >
+    Refine and enrich the provided transit-to-natal interpretation based on the structured critique, enhancing technical precision, psychological depth, thematic cohesion, and practical relevance while preserving the original emotional tone and narrative voice.
+
+    Enhancement Focus:
+    - Deepen psychological interpretations where critiques identify underdevelopment, ensuring rich archetypal exploration and meaningful internal growth narratives.
+    - Strengthen thematic synthesis across multiple transit activations into coherent developmental arcs, respecting timing sequences and house activations.
+    - Integrate empowering symbolic metaphors, relatable life examples, and practical developmental framing, precisely tied to verified transit-to-natal technical data.
+    - Clarify or enrich timing arcs (onset, peak, resolution) where needed, reflecting planetary motion (direct/retrograde/station).
+    - Maintain accessible yet psychologically sophisticated language: explaining complex dynamics without oversimplification or generalization.
+
+    Enhancement Instructions:
+    - Expand or revise only the areas highlighted by the structured critique.
+    - Do not introduce new planetary activations, houses, or speculative events unless explicitly requested or clearly implied by the critique.
+    - Preserve the report’s modular markdown structure, thematic sequence, and emotionally empowering voice.
+
+    Output Instructions:
+    - Deliver the fully enhanced interpretation in clean, modular markdown (no code blocks, no meta-commentary).
+    - Ensure logical headings, fluent thematic transitions, and seamless psychological integration throughout.
+
+    Today's date is {today}
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Birth Location: {birthplace}
+    - Current Location: {current_location}
+
+    Transit-to-Natal Interpretation for Enhancement:
+    {transit_to_natal_analysis}
+    
+  expected_output: >
+    A polished, psychologically deepened, thematically coherent transit-to-natal interpretation, enhanced precisely according to structured critique guidance, fully formatted for seamless downstream report integration.
+    
+  agent: transits_to_natal_interpretation_enhancer

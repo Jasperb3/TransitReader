@@ -1,0 +1,74 @@
+natal_chart_reading_task:
+  description: >
+    Perform a comprehensive technical extraction of the subject's natal chart, capturing all fundamental structural elements with degree-perfect accuracy to support downstream developmental synthesis.
+
+    Extraction Guidelines:
+    - List planetary, asteroid, and sensitive point positions: exact zodiac degree, zodiac sign, house placement (Placidus system), motion (direct/retrograde if applicable), essential dignity/debility, and sect status (day/night chart).
+    - Identify major natal aspects between planets/points: prioritize conjunctions, oppositions, squares, trines, and sextiles within 8° orb (tighten to 5° for luminaries and sensitive points).
+    - Map major configuration patterns: T-squares, Grand Trines, Yods, Mystic Rectangles, Stelliums (3+ planets within 10° and same sign or house).
+    - Summarize elemental distribution (Fire, Earth, Air, Water) and modality distribution (Cardinal, Fixed, Mutable).
+    - Classify chart shape based on planetary distribution (Bundle, Bowl, Locomotive, Splash, etc.).
+    - Identify diurnality: note whether the chart is a day chart (Sun above horizon) or night chart (Sun below horizon).
+    - Determine natal Moon phase and list Sun-Moon angular relationship (New, Crescent, First Quarter, Gibbous, Full, Disseminating, Last Quarter, Balsamic).
+    - Note angular planets: planets conjunct ASC, DSC, MC, IC within 5° orb (list planet, angle, degree separation).
+
+    Structure the findings hierarchically:
+    1. Planetary and Sensitive Point Positions Table
+    2. Natal Major Aspects Table
+    3. Configuration Patterns Overview
+    4. Elemental and Modal Balance Summary
+    5. Chart Shape, Diurnality, and Moon Phase
+
+    No interpretation or subjective commentary at this stage — strictly technical extraction.
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Location of Birth: {birthplace}
+
+    Natal Chart Data:
+    {natal_chart}
+
+  expected_output: >
+    A complete, precisely organized, degree-accurate technical summary of the subject's natal chart structure, formatted cleanly in markdown, prepared for downstream psychological and developmental interpretation.
+    
+  agent: natal_chart_reader
+
+
+natal_chart_interpretation_task:
+  description: >
+    Analyze the extracted natal chart structure to uncover the subject's core psychological themes, symbolic life potentials, and developmental arcs, following humanistic, archetypal, and psychological astrological principles.
+    Ensure deeper archetypal exploration rooted in specific natal placements and configurations.
+
+    Interpretation Guidelines:
+    - Extract 2–4 dominant psychological archetypes or growth themes rooted in strong planetary placements, aspect configurations, and house concentrations.
+    - Analyze elemental and modality balance for core temperament and habitual style (e.g., emotionally fluid, intellectually dominant, practically stabilizing).
+    - Interpret the natal Moon phase for emotional development style and instinctual growth trajectory.
+    - Extract the symbolic developmental narrative suggested by any major configurations (if applicable), e.g.:
+        - T-squares (inner tension and evolution)
+        - Grand Trines (natural flow and potential inertia)
+        - Yods (destiny themes, adjustment challenges)
+    - Contextualize angular planets and dignified/debilitated planets in terms of core life priorities, psychological emphasis, or growth pressures.
+    - Weight interpretations appropriately for sect: recognize altered strength of malefics/benefics in day/night charts.
+    - Identify any strong planetary clusters (stelliums) as psychological complexes or focalizing factors.
+    - Frame all interpretations in psychologically empowering, developmental language focused on potentials and conscious growth — avoid deterministic trait assignment.
+
+    Output Instructions:
+    - Organize under clear thematic headings:
+        - Temperament Overview
+        - Core Psychological Archetypes
+        - Emotional Development and Moon Phase Insights
+        - Key Developmental Challenges and Opportunities
+        - Psychological Resources and Strengths
+    - Write in clean, structured markdown without code blocks.
+    - Interpret only the chart features extracted by the reader task — do not invent or extrapolate beyond verified technical data.
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Location of Birth: {birthplace}
+
+  expected_output: >
+    A richly layered, thematically organized psychological interpretation of the subject's natal chart, weaving verified technical structure into coherent developmental narratives, formatted clearly in markdown for downstream integration.
+    
+  agent: natal_chart_interpreter

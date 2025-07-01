@@ -1,0 +1,129 @@
+data_interpretation_task:
+  description: >
+    Synthesize the extracted transit analysis, natal chart analysis, and transit-to-natal activation analysis into a cohesive, psychologically developmental astrological interpretation, integrating technical precision, symbolic richness, and practical life relevance.
+
+    Planning and Synthesis Workflow:
+    1. **Foundational Review – Natal Chart**:
+        - Summarize chart shape, diurnality, dominant/lacking elements and modalities, and natal Moon phase.
+    2. **Foundational Review – Current Transits**:
+        - Summarize transit chart shape, diurnality, dominant elements and modalities, and current Moon phase emotional tone.
+    3. **Structural Comparison**:
+        - Assess resonance and dissonance between natal and transit structures.
+        - Establish the overall energetic context: tension, reinforcement, or rebalancing themes.
+    4. **Identify Cyclical Markers**:
+        - Check for any active Planetary Returns (Saturn, Jupiter, Nodes, Chiron).
+        - Note active Solar Return or Lunar Return themes if provided.
+    5. **Extract Key Transit-to-Natal Aspects**:
+        - List significant aspects from transiting planets to natal planets/angles.
+        - Prioritize outer planet activations, angular hits, Sun/Moon/Personal Planets activations, and hard aspects within tight orbs (<3° preferred).
+    6. **Identify Key House Activations**:
+        - Highlight any natal houses strongly activated by transiting outer planets or key ingresses.
+    7. **Note Intensification Factors**:
+        - Identify any transits triggering natal stelliums, transit stelliums overlaying sensitive points, and eclipse activations impacting natal placements.
+    8. **Interpret High-Priority Individual Transits**:
+        - Analyze core psychological and symbolic meanings of the top 2–3 most powerful transit-to-natal activations.
+    9. **Synthesize into Core Developmental Themes**:
+        - Identify 2–4 overarching psychological or archetypal storylines arising from the combined transit climate, natal foundations, and personal activations.
+    10. **Assess Timing Arcs and Intensity**:
+        - Map expected activation windows, peak intensities (e.g., stations, exact aspects), and resolution phases.
+    11. **Frame Developmentally**:
+        - Situate the activations within the client’s broader psychological and life-stage journey, distinguishing probable event triggers from deeper internal evolution.
+    12. **Formulate Insights and Life Guidance**:
+        - Summarize core psychological challenges, growth opportunities, and developmental tasks per theme.
+        - Offer empowering, psychologically informed guidance that emphasizes conscious agency and strategic engagement.
+    13. **Ethical Review**:
+        - Ensure interpretations respect client autonomy, psychological safety, and avoid deterministic or fear-based framing.
+    14. **Synthesize Theme Interactions**:
+        - Briefly analyze how the 2-4 core developmental themes might interact or influence each other during this period.
+
+    Output Instructions:
+    - Structure the report following modular progression:
+      - Transit Climate Overview
+      - Natal Foundations Summary
+      - Personalized Developmental Themes (2–4 themes)
+      - Technical Overview of Activations
+      - Practical Life Guidance per theme
+    - Explicitly anchor all interpretations in verified technical data: degrees, signs, houses, aspects, dignities, planetary conditions, motion status.
+    - Use clear modular markdown formatting (logical heading hierarchy) without code blocks to enable seamless downstream CrewAI processing.
+
+    Today's date is {today}
+
+    **Input Data:**
+
+    Transit to Natal Analysis:
+    {transit_to_natal_analysis}
+    
+    Transits Analysis:
+    {transit_analysis}
+    
+    Natal Analysis:
+    {natal_analysis}
+    
+  expected_output: >
+    A psychologically insightful, technically rigorous (including specific orb measurements and nodal house details), thematically coherent astrological interpretation organized around developmental growth themes (including theme interactions), precise timing arcs, and empowering life strategies, formatted cleanly in modular markdown for seamless report generation.
+    
+  agent: astrological_data_interpreter
+
+
+report_writing_task:
+  description: >
+    Transform the synthesized astrological interpretation into a polished, psychologically resonant, client-centered report that empowers practical navigation of the current astrological landscape.
+
+    Report Structure:
+    1. **Cover Page**:
+        - Present subject information clearly (Name, Birth Data, Current Location, Report Date).
+        - Insert standardized '[transit_chart]' placeholder under the main title.
+    2. **Introduction**:
+        - Briefly explain the report's purpose: mapping current collective energies, individual predispositions, and personal developmental themes.
+        - Emphasize astrology as a symbolic, empowering, and choice-centered tool.
+    3. **Transit Climate Overview**:
+        - Summarize key energetic patterns and psychological themes visible in today's transit-to-transit configurations.
+        - Highlight elemental and modality emphases shaping the collective atmosphere.
+        - Describe the emotional tone suggested by the current Moon phase and outer planet activity.
+    4. **Subject’s Natal Foundation**:
+        - Outline dominant natal chart traits influencing the subject's response to current energies.
+        - Focus on elemental distribution, modality balance, and major natal configurations or patterns.
+    5. **Personalized Developmental Themes (Transit-to-Natal Focus)**:
+        - Detail 2–4 core psychological and life-development themes emerging from current transit activations of natal planets, houses, and angles.
+        - Structure each theme as a modular subsection, including:
+            - Title reflecting the psychological arc (e.g., "Emotional Reinvention and Relational Clarity").
+            - Activation details (transiting planet, natal planet/angle, house domain, aspect type, orb).
+            - Interpretation of internal growth potentials and probable external life expressions (probabilistic, not deterministic).
+            - Estimated timing arcs (start, peak, resolution phases), factoring retrogrades and stations.
+    6. **Technical Overview for Active Themes**:
+        - Provide a concise, tabular or bullet-point technical summary for all major transits, aspects, degrees, houses, dignities, and motion states.
+    7. **Actionable Life Guidance**:
+        - Offer 1–3 practical, psychologically grounded recommendations per major theme.
+        - Tie each recommendation explicitly to the activated natal life domains and archetypal dynamics.
+        - Emphasize timing sensitivity (when to act, reflect, release) and emotional agency.
+    8. **Conclusion**:
+        - Summarize the overarching growth potentials and challenges identified in the report using clear, accessible, everyday language.
+        - Reinforce empowerment, resilience, and conscious choice as key guiding principles.
+
+    Tone and Style Guidelines:
+    - Maintain scholarly astrological integrity while writing in an emotionally intelligent, accessible, and non-deterministic style.
+    - Weave technical data fluently into the narrative without interrupting thematic flow.
+    - Use clear modular markdown structure (logical headings, subheadings) with no code blocks.
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Birth Location: {birthplace}
+    - Current Location: {location}
+    - Today's Date: {today}
+
+    **Reference Data:**
+
+    Transit to Natal Analysis:
+    {transit_to_natal_analysis}
+    
+    Transits Analysis:
+    {transit_analysis}
+    
+    Natal Analysis:
+    {natal_analysis}
+    
+  expected_output: >
+    A fully structured, psychologically sophisticated, technically precise astrological report, integrating developmental narratives, timing arcs, and practical life strategies, formatted in clean modular markdown ready for client delivery.
+    
+  agent: astrological_report_writer

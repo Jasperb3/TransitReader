@@ -1,0 +1,98 @@
+transits_to_natal_chart_reading_task:
+  description: >
+    Perform a comprehensive technical extraction of today's significant transit-to-natal interactions between current planetary positions and the subject’s natal chart, providing degree-perfect, house-specific data for personalized developmental interpretation.
+
+    Extraction Focus:
+    - Identify all major transit-to-natal aspects:
+        - Prioritize conjunctions, oppositions, squares, trines, and sextiles.
+        - Maintain strict tight orbs: ~2° for outer planets (Saturn–Pluto, Chiron), ~1° for inner planets (Sun–Mars).
+    - Note aspect status: indicate whether each aspect is applying or separating.
+    - Map each transiting planet’s current position into the subject’s natal house structure (Placidus system).
+    - Highlight activation of natal Angles (ASC, DSC, MC, IC) and major natal planets (especially Sun, Moon, chart ruler, and stelliums).
+    - Identify if transiting planets complete or trigger natal configuration patterns (e.g., forming a Grand Cross, Kite, or T-square).
+    - Flag verified planetary returns and critical cyclical milestones, but only when strictly present in the extracted data.
+        **Rules for Flagging Planetary Returns and Critical Cycles:**
+        - **Planetary Return**:
+          - The transiting planet aspects itself via conjunction (0° ± small orb).
+          - Example: Transiting Saturn conjunct Natal Saturn = Saturn Return.
+        - **Planetary Opposition** (Mid-cycle Marker):
+          - The transiting planet aspects its natal position by opposition (180° ± small orb).
+          - Example: Transiting Saturn opposition Natal Saturn = Mid-Saturn cycle.
+        - **Square Cycles** (First and Last Quarter Milestones):
+          - The transiting planet aspects its natal position by square (90° or 270° ± small orb).
+          - Example: Transiting Saturn square Natal Saturn = first quarter Saturn milestone.
+        - **Nodal Return or Inversion**:
+          - True Node conjunct or opposite natal Node (± tight orb).
+        - **Other Critical Milestones** (e.g., Uranus Opposition, Chiron Return, etc.) if present in the extracted aspect list:
+        **Important:**
+        - Only flag planetary returns or critical milestones when **conjunctions, oppositions, or squares** involving the **same planet** appear in the extracted aspect list.
+        - Do not infer or assume returns unless explicitly visible based on the extracted data.
+    - Capture planetary dignity/debility, motion (direct/retrograde), and proximity to stationing points for each transiting body involved.
+
+    Output Structure:
+    - Transit-to-Natal Aspects Table:
+        - Columns: Transiting Planet, Natal Planet/Point, Aspect Type, Degrees (Transit/Natal), Orb, Natal House, Transit House, Applying/Separating, Planetary Dignity/Status
+    - Major Transit Activations Summary:
+        - Notable angular hits, personal planet activations, stellium overlays
+    - Key Returns and Critical Phases Summary (if applicable)
+    - Notes on Retrograde Status and Stationary Planets (if applicable)
+
+    Special Instructions:
+    - Be strictly factual: do not interpret or infer psychological meanings at this stage.
+    - Ensure precise degree accuracy and clean modular markdown formatting.
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Birth Location: {birthplace}
+    - Current Location: {current_location}
+
+    Transit to Natal Chart Data:
+    {transit_to_natal_chart}
+
+  expected_output: >
+    A degree-accurate, house-mapped, orb-prioritized extraction of today's transit-to-natal interactions, structured cleanly in markdown, providing complete technical input for downstream developmental interpretation.
+    
+  agent: transits_to_natal_chart_reader
+
+transits_to_natal_chart_interpretation_task:
+  description: >
+    Interpret the extracted transit-to-natal data to identify the subject’s key personal developmental themes, psychological challenges, growth opportunities, and timing arcs for the current transit cycle.
+
+    Interpretation Focus:
+    - Synthesize major transit-to-natal activations into 2–4 overarching psychological or symbolic growth themes.
+    - Analyze activated natal houses and angles to map the life domains currently most influenced.
+    - Interpret any planetary returns or major transit phases (if provided) in psychological and archetypal developmental context:
+        - e.g., Saturn return = maturity, Uranus opposition = individuation crisis, Nodal return = destiny recalibration.
+    - Prioritize:
+        - Tight orbed aspects.
+        - Activations involving outer planets, angles, chart rulers, personal planets, or stelliums.
+        - Stationing or retrograde transiting planets influencing natal structures.
+    - For each major transit activation:
+        - Outline internal psychological development potentials (e.g., empowerment, emotional resilience, relational evolution).
+        - Suggest probable circumstantial shifts (e.g., career restructuring, home changes, relational reevaluation) — probabilistically, not deterministically.
+        - Specify timing arcs:
+            - Activation onset
+            - Peak intensity (especially at exact aspects or station points)
+            - Resolution phase.
+    - Always anchor interpretation explicitly to technical data (aspect, house, planet, dignity/motion status).
+
+    Output Instructions:
+    - Structure under clear modular headings:
+        - Major Growth Themes
+        - Life Domains Activated
+        - Timing Windows and Critical Peaks
+    - Embed verified technical anchor points naturally into the psychological narrative.
+    - Maintain an emotionally intelligent, empowering, psychologically sophisticated tone.
+    - Write in clean, modular markdown without code blocks or meta-commentary.
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Birth Location: {birthplace}
+    - Current Location: {current_location}
+
+  expected_output: >
+    A richly layered, technically anchored, psychologically empowering interpretation of the subject's active transit-to-natal themes, structured in clean markdown for seamless downstream integration into the final report.
+    
+  agent: transits_to_natal_chart_interpreter

@@ -1,0 +1,79 @@
+transits_interpretation_critic_task:
+  description: >
+    Critically evaluate the provided transit interpretation for technical accuracy, psychological richness, symbolic depth, thematic coherence, and collective emotional resonance, based exclusively on embedded chart data and established astrological best practices.
+    Ensure all transit factors mentioned in the source data are included and interpreted where relevant.
+
+    Review Guidelines:
+    - **Technical Anchoring**:
+      - Validate that all interpretations are grounded in verified aspects, degrees, house placements (if used), planetary dignities, retrograde statuses, and stationing influences.
+      - Confirm correct description of chart shape, diurnality, elemental and modality emphasis, and Moon phase influences.
+    - **Psychological Depth and Symbolic Framing**:
+      - Assess whether collective psychological themes and symbolic storylines are deeply and meaningfully articulated.
+      - Verify use of psychologically rich, archetypally resonant language aligned with planetary symbolism.
+    - **Thematic Coherence**:
+      - Ensure transit influences are logically grouped into coherent thematic clusters, not isolated or fragmented.
+      - Evaluate the integration of major geometric configurations (T-squares, Stelliums, etc.) into overarching symbolic narratives.
+    - **Emotional Tone and Developmental Framing**:
+      - Confirm that the emotional tone is empowering, nuanced, and avoids determinism or fear-based language.
+      - Evaluate whether emotional atmospheres (especially Moon phase dynamics) are captured effectively.
+
+    Critique Instructions:
+    - Organize feedback under clear modular headings:
+        - Technical Accuracy
+        - Psychological and Symbolic Depth
+        - Thematic Coherence
+        - Emotional Resonance
+    - Under each heading, provide specific, actionable bullet-point recommendations.
+    - Focus on precise improvement guidance — no rewriting or speculation beyond the embedded transit data.
+    - Maintain a solution-focused tone: identify weaknesses or missed opportunities, but offer guidance for refinement without rewriting or reinterpreting.
+
+    Today's date is {today}
+    The subject's name is {name}
+    Their current location is {location}
+
+    Transit Interpretation for Review:
+    {transit_analysis}
+
+    Raw Transit Data for reference:
+    {current_transits}
+    
+  expected_output: >
+    A structured, thematically organized critique formatted in clean modular markdown, providing specific, actionable recommendations for enhancing technical precision, psychological richness, thematic integration, and emotional resonance without rewriting the original analysis.
+    
+  agent: transits_interpretation_critic
+
+
+transits_interpretation_enhancement_task:
+  description: >
+    Refine and enrich the provided transit interpretation based on the structured critique feedback, enhancing technical precision, symbolic richness, thematic depth, and collective psychological resonance while preserving the original narrative voice and emotional tone.
+
+    Enhancement Guidelines:
+    - Deepen psychological and symbolic interpretations where the critique highlights gaps, ensuring richer collective storylines and emotional atmospheres.
+    - Correct and clarify technical data points as needed:
+        - Degrees, orbs, planetary dignity status, retrograde/stationing conditions, elemental/modal distributions, Moon phase influences.
+    - Strengthen thematic grouping:
+        - Unify related transits into coherent symbolic and psychological growth arcs or tension narratives.
+    - Integrate archetypal metaphors, emotional imagery, and real-world psychological parallels naturally tied to planetary symbolism.
+    - Clarify emotional atmospheres linked to lunar cycles, elemental imbalances, or key geometric patterns without deterministic language.
+    - Maintain modular markdown structure, logical narrative flow, and emotionally intelligent language.
+
+    Enhancement Instructions:
+    - Expand, adjust, or refine only the sections highlighted by the structured critique.
+    - Avoid adding new chart data or speculating beyond the provided transit data.
+    - Ensure all technical corrections are seamlessly woven into natural narrative flow.
+
+    Output Instructions:
+    - Deliver the fully enhanced interpretation in clean modular markdown (no code blocks, no meta-commentary).
+    - Ensure modular headings, symbolic richness, and thematic cohesion throughout.
+
+    Today's date is {today}
+    The subject's name is {name}
+    Their current location is {location}
+
+    Transit Interpretation for Enhancement:
+    {transit_analysis}
+    
+  expected_output: >
+    A polished, thematically unified, symbolically rich, technically accurate interpretation, enhanced precisely according to structured critique feedback, formatted cleanly for downstream integration.
+    
+  agent: transits_interpretation_enhancer

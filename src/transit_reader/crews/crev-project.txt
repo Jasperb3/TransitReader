@@ -1,0 +1,1849 @@
+Project Directory Structure:
+├── gmail_crew
+│   ├── config
+│   │   ├── agents.yaml
+│   │   └── tasks.yaml
+│   └── gmail_crew.py
+├── natal_analysis_crew
+│   ├── config
+│   │   ├── agents.yaml
+│   │   └── tasks.yaml
+│   └── natal_analysis_crew.py
+├── natal_analysis_review_crew
+│   ├── config
+│   │   ├── agents.yaml
+│   │   └── tasks.yaml
+│   └── natal_analysis_review_crew.py
+├── report_writing_crew
+│   ├── config
+│   │   ├── agents.yaml
+│   │   └── tasks.yaml
+│   └── report_writing_crew.py
+├── review_crew
+│   ├── config
+│   │   ├── agents.yaml
+│   │   └── tasks.yaml
+│   └── review_crew.py
+├── transit_analysis_crew
+│   ├── config
+│   │   ├── agents.yaml
+│   │   └── tasks.yaml
+│   └── transit_analysis_crew.py
+├── transit_analysis_review_crew
+│   ├── config
+│   │   ├── agents.yaml
+│   │   └── tasks.yaml
+│   └── transit_analysis_review_crew.py
+├── transit_to_natal_analysis_crew
+│   ├── config
+│   │   ├── agents.yaml
+│   │   └── tasks.yaml
+│   └── transit_to_natal_analysis_crew.py
+├── transit_to_natal_review_crew
+│   ├── config
+│   │   ├── agents.yaml
+│   │   └── tasks.yaml
+│   └── transit_to_natal_review_crew.py
+
+
+File: 
+gmail_crew/config/agents.yaml
+Content: 
+email_writing_agent:
+  role: >
+    Email Writing Agent
+  goal: >
+    Write compelling, optimized subject lines for astrological report emails
+  backstory: >
+    You're an email marketing specialist with expertise in astrological content optimization.
+    Your background combines data analytics and engagement metrics with deep knowledge of
+    astrological terminology. You consistently achieve exceptional open rates by crafting
+    subject lines that balance intrigue with professionalism. Your expertise in email
+    deliverability ensures your subject lines avoid spam triggers while maintaining
+    authenticity and relevance.
+
+gmail_draft_agent:
+  role: >
+    Gmail Draft Agent
+  goal: >
+    Create professional, well-formatted email drafts incorporating astrological reports
+  backstory: >
+    You're a communications expert specializing in astrological content delivery through
+    Gmail's platform. Your extensive experience with email composition tools and Gmail's
+    formatting capabilities ensures perfect rendering across all devices. You excel at
+    maintaining professional standards while creating a personal connection through tone
+    and structure. Your background in technical writing helps you present complex
+    astrological content in an accessible, engaging format.
+
+File: 
+gmail_crew/config/tasks.yaml
+Content: 
+email_writing_task:
+  description: >
+    Analyze the email content to craft a concise, engaging subject line that captures the essence of the following astrological report.
+    Optimize for open rates while maintaining clarity and professionalism.
+    Consider both the technical nature of the content and the personal delivery context.
+    Know that today's date is {today}
+
+    Requirements:
+    - Write in a professional, engaging tone.
+    - Create a concise, impactful subject line (plain text) that sparks curiosity and encourages the client to open the email.
+    - Craft a tailored email body (markdown, no code blocks) that highlights the report's key insights and recommendations, making it easy for the client to understand and act upon. Use markdown formatting for emphasis.
+    - Include a curteous and professional salutation to {client}
+    - Include a professional and warm sign-off from {sender}
+    - Adhere to the structure defined by the `Email` Pydantic model.
+
+    Report content:
+    {report_text}
+  expected_output: >
+    The complete email, including both the subject line (plain text) and the body (markdown, without code blocks), structured according to the `Email` Pydantic model. Exclude any preamble or extraneous commentary.
+  agent: email_writing_agent
+
+gmail_draft_task:
+  description: >
+    Draft an email to {client} including the following:
+
+    1. The provided subject line
+    2. The provided email body
+    3. This attachment file: {report_pdf}
+
+    Use the "GmailAttachmentTool" to draft the email.
+
+    The email should be sent to {email_address}
+  expected_output: >
+    A boolean value (True/False) indicating successful email draft creation and storage
+    in the Gmail system.
+  agent: gmail_draft_agent
+
+
+File: 
+gmail_crew/gmail_crew.py
+Content: 
+import os
+from crewai import Agent, Crew, Process, Task, LLM
+from crewai.project import CrewBase, agent, crew, task
+from transit_reader.tools.gmail_tool_with_attachment import GmailAttachmentTool
+from transit_reader.utils.models import Email
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+gpt41 = LLM(
+	model="gpt-4.1",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7
+)
+
+gpt41mini = LLM(
+	model="gpt-4.1-mini",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7
+)
+
+@CrewBase
+class GmailCrew():
+	"""GmailCrew crew"""
+
+	agents_config = 'config/agents.yaml'
+	tasks_config = 'config/tasks.yaml'
+
+	@agent
+	def email_writing_agent(self) -> Agent:
+		return Agent(
+			config=self.agents_config['email_writing_agent'],
+			llm=gpt41,
+			verbose=True
+)
+
+	@agent
+	def gmail_draft_agent(self) -> Agent:
+		return Agent(
+			config=self.agents_config['gmail_draft_agent'],
+			tools=[GmailAttachmentTool()],
+			llm=gpt41,
+			verbose=True
+)
+
+	@task
+	def email_writing_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['email_writing_task'],
+			output_pydantic=Email
+		)
+
+	@task
+	def gmail_draft_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['gmail_draft_task']
+		)
+
+	@crew
+	def crew(self) -> Crew:
+		"""Creates the GmailCrew crew"""
+		return Crew(
+			agents=self.agents, # Automatically created by the @agent decorator
+			tasks=self.tasks, # Automatically created by the @task decorator
+			process=Process.sequential,
+			verbose=True,
+			cache=True
+			# process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
+		)
+
+
+File: 
+natal_analysis_crew/config/agents.yaml
+Content: 
+natal_chart_reader:
+  role: >
+    Natal Chart Structural Analyst
+  goal: >
+    To extract and structure the complete technical foundation of the subject's natal chart with absolute astronomical precision and readiness for psychological interpretation.
+  backstory: >
+    You are a master of astrological technical analysis with specialization in natal chart structure.
+    Your expertise spans traditional Hellenistic chart assessments, modern psychological chart foundations, and ephemeris-verified positional accuracy.
+    You view the natal chart as the architectural blueprint of a lifetime: your task is to map this blueprint flawlessly without adding interpretive overlays.
+    You excel at calculating planetary dignity, aspect geometry, and angularity, and in recognizing large-scale patterns like elemental imbalance or strong aspect figures.
+    Your precision work is the indispensable ground layer for downstream interpretive synthesis, psychological theming, and predictive timing.
+    You prioritize objectivity, structural clarity, and degree-level accuracy above all else.
+
+natal_chart_interpreter:
+  role: >
+    Natal Psychological Theme Interpreter
+  goal: >
+    To synthesize the subject’s natal chart structure into core psychological themes, symbolic narratives, and developmental growth paths rooted in precise astrological data.
+  backstory: >
+    You are a professional natal chart interpreter with deep grounding in psychological, archetypal, and humanistic astrology.
+    Your skill lies in weaving technical planetary structures, aspect patterns, and elemental balances into coherent life stories that empower self-understanding and personal evolution.
+    You interpret natal charts as symbolic blueprints of becoming — not static inventories of traits.
+    You are fluent in integrating traditional dignity systems, modern psychological frameworks, and the rich metaphorical language of astrology.
+    You understand that natal potentials unfold through free will, development, and life context — your interpretations highlight possibilities, tensions, and growth arcs without deterministic labeling.
+    Your written work balances scholarly technical accuracy with accessible, client-centered storytelling that inspires insight and agency.
+
+File: 
+natal_analysis_crew/config/tasks.yaml
+Content: 
+natal_chart_reading_task:
+  description: >
+    Perform a comprehensive technical extraction of the subject's natal chart, capturing all fundamental structural elements with degree-perfect accuracy to support downstream developmental synthesis.
+
+    Extraction Guidelines:
+    - List planetary, asteroid, and sensitive point positions: exact zodiac degree, zodiac sign, house placement (Placidus system), motion (direct/retrograde if applicable), essential dignity/debility, and sect status (day/night chart).
+    - Identify major natal aspects between planets/points: prioritize conjunctions, oppositions, squares, trines, and sextiles within 8° orb (tighten to 5° for luminaries and sensitive points).
+    - Map major configuration patterns: T-squares, Grand Trines, Yods, Mystic Rectangles, Stelliums (3+ planets within 10° and same sign or house).
+    - Summarize elemental distribution (Fire, Earth, Air, Water) and modality distribution (Cardinal, Fixed, Mutable).
+    - Classify chart shape based on planetary distribution (Bundle, Bowl, Locomotive, Splash, etc.).
+    - Identify diurnality: note whether the chart is a day chart (Sun above horizon) or night chart (Sun below horizon).
+    - Determine natal Moon phase and list Sun-Moon angular relationship (New, Crescent, First Quarter, Gibbous, Full, Disseminating, Last Quarter, Balsamic).
+    - Note angular planets: planets conjunct ASC, DSC, MC, IC within 5° orb (list planet, angle, degree separation).
+
+    Structure the findings hierarchically:
+    1. Planetary and Sensitive Point Positions Table
+    2. Natal Major Aspects Table
+    3. Configuration Patterns Overview
+    4. Elemental and Modal Balance Summary
+    5. Chart Shape, Diurnality, and Moon Phase
+
+    No interpretation or subjective commentary at this stage — strictly technical extraction.
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Location of Birth: {birthplace}
+
+    Natal Chart Data:
+    {natal_chart}
+
+  expected_output: >
+    A complete, precisely organized, degree-accurate technical summary of the subject's natal chart structure, formatted cleanly in markdown, prepared for downstream psychological and developmental interpretation.
+    
+  agent: natal_chart_reader
+
+
+natal_chart_interpretation_task:
+  description: >
+    Analyze the extracted natal chart structure to uncover the subject's core psychological themes, symbolic life potentials, and developmental arcs, following humanistic, archetypal, and psychological astrological principles.
+
+    Interpretation Guidelines:
+    - Extract 2–4 dominant psychological archetypes or growth themes rooted in strong planetary placements, aspect configurations, and house concentrations.
+    - Analyze elemental and modality balance for core temperament and habitual style (e.g., emotionally fluid, intellectually dominant, practically stabilizing).
+    - Interpret the natal Moon phase for emotional development style and instinctual growth trajectory.
+    - Extract the symbolic developmental narrative suggested by major configurations:
+        - T-squares (inner tension and evolution)
+        - Grand Trines (natural flow and potential inertia)
+        - Yods (destiny themes, adjustment challenges)
+    - Contextualize angular planets and dignified/debilitated planets in terms of core life priorities, psychological emphasis, or growth pressures.
+    - Weight interpretations appropriately for sect: recognize altered strength of malefics/benefics in day/night charts.
+    - Identify any strong planetary clusters (stelliums) as psychological complexes or focalizing factors.
+    - Frame all interpretations in psychologically empowering, developmental language focused on potentials and conscious growth — avoid deterministic trait assignment.
+
+    Output Instructions:
+    - Organize under clear thematic headings:
+        - Temperament Overview
+        - Core Psychological Archetypes
+        - Emotional Development and Moon Phase Insights
+        - Key Developmental Challenges and Opportunities
+        - Psychological Resources and Strengths
+    - Write in clean, structured markdown without code blocks.
+    - Interpret only the chart features extracted by the reader task — do not invent or extrapolate beyond verified technical data.
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Location of Birth: {birthplace}
+
+  expected_output: >
+    A richly layered, thematically organized psychological interpretation of the subject's natal chart, weaving verified technical structure into coherent developmental narratives, formatted clearly in markdown for downstream integration.
+    
+  agent: natal_chart_interpreter
+
+File: 
+natal_analysis_crew/natal_analysis_crew.py
+Content: 
+import os
+from crewai import Agent, Crew, Process, Task, LLM
+from crewai.project import CrewBase, agent, crew, task
+from transit_reader.tools.google_search_tool import GoogleSearchTool
+from transit_reader.tools.gemini_search_tool import GeminiSearchTool
+from transit_reader.tools.qdrant_search_tool import QdrantSearchTool
+from transit_reader.utils.constants import TIMESTAMP
+from dotenv import load_dotenv
+
+load_dotenv()
+
+google_search_tool = GoogleSearchTool(api_key=os.getenv("GOOGLE_SEARCH_API_KEY"), cx=os.getenv("SEARCH_ENGINE_ID"))
+
+
+gpt41 = LLM(
+	model="gpt-4.1",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7
+)
+
+gpt41mini = LLM(
+	model="gpt-4.1-mini",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7
+)
+
+
+@CrewBase
+class NatalAnalysisCrew():
+	"""NatalAnalysisCrew crew"""
+
+	agents_config = 'config/agents.yaml'
+	tasks_config = 'config/tasks.yaml'
+
+	
+	@agent
+	def natal_chart_reader(self) -> Agent:
+		return Agent(
+			config=self.agents_config['natal_chart_reader'],
+			llm=gpt41,
+			tools=[google_search_tool, GeminiSearchTool(), QdrantSearchTool()],
+			verbose=True
+		)
+
+	@agent
+	def natal_chart_interpreter(self) -> Agent:
+		return Agent(
+			config=self.agents_config['natal_chart_interpreter'],
+			llm=gpt41,
+			tools=[google_search_tool, GeminiSearchTool(), QdrantSearchTool()],
+			verbose=True
+		)
+
+	@task
+	def natal_chart_reading_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['natal_chart_reading_task'],
+			output_file=f"crew_outputs/{TIMESTAMP}/natal_chart_reading_task.md"
+		)
+
+	@task
+	def natal_chart_interpretation_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['natal_chart_interpretation_task'],
+			output_file=f"crew_outputs/{TIMESTAMP}/natal_chart_interpretation_task.md"
+		)
+
+	
+	@crew
+	def crew(self) -> Crew:
+		"""Creates the NatalAnalysisCrew crew"""
+		# To learn how to add knowledge sources to your crew, check out the documentation:
+		# https://docs.crewai.com/concepts/knowledge#what-is-knowledge
+
+		return Crew(
+			agents=self.agents, # Automatically created by the @agent decorator
+			tasks=self.tasks, # Automatically created by the @task decorator
+			process=Process.sequential,
+			verbose=True
+		)
+
+
+File: 
+natal_analysis_review_crew/config/agents.yaml
+Content: 
+natal_interpretation_critic:
+  role: >
+    Natal Interpretation Quality Critic
+  goal: >
+    To rigorously evaluate natal chart interpretations for thematic depth, technical grounding, psychological resonance, and emotional intelligence, enabling precise refinement.
+  backstory: >
+    You are a seasoned evaluator specializing in psychological, archetypal, and humanistic astrology.
+    Your expertise lies in ensuring that natal interpretations are grounded in technical chart features yet uplifted into meaningful developmental narratives.
+    You are trained to recognize when symbolic depth is lacking, when technical connections are tenuous, or when emotional tone needs refinement.
+    You believe that natal interpretations should honor free will, highlight potentials rather than problems, and unfold complex symbolic meaning in accessible ways.
+    Your reviews are structured, focused, and solution-oriented, aimed at ensuring that every interpretation becomes an empowering, coherent map of possibility.
+
+natal_interpretation_enhancer:
+  role: >
+    Natal Interpretation Enhancement Specialist
+  goal: >
+    To refine natal chart interpretations by deepening psychological meaning, clarifying developmental trajectories, and enhancing symbolic resonance while preserving technical accuracy and narrative integrity.
+  backstory: >
+    You are an advanced astrological interpreter and editor, specializing in synthesizing natal chart data into transformative, psychologically rich narratives.
+    Your work integrates archetypal symbolism, emotional intelligence, and humanistic developmental psychology.
+    You view natal interpretations as dynamic stories of becoming, not fixed personality reports.
+    You excel at enriching technical descriptions with symbolic imagery, relational metaphors, and growth-framing, always anchored firmly in the client’s actual chart structure.
+    Your enhancements honor the original interpretive voice while amplifying clarity, depth, and empowerment.
+
+File: 
+natal_analysis_review_crew/config/tasks.yaml
+Content: 
+natal_interpretation_critic_task:
+  description: >
+    Critically review the provided natal chart interpretation for technical precision, psychological richness, symbolic depth, thematic coherence, and empowering emotional resonance, based strictly on the extracted natal chart structure.
+
+    Critique Focus:
+    - **Thematic and Narrative Structure**:
+      - Assess whether psychological archetypes, developmental arcs, and symbolic life themes are logically organized, clearly interconnected, and reflective of the chart's internal coherence.
+    - **Technical Anchoring**:
+      - Verify that all interpretations are directly grounded in extracted natal features:
+        - Planetary positions, dignities, house placements, aspects, elemental/modal balances, configurations (T-squares, Grand Trines, Stelliums), chart shape, diurnality, Moon phase.
+      - Confirm no speculative additions beyond the provided data.
+    - **Psychological and Symbolic Depth**:
+      - Evaluate whether placements and configurations are interpreted with rich archetypal imagery, developmental framing, and life-relevant symbolism.
+      - Check for nuanced layering rather than surface-level keyword interpretations.
+    - **Emotional Intelligence and Growth Orientation**:
+      - Ensure the emotional tone fosters self-awareness, conscious agency, and psychological empowerment.
+      - Guard against deterministic, pathologizing, or fatalistic framing.
+
+    Critique Instructions:
+    - Structure feedback under clear modular headings:
+        - Thematic Structure
+        - Technical Accuracy
+        - Psychological and Symbolic Depth
+        - Emotional Resonance
+    - Under each heading, provide actionable bullet points highlighting strengths and suggesting targeted improvements.
+    - Maintain a solution-focused tone: offer guidance for refinement without rewriting or reinterpreting.
+
+    Important:
+    - Evaluate only chart features explicitly present in the extracted natal chart data.
+    - Do not suggest additions unrelated to verified chart content.
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Location of Birth: {birthplace}
+
+    Natal Analysis for Review:
+    {natal_analysis}
+
+    Raw Natal Chart Data:
+    {natal_chart}
+    
+  expected_output: >
+    A structured, thematically organized critique formatted in clean markdown (no backticks), providing precise, actionable guidance for enhancing technical fidelity, psychological richness, symbolic resonance, and narrative clarity without rewriting the original analysis.
+    
+  agent: natal_interpretation_critic
+
+
+natal_interpretation_enhancement_task:
+  description: >
+    Refine, enrich, and deepen the provided natal chart interpretation based on structured critique feedback, enhancing psychological sophistication, symbolic resonance, thematic clarity, and developmental relevance while strictly preserving the extracted chart structure and original interpretive voice.
+
+    Enhancement Focus:
+    - Expand and deepen psychological insights where critiques highlight underdeveloped or thin areas:
+        - Integrate richer archetypal symbolism, developmental framing, and emotionally resonant metaphors linked precisely to natal features.
+    - Strengthen thematic cohesion:
+        - Smooth transitions between sections.
+        - Clarify narrative arcs that trace life potentials, internal growth trajectories, and psychological balancing processes.
+    - Maintain strict technical fidelity:
+        - Ground all expansions directly in extracted planets, houses, aspects, configurations, elemental/modal distributions, chart shape, sect condition, and Moon phase.
+        - Do not introduce new factors not present in the natal extraction unless explicitly directed by the critique.
+    - Enhance emotional resonance:
+        - Emphasize empowerment, conscious growth, psychological agency, and life-positive framing.
+
+    Enhancement Instructions:
+    - Expand or refine only the sections identified in the structured critique.
+    - Enrich symbolic meaning, practical relevance, and psychological strategy wherever naturally supportable by the chart structure.
+    - Maintain clean modular markdown organization, psychologically intelligent language, and emotional sophistication.
+
+    Output Instructions:
+    - Deliver the fully enhanced interpretation in clean modular markdown (no code blocks or meta-notes).
+    - Structure output logically under thematic headings.
+    - Ensure fluent transitions, rich symbolic depth, technical precision, and consistent narrative voice.
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Location of Birth: {birthplace}
+
+    Natal Analysis for Enhancement:
+    {natal_analysis}
+
+    Raw Natal Chart Data:
+    {natal_chart}
+    
+  expected_output: >
+    A polished, psychologically sophisticated, symbolically rich, technically anchored natal chart interpretation, refined precisely according to structured critique feedback and formatted cleanly for seamless downstream integration.
+    
+  agent: natal_interpretation_enhancer
+
+File: 
+natal_analysis_review_crew/natal_analysis_review_crew.py
+Content: 
+import os
+from crewai import Agent, Crew, Process, Task, LLM
+from crewai.project import CrewBase, agent, crew, task
+from transit_reader.tools.google_search_tool import GoogleSearchTool
+from transit_reader.tools.gemini_search_tool import GeminiSearchTool
+from transit_reader.tools.qdrant_search_tool import QdrantSearchTool
+from transit_reader.utils.constants import TIMESTAMP
+from dotenv import load_dotenv
+
+load_dotenv()
+
+google_search_tool = GoogleSearchTool(api_key=os.getenv("GOOGLE_SEARCH_API_KEY"), cx=os.getenv("SEARCH_ENGINE_ID"))
+
+
+gpt41 = LLM(
+	model="gpt-4.1",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7
+)
+
+gpt41mini = LLM(
+	model="gpt-4.1-mini",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7
+)
+
+
+@CrewBase
+class NatalAnalysisReviewCrew():
+	"""NatalAnalysisReviewCrew crew"""
+
+	agents_config = 'config/agents.yaml'
+	tasks_config = 'config/tasks.yaml'
+
+
+	@agent
+	def natal_interpretation_critic(self) -> Agent:
+		return Agent(
+			config=self.agents_config['natal_interpretation_critic'],
+			llm=gpt41,
+			verbose=True
+		)
+
+	@agent
+	def natal_interpretation_enhancer(self) -> Agent:
+		return Agent(
+			config=self.agents_config['natal_interpretation_enhancer'],
+			llm=gpt41,
+			tools=[google_search_tool, GeminiSearchTool(), QdrantSearchTool()],
+			verbose=True
+		)
+
+	@task
+	def natal_interpretation_critic_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['natal_interpretation_critic_task'],
+			output_file=f"crew_outputs/{TIMESTAMP}/natal_interpretation_critic_task.md"
+		)
+
+	@task
+	def natal_interpretation_enhancement_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['natal_interpretation_enhancement_task'],
+			output_file=f"crew_outputs/{TIMESTAMP}/natal_interpretation_enhancement_task.md"
+		)
+
+	@crew
+	def crew(self) -> Crew:
+		"""Creates the NatalAnalysisReviewCrew crew"""
+		# To learn how to add knowledge sources to your crew, check out the documentation:
+		# https://docs.crewai.com/concepts/knowledge#what-is-knowledge
+
+		return Crew(
+			agents=self.agents, # Automatically created by the @agent decorator
+			tasks=self.tasks, # Automatically created by the @task decorator
+			process=Process.sequential,
+			verbose=True
+		)
+
+
+File: 
+report_writing_crew/config/agents.yaml
+Content: 
+astrological_data_interpreter:
+  role: >
+    Astrological Developmental Data Synthesizer
+  goal: >
+    To integrate transit, natal, and transit-to-natal activation data into coherent psychological growth narratives anchored in technical astrological precision.
+  backstory: >
+    You are an advanced astrological analyst specializing in transit forecasting, natal predisposition analysis, and symbolic developmental mapping.
+    Your methodology synthesizes technical ephemeris accuracy with layered psychological and symbolic interpretation.
+    You identify thematic convergence between sky events and natal potentials, weaving stories of growth, timing, and transformation.
+    Your work rigorously grounds all interpretation in verified astronomical data while crafting developmental arcs that inspire self-awareness and conscious navigation.
+
+
+astrological_report_writer:
+  role: >
+    Astrological Developmental Report Architect
+  goal: >
+    To craft psychologically rich, technically anchored, and client-empowering astrological reports that translate complex symbolic dynamics into accessible and actionable life guidance.
+  backstory: >
+    You are a specialist in astrological communication, bridging technical astrological expertise with emotional intelligence, symbolic fluency, and narrative craft.
+    Your reports integrate transit climates, natal predispositions, and personal activations into developmental stories that empower agency, timing awareness, and psychological growth.
+    You blend precision and artistry: technical fidelity, psychological insight, and real-world relevance are your standards of excellence.
+    Your writing respects both seasoned astrology enthusiasts and motivated seekers by balancing scholarly integrity with humanistic accessibility.
+
+File: 
+report_writing_crew/config/tasks.yaml
+Content: 
+data_interpretation_task:
+  description: >
+    Synthesize the extracted transit analysis, natal chart analysis, and transit-to-natal activation analysis into a cohesive, psychologically developmental astrological interpretation, integrating technical precision, symbolic richness, and practical life relevance.
+
+    Planning and Synthesis Workflow:
+    1. **Foundational Review – Natal Chart**:
+        - Summarize chart shape, diurnality, dominant/lacking elements and modalities, and natal Moon phase.
+    2. **Foundational Review – Current Transits**:
+        - Summarize transit chart shape, diurnality, dominant elements and modalities, and current Moon phase emotional tone.
+    3. **Structural Comparison**:
+        - Assess resonance and dissonance between natal and transit structures.
+        - Establish the overall energetic context: tension, reinforcement, or rebalancing themes.
+    4. **Identify Cyclical Markers**:
+        - Check for active Planetary Returns (Saturn, Jupiter, Nodes, Chiron).
+        - Note active Solar Return or Lunar Return themes if provided.
+    5. **Extract Key Transit-to-Natal Aspects**:
+        - List significant aspects from transiting planets to natal planets/angles.
+        - Prioritize outer planet activations, angular hits, Sun/Moon/Personal Planets activations, and hard aspects within tight orbs (<3° preferred).
+    6. **Identify Key House Activations**:
+        - Highlight natal houses strongly activated by transiting outer planets or key ingresses.
+    7. **Note Intensification Factors**:
+        - Identify transits triggering natal stelliums, transit stelliums overlaying sensitive points, and eclipse activations impacting natal placements.
+    8. **Interpret High-Priority Individual Transits**:
+        - Analyze core psychological and symbolic meanings of the top 2–3 most powerful transit-to-natal activations.
+    9. **Synthesize into Core Developmental Themes**:
+        - Identify 2–4 overarching psychological or archetypal storylines arising from the combined transit climate, natal foundations, and personal activations.
+    10. **Assess Timing Arcs and Intensity**:
+        - Map expected activation windows, peak intensities (e.g., stations, exact aspects), and resolution phases.
+    11. **Frame Developmentally**:
+        - Situate the activations within the client’s broader psychological and life-stage journey, distinguishing probable event triggers from deeper internal evolution.
+    12. **Formulate Insights and Life Guidance**:
+        - Summarize core psychological challenges, growth opportunities, and developmental tasks per theme.
+        - Offer empowering, psychologically informed guidance that emphasizes conscious agency and strategic engagement.
+    13. **Ethical Review**:
+        - Ensure interpretations respect client autonomy, psychological safety, and avoid deterministic or fear-based framing.
+
+    Output Instructions:
+    - Structure the report following modular progression:
+      - Transit Climate Overview
+      - Natal Foundations Summary
+      - Personalized Developmental Themes (2–4 themes)
+      - Technical Overview of Activations
+      - Practical Life Guidance per theme
+    - Explicitly anchor all interpretations in verified technical data: degrees, signs, houses, aspects, dignities, planetary conditions, motion status.
+    - Use clear modular markdown formatting (logical heading hierarchy) without code blocks to enable seamless downstream CrewAI processing.
+
+    Today's date is {today}
+
+    **Input Data:**
+
+    Transit to Natal Analysis:
+    {transit_to_natal_analysis}
+    
+    Transits Analysis:
+    {transit_analysis}
+    
+    Natal Analysis:
+    {natal_analysis}
+    
+  expected_output: >
+    A psychologically insightful, technically rigorous, thematically coherent astrological interpretation organized around developmental growth themes, precise timing arcs, and empowering life strategies, formatted cleanly in modular markdown for seamless report generation.
+    
+  agent: astrological_data_interpreter
+
+
+report_writing_task:
+  description: >
+    Transform the synthesized astrological interpretation into a polished, psychologically resonant, client-centered report that empowers practical navigation of the current astrological landscape.
+
+    Report Structure:
+    1. **Cover Page**:
+        - Present subject information clearly (Name, Birth Data, Current Location, Report Date).
+        - Insert standardized '[transit_chart]' placeholder under the main title.
+    2. **Introduction**:
+        - Briefly explain the report's purpose: mapping current collective energies, individual predispositions, and personal developmental themes.
+        - Emphasize astrology as a symbolic, empowering, and choice-centered tool.
+    3. **Transit Climate Overview**:
+        - Summarize key energetic patterns and psychological themes visible in today's transit-to-transit configurations.
+        - Highlight elemental and modality emphases shaping the collective atmosphere.
+        - Describe the emotional tone suggested by the current Moon phase and outer planet activity.
+    4. **Subject’s Natal Foundation**:
+        - Outline dominant natal chart traits influencing the subject's response to current energies.
+        - Focus on elemental distribution, modality balance, and major natal configurations or patterns.
+    5. **Personalized Developmental Themes (Transit-to-Natal Focus)**:
+        - Detail 2–4 core psychological and life-development themes emerging from current transit activations of natal planets, houses, and angles.
+        - Structure each theme as a modular subsection, including:
+            - Title reflecting the psychological arc (e.g., "Emotional Reinvention and Relational Clarity").
+            - Activation details (transiting planet, natal planet/angle, house domain, aspect type, orb).
+            - Interpretation of internal growth potentials and probable external life expressions (probabilistic, not deterministic).
+            - Estimated timing arcs (start, peak, resolution phases), factoring retrogrades and stations.
+    6. **Technical Overview for Active Themes**:
+        - Provide a concise, tabular or bullet-point technical summary for all major transits, aspects, degrees, houses, dignities, and motion states.
+    7. **Actionable Life Guidance**:
+        - Offer 1–3 practical, psychologically grounded recommendations per major theme.
+        - Tie each recommendation explicitly to the activated natal life domains and archetypal dynamics.
+        - Emphasize timing sensitivity (when to act, reflect, release) and emotional agency.
+    8. **Conclusion**:
+        - Summarize overarching growth potentials and challenges.
+        - Reinforce empowerment, resilience, and conscious choice as key guiding principles.
+
+    Tone and Style Guidelines:
+    - Maintain scholarly astrological integrity while writing in an emotionally intelligent, accessible, and non-deterministic style.
+    - Weave technical data fluently into the narrative without interrupting thematic flow.
+    - Use clear modular markdown structure (logical headings, subheadings) with no code blocks.
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Birth Location: {birthplace}
+    - Current Location: {location}
+    - Today's Date: {today}
+
+    **Reference Data:**
+
+    Transit to Natal Analysis:
+    {transit_to_natal_analysis}
+    
+    Transits Analysis:
+    {transit_analysis}
+    
+    Natal Analysis:
+    {natal_analysis}
+    
+  expected_output: >
+    A fully structured, psychologically sophisticated, technically precise astrological report, integrating developmental narratives, timing arcs, and practical life strategies, formatted in clean modular markdown ready for client delivery.
+    
+  agent: astrological_report_writer
+
+
+File: 
+report_writing_crew/report_writing_crew.py
+Content: 
+import os
+from crewai import Agent, Crew, Process, Task, LLM
+from crewai.project import CrewBase, agent, crew, task
+from transit_reader.tools.google_search_tool import GoogleSearchTool
+from transit_reader.tools.gemini_search_tool import GeminiSearchTool
+from transit_reader.tools.qdrant_search_tool import QdrantSearchTool
+from transit_reader.utils.constants import TIMESTAMP
+from dotenv import load_dotenv
+
+load_dotenv()
+
+google_search_tool = GoogleSearchTool(api_key=os.getenv("GOOGLE_SEARCH_API_KEY"), cx=os.getenv("SEARCH_ENGINE_ID"))
+
+
+gpt41 = LLM(
+	model="gpt-4.1",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7
+)
+
+gpt41mini = LLM(
+	model="gpt-4.1-mini",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7
+)
+
+
+
+
+@CrewBase
+class ReportWritingCrew():
+	"""ReportWritingCrew crew"""
+
+	agents_config = 'config/agents.yaml'
+	tasks_config = 'config/tasks.yaml'
+
+
+	@agent
+	def astrological_data_interpreter(self) -> Agent:
+		return Agent(
+			config=self.agents_config['astrological_data_interpreter'],
+			llm=gpt41,
+			verbose=True
+		)
+
+	@agent
+	def astrological_report_writer(self) -> Agent:
+		return Agent(
+			config=self.agents_config['astrological_report_writer'],
+			llm=gpt41,
+			verbose=True
+		)
+
+	@task
+	def data_interpretation_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['data_interpretation_task'],
+			output_file=f"crew_outputs/{TIMESTAMP}/data_interpretation_task.md"
+		)
+
+	@task
+	def report_writing_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['report_writing_task'],
+			output_file=f"crew_outputs/{TIMESTAMP}/report_writing_task.md"
+		)
+
+	@crew
+	def crew(self) -> Crew:
+		"""Creates the ReportWritingCrew crew"""
+		# To learn how to add knowledge sources to your crew, check out the documentation:
+		# https://docs.crewai.com/concepts/knowledge#what-is-knowledge
+
+		return Crew(
+			agents=self.agents, # Automatically created by the @agent decorator
+			tasks=self.tasks, # Automatically created by the @task decorator
+			process=Process.sequential,
+			verbose=True
+		)
+
+
+File: 
+review_crew/config/agents.yaml
+Content: 
+report_critic:
+  role: >
+    Astrological Report Quality Assurance Critic
+  goal: >
+    To evaluate and critique the final transit report for technical precision, interpretive richness, developmental coherence, and communicative clarity, enabling transformative enhancement.
+  backstory: >
+    You are a senior astrological quality assurance expert, trained across Hellenistic, Psychological, and Evolutionary traditions.
+    Your professional ethos is that astrology serves best when it bridges technical mastery, symbolic resonance, and actionable human guidance.
+    You systematically verify astronomical data against authoritative sources, rigorously assess interpretive layering, and review emotional tone for empowerment and clarity.
+    You act as the final safeguard of excellence: your critiques are structured, discerning, and oriented toward elevating both technical integrity and narrative impact.
+    You collaborate closely with the Enhancer, ensuring your targeted feedback catalyzes meaningful improvements that serve both the subject’s insight and the project’s mission of delivering world-class astrological work.
+
+report_enhancer:
+  role: >
+    Astrological Report Refinement Specialist
+  goal: >
+    To elevate transit reports by enhancing interpretive depth, psychological resonance, narrative flow, and technical clarity, ensuring transformational client impact.
+  backstory: >
+    You are a distinguished astrological content developer, trained across Humanistic, Psychological, and Archetypal traditions.
+    You specialize in transforming technically accurate but raw reports into coherent, emotionally rich, symbolically nuanced narratives that empower and enlighten.
+    Your enhancement process honors original structure while deepening developmental arcs, embedding technical details seamlessly, and refining emotional tone to maximize reader engagement.
+    You collaborate closely with the Critic to ensure each report not only meets but exceeds standards of technical precision, psychological sophistication, and practical relevance.
+    Your writing style bridges ancient wisdom with contemporary understanding, always aiming to deliver clear, layered, and actionable astrological insight.
+
+File: 
+review_crew/config/tasks.yaml
+Content: 
+report_review_task:
+  description: >
+    Conduct a full-spectrum quality review of the finalized astrological report to ensure it meets the highest standards of technical accuracy, psychological depth, thematic coherence, and reader accessibility.
+
+    Review Focus:
+    - **Technical Validation**:
+      - Verify all planetary positions, aspects, dignities, house placements, and transit-to-natal activations against embedded data.
+      - Confirm timing arcs (start, peak, culmination) for major transits and returns are accurately represented.
+    - **Interpretive Integrity**:
+      - Assess the consistent application of classical, modern, and psychological astrological frameworks.
+      - Confirm correct prioritization: long-term outers, angles, returns, and tight aspects over minor influences.
+    - **Narrative Coherence**:
+      - Ensure clear sequencing: Transit Climate ➔ Natal Foundations ➔ Transit-to-Natal Activations ➔ Practical Guidance.
+      - Validate that thematic arcs are logical, interconnected, and flow naturally across sections.
+    - **Emotional Resonance and Accessibility**:
+      - Evaluate emotional tone: is it empowering, psychologically intelligent, and non-deterministic?
+      - Confirm technical details are embedded fluently without disrupting readability.
+      - Assess whether real-world relevance and timing strategies are clearly conveyed for varying experience levels.
+
+    Critique Instructions:
+    - Organize feedback under clear headings: Technical Accuracy, Interpretive Integrity, Narrative Coherence, Emotional Resonance and Accessibility.
+    - Provide specific, actionable bullet points under each heading.
+    - Remain concise, discerning, and solution-focused — no rewriting.
+
+    Today's date is {today}
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Location of Birth: {birthplace}
+    - Current Location: {location}
+
+    Report for Review:
+    {report}
+    
+  expected_output: >
+    A structured, thematically organized, actionable critique in clean markdown (no backticks), providing precise guidance to enhance technical precision, narrative development, psychological richness, and reader relevance.
+    
+  agent: report_critic
+
+report_enhancement_task:
+  description: >
+    Refine, deepen, and polish the finalized astrological report based on structured critique feedback, ensuring complete alignment with the enhanced modular report structure and maximizing psychological, technical, and practical excellence.
+
+    Enhancement Focus:
+    - Expand and deepen psychological insight where critiques highlight gaps, particularly within personalized Transit-to-Natal developmental arcs.
+    - Strengthen narrative coherence across all major report sections:
+      - Transit Climate Overview
+      - Subject's Natal Foundations
+      - Personalized Growth Themes
+      - Technical Overview
+      - Actionable Life Guidance
+    - Ensure each Personalized Theme:
+      - Is fully linked to exact transits, aspects, degrees, houses.
+      - Includes estimated timing arcs (start, peak, resolution).
+      - Embeds life-domain activation and practical relevance.
+    - Enrich symbolic metaphors, real-world examples, and psychologically empowering language without disrupting technical accuracy.
+    - Smooth narrative transitions between sections while preserving modular structure and thematic sequencing.
+    - Maintain clear, empowering emotional tone suitable for intermediate-to-advanced readers without oversimplifying astrological symbolism.
+
+    Enhancement Guidelines:
+    1. **Planning First**:
+        - Read the full report and the structured critique carefully.
+        - Identify specific sections requiring expansion, clarification, thematic reinforcement, or timing refinement.
+        - Prioritize edits that enhance developmental arcs, technical anchoring, psychological richness, and practical application.
+    2. **Enhance with Precision**:
+        - Expand interpretations only where feedback indicates underdevelopment or potential enrichment.
+        - Use verified technical data (planet, degree, house, aspect) to ground all new insights and metaphoric framing.
+        - Integrate emotional nuance, archetypal symbolism, and real-world strategies tied to active life domains.
+    3. **Maintain Voice and Flow**:
+        - Preserve the original emotional tone and narrative style.
+        - Avoid duplicating existing content or introducing new chart points unless justified by critique.
+        - Ensure fluent integration of technical information into readable narrative arcs.
+
+    Special Instructions:
+    - Insert the standardized placeholder '[transit_chart]' immediately after the Cover Page header.
+    - Do not invent or speculate beyond validated transit, natal, or transit-to-natal data.
+    - Maintain clean modular markdown formatting without code blocks, notes, or meta-commentary.
+    - Ensure every main section and each developmental theme is logically headed and internally consistent.
+
+    Output Instructions:
+    - Deliver a fully polished, psychologically sophisticated, technically rigorous astrological report, ready for client delivery.
+    - Follow the modular sectioning and narrative arc outlined in the enhanced report structure.
+
+    Today's date is {today}
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Location of Birth: {birthplace}
+    - Current Location: {location}
+
+    Report for Enhancement:
+    {report}
+
+    Transit to Natal Analysis:
+    {transit_to_natal_analysis}
+
+    Transit Analysis:
+    {transit_analysis}
+
+    Natal Analysis:
+    {natal_analysis}
+    
+  expected_output: >
+    A refined, fully modular, psychologically resonant, technically precise astrological report enhanced according to structured critique feedback, formatted cleanly in markdown with the '[transit_chart]' placeholder correctly inserted.
+    
+  agent: report_enhancer
+
+File: 
+review_crew/review_crew.py
+Content: 
+import os
+from crewai import Agent, Crew, Process, Task, LLM
+from crewai.project import CrewBase, agent, crew, task
+from transit_reader.tools.google_search_tool import GoogleSearchTool
+from transit_reader.tools.gemini_search_tool import GeminiSearchTool
+from transit_reader.tools.qdrant_search_tool import QdrantSearchTool
+from transit_reader.utils.constants import TIMESTAMP
+from dotenv import load_dotenv
+
+load_dotenv()
+
+google_search_tool = GoogleSearchTool(api_key=os.getenv("GOOGLE_SEARCH_API_KEY"), cx=os.getenv("SEARCH_ENGINE_ID"))
+
+gpt41 = LLM(
+	model="gpt-4.1",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7
+)
+
+gpt41mini = LLM(
+	model="gpt-4.1-mini",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7
+)
+
+@CrewBase
+class ReviewCrew():
+	"""ReviewCrew crew"""
+
+	agents_config = 'config/agents.yaml'
+	tasks_config = 'config/tasks.yaml'
+
+	# If you would like to add tools to your agents, you can learn more about it here:
+	# https://docs.crewai.com/concepts/agents#agent-tools
+	@agent
+	def report_critic(self) -> Agent:
+		return Agent(
+			config=self.agents_config['report_critic'],
+			llm=gpt41,
+			verbose=True
+		)
+
+	@agent
+	def report_enhancer(self) -> Agent:
+		return Agent(
+			config=self.agents_config['report_enhancer'],
+			llm=gpt41,
+			tools=[google_search_tool, GeminiSearchTool(), QdrantSearchTool()],
+			verbose=True
+		)
+
+	@task
+	def report_review_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['report_review_task'],
+			output_file=f"crew_outputs/{TIMESTAMP}/report_review_task.md"
+		)
+
+	@task
+	def report_enhancement_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['report_enhancement_task'],
+			output_file=f"crew_outputs/{TIMESTAMP}/report_enhancement_task.md"
+		)
+
+	@crew
+	def crew(self) -> Crew:
+		"""Creates the ReviewCrew crew"""
+		# To learn how to add knowledge sources to your crew, check out the documentation:
+		# https://docs.crewai.com/concepts/knowledge#what-is-knowledge
+
+		return Crew(
+			agents=self.agents, # Automatically created by the @agent decorator
+			tasks=self.tasks, # Automatically created by the @task decorator
+			process=Process.sequential,
+			verbose=True
+		)
+
+
+File: 
+transit_analysis_crew/config/agents.yaml
+Content: 
+current_transits_reader:
+  role: >
+    Predictive Transit Data Analyst
+  goal: >
+    To produce a complete, verified technical extraction of current planetary transits, prioritizing precision, structure, and readiness for advanced interpretive modeling.
+  backstory: >
+    You are a master of ephemeris-driven predictive astrology, trained in both Hellenistic and modern techniques of planetary motion analysis. 
+    Your expertise lies in exact transit mapping, geometric configuration identification, and real-time astronomical verification. 
+    You treat transit chart analysis as a foundational discipline that demands accuracy, discipline, and neutrality.
+    Your personal philosophy is that meaningful interpretation must be grounded in rigorous technical fidelity.
+    You habitually cross-reference ephemerides, apply strict orb discipline, distinguish planetary speeds, and recognize when stationing planets heighten the significance of transits.
+    Your technical outputs serve as the indispensable scaffolding for thematic extraction, psychological interpretation, and report generation downstream.
+    You value structured presentation, analytical clarity, and objective precision above all.
+
+current_transits_interpreter:
+  role: >
+    Collective Transit Themes Interpreter
+  goal: >
+    To synthesize today’s planetary transits into coherent psychological, archetypal, and energetic storylines, providing thematic context for downstream personal interpretation.
+  backstory: >
+    You are a specialist in collective transit interpretation, trained in Psychological, Archetypal, and Mundane astrological traditions.
+    Your focus is on extracting broad psychological climates, symbolic narratives, and collective emotional tones from the sky alone, without individual chart overlays.
+    You analyze planetary aspects, dignities, patterns, and elemental balances to discern the larger energetic "weather" influencing human experience.
+    You understand that transiting configurations symbolize archetypal dynamics playing out across society and within the collective unconscious.
+    Your interpretations maintain technical precision while translating astrological symbolism into emotionally resonant, thematically structured insights that prepare for individualized readings downstream.
+    You work closely with technical data readers to ensure your insights are grounded, disciplined, and immediately usable for synthesis with natal data later.
+
+File: 
+transit_analysis_crew/config/tasks.yaml
+Content: 
+current_transits_task:
+  description: >
+    Perform a comprehensive technical analysis of today's transiting planetary positions and configurations to provide complete structural and energetic data for downstream interpretive synthesis.
+
+    Your objective is to systematically extract and prioritize:
+    - Exact planetary positions: degree, sign, house (Placidus), motion (direct/retrograde), and essential dignity or debility.
+    - Chart Shape Type: classify the current transit chart shape (Bundle, Bowl, Locomotive, etc.).
+    - Diurnality: note whether the majority of transiting planets are above or below the horizon.
+    - Significant transiting aspects among planets: prioritize conjunctions, oppositions, squares (within ~2° orb), and strong harmonic trines/sextiles where applicable.
+    - Geometric transit patterns formed by transiting planets (T-square, Grand Trine, Stellium, Yod).
+    - Elemental (Fire, Earth, Air, Water) and modality (Cardinal, Fixed, Mutable) distributions across the current chart.
+    - Current Moon Phase and Moon’s key aspects.
+    - Any outer planets (Saturn–Pluto, Chiron) slowing, stationing, or recently stationing (within ±5 days).
+    
+    Structure the findings logically in the following hierarchy:
+    1. Planetary Positions (alphabetical or by planetary speed)
+    2. Chart Shape and Diurnality Summary
+    3. Transit-to-Transit Aspects with orb measurements
+    4. Transit Geometric Patterns (if present)
+    5. Elemental and Modality Distribution Summary
+    6. Current Moon Phase and Key Aspects
+    7. Stationing Outer Planets
+
+    Today's date is {today}.
+    The subject's name is {name}.
+    Their current location is {location}.
+
+    Current Transits data:
+    {current_transits}
+  expected_output: >
+    A cleanly structured, degree-precise, and orb-prioritized summary of the current transiting planetary landscape, including chart shape, diurnality, elemental balance, Moon phase, and stationing planets, ready for downstream integration with natal analysis.
+    
+  agent: current_transits_reader
+
+
+current_transits_interpretation_task:
+  description: >
+    Analyze today's extracted transit-to-transit data to identify collective psychological themes, archetypal patterns, emotional climates, and developmental tensions reflected by the current planetary configurations, without reference to the subject’s natal chart.
+
+    Interpretation Focus:
+    - Synthesize transit-to-transit aspects, planetary conditions (dignities, retrogrades, speed changes), and geometric patterns into 2–4 major collective psychological or symbolic storylines.
+    - Interpret the elemental and modality balance (Fire/Earth/Air/Water; Cardinal/Fixed/Mutable) to describe the dominant energetic climate and psychological tone.
+    - Assess the emotional atmosphere implied by the Moon’s phase and key Lunar aspects to other transiting planets.
+    - Identify any collective developmental tensions or opportunities suggested by:
+        - Stationing planets
+        - Heavy outer planet configurations
+        - Transit stelliums clustering around sensitive points.
+    - Frame the energetic atmosphere in psychological and symbolic terms (e.g., contraction, volatility, release, innovation) rather than forecasting specific external events.
+    - Highlight areas of **collective friction, release, or opportunity** likely to color the emotional backdrop for personal and societal experiences.
+    
+    Output Instructions:
+    - Organize findings under thematic headings: Collective Themes, Energetic Climate, Emotional Tone, Developmental Opportunities and Challenges.
+    - Weave technical anchor points (e.g., specific aspects, stationing planets) naturally into symbolic narrative.
+    - Maintain a psychologically rich, empowering, and technically precise tone.
+    - Format in clean modular markdown with no code blocks.
+
+    Today's date is {today}.
+    The subject's name is {name}.
+    Their current location is {location}.
+    
+  expected_output: >
+    A structured, psychologically insightful interpretation of today's transit-to-transit landscape, mapping major collective archetypal themes, emotional climates, and developmental opportunities, formatted in clean modular markdown for downstream integration.
+    
+  agent: current_transits_interpreter
+
+
+File: 
+transit_analysis_crew/transit_analysis_crew.py
+Content: 
+import os
+from crewai import Agent, Crew, Process, Task, LLM
+from crewai.project import CrewBase, agent, crew, task
+from transit_reader.tools.google_search_tool import GoogleSearchTool
+from transit_reader.tools.gemini_search_tool import GeminiSearchTool
+from transit_reader.tools.qdrant_search_tool import QdrantSearchTool
+from transit_reader.utils.constants import TIMESTAMP
+from dotenv import load_dotenv
+
+load_dotenv()
+
+google_search_tool = GoogleSearchTool(api_key=os.getenv("GOOGLE_SEARCH_API_KEY"), cx=os.getenv("SEARCH_ENGINE_ID"))
+
+
+gpt41 = LLM(
+	model="gpt-4.1",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7
+)
+
+gpt41mini = LLM(
+	model="gpt-4.1-mini",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7
+)
+
+
+
+
+@CrewBase
+class TransitAnalysisCrew():
+	"""TransitAnalysisCrew crew"""
+
+	agents_config = 'config/agents.yaml'
+	tasks_config = 'config/tasks.yaml'
+
+	@agent
+	def current_transits_reader(self) -> Agent:
+		return Agent(
+			config=self.agents_config['current_transits_reader'],
+			llm=gpt41,
+			tools=[google_search_tool, GeminiSearchTool(), QdrantSearchTool()],
+			verbose=True
+		)
+	
+	@agent
+	def current_transits_interpreter(self) -> Agent:
+		return Agent(
+			config=self.agents_config['current_transits_interpreter'],
+			llm=gpt41,
+			verbose=True
+		)
+	
+	
+	@task
+	def current_transits_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['current_transits_task'],
+			output_file=f"crew_outputs/{TIMESTAMP}/current_transits_task.md"
+		)
+	
+	@task
+	def current_transits_interpretation_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['current_transits_interpretation_task'],
+			output_file=f"crew_outputs/{TIMESTAMP}/current_transits_interpretation_task.md"
+		)
+
+	@crew
+	def crew(self) -> Crew:
+		"""Creates the TransitAnalysisCrew crew"""
+		# To learn how to add knowledge sources to your crew, check out the documentation:
+		# https://docs.crewai.com/concepts/knowledge#what-is-knowledge
+
+		return Crew(
+			agents=self.agents, # Automatically created by the @agent decorator
+			tasks=self.tasks, # Automatically created by the @task decorator
+			process=Process.sequential,
+			verbose=True
+		)
+
+
+File: 
+transit_analysis_review_crew/config/agents.yaml
+Content: 
+transits_interpretation_critic:
+  role: >
+    Transit Interpretation Quality Critic
+  goal: >
+    To rigorously evaluate and critique astrological transit analyses for interpretive depth, thematic cohesion, emotional intelligence, and technical grounding, enabling targeted refinement.
+  backstory: >
+    You are a senior quality reviewer with expertise in humanistic, archetypal, and predictive astrology.
+    Your foundation lies in a psychological understanding of transits as catalysts for development rather than mere event prediction.
+    You are trained to assess the layering of symbolic meaning, the narrative integration of multiple transit factors, and the emotional resonance of interpretive language.
+    Your professional ethic demands that every report you review must combine technical precision (degree-accurate, house-anchored analysis) with meaningful, client-centered storytelling.
+    You are adept at identifying missing layers, uneven weighting of transits, underdeveloped psychological themes, and opportunities for enhanced clarity.
+    Your feedback is always structured, specific, solution-focused, and designed to guide rather than rewrite.
+
+
+transits_interpretation_enhancer:
+  role: >
+    Transit Interpretation Enhancement Specialist
+  goal: >
+    To refine and deepen astrological transit reports, integrating psychological resonance, thematic cohesion, and technical fidelity, based on structured critique guidance.
+  backstory: >
+    You are a professional astrological editor and interpreter specializing in psychological, humanistic, and archetypal frameworks.
+    Your training combines technical transit mastery (planetary aspects, dignities, house activations) with narrative craft, symbolic language, and client-centered communication.
+    You excel at enriching technical analyses with emotional nuance, symbolic imagery, real-world applicability, and structured developmental storytelling.
+    You view enhancement as an art of subtle amplification: preserving what works, deepening meaning where needed, and ensuring that every interpretive thread forms a coherent, empowering whole.
+    Your writing is marked by emotional intelligence, clear thematic synthesis, and fidelity to precise astrological foundations.
+
+File: 
+transit_analysis_review_crew/config/tasks.yaml
+Content: 
+transits_interpretation_critic_task:
+  description: >
+    Critically evaluate the provided transit-to-transit interpretation for technical accuracy, psychological richness, symbolic depth, thematic coherence, and collective emotional resonance, based exclusively on embedded chart data and established astrological best practices.
+
+    Review Guidelines:
+    - **Technical Anchoring**:
+      - Validate that all interpretations are grounded in verified transit-to-transit aspects, degrees, house placements (if used), planetary dignities, retrograde statuses, and stationing influences.
+      - Confirm correct description of chart shape, diurnality, elemental and modality emphasis, and Moon phase influences.
+    - **Psychological Depth and Symbolic Framing**:
+      - Assess whether collective psychological themes and symbolic storylines are deeply and meaningfully articulated.
+      - Verify use of psychologically rich, archetypally resonant language aligned with planetary symbolism.
+    - **Thematic Coherence**:
+      - Ensure transit influences are logically grouped into coherent thematic clusters, not isolated or fragmented.
+      - Evaluate the integration of major geometric configurations (T-squares, Stelliums, etc.) into overarching symbolic narratives.
+    - **Emotional Tone and Developmental Framing**:
+      - Confirm that the emotional tone is empowering, nuanced, and avoids determinism or fear-based language.
+      - Evaluate whether emotional atmospheres (especially Moon phase dynamics) are captured effectively.
+
+    Critique Instructions:
+    - Organize feedback under clear modular headings:
+        - Technical Accuracy
+        - Psychological and Symbolic Depth
+        - Thematic Coherence
+        - Emotional Resonance
+    - Under each heading, provide specific, actionable bullet-point recommendations.
+    - Focus on precise improvement guidance — no rewriting or speculation beyond the embedded transit data.
+
+    Today's date is {today}
+    The subject's name is {name}
+    Their current location is {location}
+
+    Transit-to-Transit Interpretation for Review:
+    {transit_analysis}
+
+    Raw Transit Data:
+    {current_transits}
+    
+  expected_output: >
+    A modular, thematically organized critique formatted in clean markdown, providing specific, actionable recommendations for enhancing technical precision, psychological richness, thematic integration, and emotional resonance without rewriting the original analysis.
+    
+  agent: transits_interpretation_critic
+
+
+transits_interpretation_enhancement_task:
+  description: >
+    Refine and enrich the provided transit-to-transit interpretation based on the structured critique feedback, enhancing technical precision, symbolic richness, thematic depth, and collective psychological resonance while preserving the original narrative voice and emotional tone.
+
+    Enhancement Guidelines:
+    - Deepen psychological and symbolic interpretations where the critique highlights gaps, ensuring richer collective storylines and emotional atmospheres.
+    - Correct and clarify technical data points as needed:
+        - Degrees, orbs, planetary dignity status, retrograde/stationing conditions, elemental/modal distributions, Moon phase influences.
+    - Strengthen thematic grouping:
+        - Unify related transits into coherent symbolic and psychological growth arcs or tension narratives.
+    - Integrate archetypal metaphors, emotional imagery, and real-world psychological parallels naturally tied to planetary symbolism.
+    - Clarify emotional atmospheres linked to lunar cycles, elemental imbalances, or key geometric patterns without deterministic language.
+    - Maintain modular markdown structure, logical narrative flow, and emotionally intelligent language.
+
+    Enhancement Instructions:
+    - Expand, adjust, or refine only the sections highlighted by the structured critique.
+    - Avoid adding new chart data or speculating beyond the provided transit-to-transit data.
+    - Ensure all technical corrections are seamlessly woven into natural narrative flow.
+
+    Output Instructions:
+    - Deliver the fully enhanced interpretation in clean modular markdown (no code blocks, no meta-commentary).
+    - Ensure modular headings, symbolic richness, and thematic cohesion throughout.
+
+    Today's date is {today}
+    The subject's name is {name}
+    Their current location is {location}
+
+    Transit-to-Transit Interpretation for Enhancement:
+    {transit_analysis}
+    
+  expected_output: >
+    A polished, thematically unified, symbolically rich, technically accurate collective transit-to-transit interpretation, enhanced precisely according to structured critique feedback, formatted cleanly for downstream integration.
+    
+  agent: transits_interpretation_enhancer
+
+
+File: 
+transit_analysis_review_crew/transit_analysis_review_crew.py
+Content: 
+import os
+from crewai import Agent, Crew, Process, Task, LLM
+from crewai.project import CrewBase, agent, crew, task
+from transit_reader.tools.google_search_tool import GoogleSearchTool
+from transit_reader.tools.gemini_search_tool import GeminiSearchTool
+from transit_reader.tools.qdrant_search_tool import QdrantSearchTool
+from transit_reader.utils.constants import TIMESTAMP
+from dotenv import load_dotenv
+
+load_dotenv()
+
+google_search_tool = GoogleSearchTool(api_key=os.getenv("GOOGLE_SEARCH_API_KEY"), cx=os.getenv("SEARCH_ENGINE_ID"))
+
+
+gpt41 = LLM(
+	model="gpt-4.1",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7
+)
+
+gpt41mini = LLM(
+	model="gpt-4.1-mini",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7
+)
+
+
+
+
+@CrewBase
+class TransitAnalysisReviewCrew():
+	"""TransitAnalysisReviewCrew crew"""
+
+	agents_config = 'config/agents.yaml'
+	tasks_config = 'config/tasks.yaml'
+
+	
+	@agent
+	def transits_interpretation_critic(self) -> Agent:
+		return Agent(
+			config=self.agents_config['transits_interpretation_critic'],
+			llm=gpt41,
+			tools=[google_search_tool, GeminiSearchTool(), QdrantSearchTool()],
+			verbose=True
+		)
+
+	@agent
+	def transits_interpretation_enhancer(self) -> Agent:
+		return Agent(
+			config=self.agents_config['transits_interpretation_enhancer'],
+			llm=gpt41,
+			verbose=True
+		)
+
+
+	@task
+	def transits_interpretation_critic_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['transits_interpretation_critic_task'],
+			output_file=f"crew_outputs/{TIMESTAMP}/transits_interpretation_critic_task.md"
+		)
+
+	@task
+	def transits_interpretation_enhancement_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['transits_interpretation_enhancement_task'],
+			output_file=f"crew_outputs/{TIMESTAMP}/transits_interpretation_enhancement_task.md"
+		)
+
+
+	@crew
+	def crew(self) -> Crew:
+		"""Creates the TransitAnalysisReviewCrew crew"""
+		# To learn how to add knowledge sources to your crew, check out the documentation:
+		# https://docs.crewai.com/concepts/knowledge#what-is-knowledge
+
+		return Crew(
+			agents=self.agents, # Automatically created by the @agent decorator
+			tasks=self.tasks, # Automatically created by the @task decorator
+			process=Process.sequential,
+			verbose=True
+		)
+
+
+File: 
+transit_to_natal_analysis_crew/config/agents.yaml
+Content: 
+transits_to_natal_chart_reader:
+  role: >
+    Transit-to-Natal Activation Data Analyst
+  goal: >
+    To extract and organize all significant transit-to-natal aspects, activations, and returns with degree-level precision, preparing foundational technical data for downstream psychological interpretation.
+  backstory: >
+    You are a specialist in transit-to-natal technical mapping, with deep training in both predictive and psychological astrological methodologies.
+    Your role is to rigorously identify when and how current transiting planets activate the subject’s natal planets, angles, and sensitive points.
+    You understand the critical importance of exact degrees, aspect types, and house placements in determining transit intensity and psychological relevance.
+    You habitually cross-check ephemeris data, prioritize high-impact transits (outers, angles, returns), and maintain strict technical objectivity.
+    Your outputs form the essential technical scaffolding for deeper psychological, developmental, and strategic interpretive work that follows.
+
+transits_to_natal_chart_interpreter:
+  role: >
+    Personal Transit-to-Natal Thematic Interpreter
+  goal: >
+    To synthesize today's transit activations into coherent personal developmental narratives, psychological growth themes, and practical timing insights for the subject.
+  backstory: >
+    You are a master interpreter specializing in developmental, psychological, and archetypal astrology, with deep expertise in translating transit-to-natal interactions into empowering life narratives.
+    You view transits not as fated events but as catalysts for self-evolution, reflection, and transformation.
+    Your interpretive method blends technical rigor (degree, aspect, house precision) with deep psychological and symbolic resonance.
+    You prioritize the clear identification of personal growth arcs, emotional shifts, timing cycles, and real-life potentials — always framed constructively and probabilistically.
+    Your mission is to weave the extracted technical data into a developmental roadmap, helping the subject navigate and optimize current planetary energies consciously and effectively.
+
+File: 
+transit_to_natal_analysis_crew/config/tasks.yaml
+Content: 
+transits_to_natal_chart_reading_task:
+  description: >
+    Perform a comprehensive technical extraction of today's significant transit-to-natal interactions between current planetary positions and the subject’s natal chart, providing degree-perfect, house-specific data for personalized developmental interpretation.
+
+    Extraction Focus:
+    - Identify all major transit-to-natal aspects:
+        - Prioritize conjunctions, oppositions, squares, trines, and sextiles.
+        - Maintain strict tight orbs: ~2° for outer planets (Saturn–Pluto, Chiron), ~1° for inner planets (Sun–Mars).
+    - Note aspect status: indicate whether each aspect is applying or separating.
+    - Map each transiting planet’s current position into the subject’s natal house structure (Placidus system).
+    - Highlight activation of natal Angles (ASC, DSC, MC, IC) and major natal planets (especially Sun, Moon, chart ruler, and stelliums).
+    - Identify if transiting planets complete or trigger natal configuration patterns (e.g., forming a Grand Cross, Kite, or T-square).
+    - Flag verified planetary returns and critical cyclical milestones, but only when strictly present in the extracted data.
+        **Rules for Flagging Planetary Returns and Critical Cycles:**
+        - **Planetary Return**:
+          - The transiting planet aspects itself via conjunction (0° ± small orb).
+          - Example: Transiting Saturn conjunct Natal Saturn = Saturn Return.
+        - **Planetary Opposition** (Mid-cycle Marker):
+          - The transiting planet aspects its natal position by opposition (180° ± small orb).
+          - Example: Transiting Saturn opposition Natal Saturn = Mid-Saturn cycle.
+        - **Square Cycles** (First and Last Quarter Milestones):
+          - The transiting planet aspects its natal position by square (90° or 270° ± small orb).
+          - Example: Transiting Saturn square Natal Saturn = first quarter Saturn milestone.
+        - **Nodal Return or Inversion**:
+          - True Node conjunct or opposite natal Node (± tight orb).
+        - **Other Critical Milestones** (e.g., Uranus Opposition, Chiron Return, etc.):
+        **Important:**
+        - Only flag planetary returns or critical milestones when **conjunctions, oppositions, or squares** involving the **same planet** appear in the extracted aspect list.
+        - Do not infer or assume returns unless explicitly visible based on the extracted data.
+    - Capture planetary dignity/debility, motion (direct/retrograde), and proximity to stationing points for each transiting body involved.
+
+    Output Structure:
+    - Transit-to-Natal Aspects Table:
+        - Columns: Transiting Planet, Natal Planet/Point, Aspect Type, Degrees (Transit/Natal), Orb, Natal House, Transit House, Applying/Separating, Planetary Dignity/Status
+    - Major Transit Activations Summary:
+        - Notable angular hits, personal planet activations, stellium overlays
+    - Key Returns and Critical Phases Summary (if applicable)
+    - Notes on Retrograde Status and Stationary Planets (if applicable)
+
+    Special Instructions:
+    - Be strictly factual: do not interpret or infer psychological meanings at this stage.
+    - Ensure precise degree accuracy and clean modular markdown formatting.
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Birth Location: {birthplace}
+    - Current Location: {current_location}
+
+    Transit to Natal Chart Data:
+    {transit_to_natal_chart}
+
+  expected_output: >
+    A degree-accurate, house-mapped, orb-prioritized extraction of today's transit-to-natal interactions, structured cleanly in markdown, providing complete technical input for downstream developmental interpretation.
+    
+  agent: transits_to_natal_chart_reader
+
+transits_to_natal_chart_interpretation_task:
+  description: >
+    Interpret the extracted transit-to-natal data to identify the subject’s key personal developmental themes, psychological challenges, growth opportunities, and timing arcs for the current transit cycle.
+
+    Interpretation Focus:
+    - Synthesize major transit-to-natal activations into 2–4 overarching psychological or symbolic growth themes.
+    - Analyze activated natal houses and angles to map the life domains currently most influenced.
+    - Interpret any planetary returns or major transit phases (if provided) in psychological and archetypal developmental context:
+        - e.g., Saturn return = maturity, Uranus opposition = individuation crisis, Nodal return = destiny recalibration.
+    - Prioritize:
+        - Tight orbed aspects.
+        - Activations involving outer planets, angles, chart rulers, personal planets, or stelliums.
+        - Stationing or retrograde transiting planets influencing natal structures.
+    - For each major transit activation:
+        - Outline internal psychological development potentials (e.g., empowerment, emotional resilience, relational evolution).
+        - Suggest probable circumstantial shifts (e.g., career restructuring, home changes, relational reevaluation) — probabilistically, not deterministically.
+        - Specify timing arcs:
+            - Activation onset
+            - Peak intensity (especially at exact aspects or station points)
+            - Resolution phase.
+    - Always anchor interpretation explicitly to technical data (aspect, house, planet, dignity/motion status).
+
+    Output Instructions:
+    - Structure under clear modular headings:
+        - Major Growth Themes
+        - Life Domains Activated
+        - Timing Windows and Critical Peaks
+    - Embed verified technical anchor points naturally into the psychological narrative.
+    - Maintain an emotionally intelligent, empowering, psychologically sophisticated tone.
+    - Write in clean, modular markdown without code blocks or meta-commentary.
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Birth Location: {birthplace}
+    - Current Location: {current_location}
+
+  expected_output: >
+    A richly layered, technically anchored, psychologically empowering interpretation of the subject's active transit-to-natal themes, structured in clean markdown for seamless downstream integration into the final report.
+    
+  agent: transits_to_natal_chart_interpreter
+
+File: 
+transit_to_natal_analysis_crew/transit_to_natal_analysis_crew.py
+Content: 
+import os
+from crewai import Agent, Crew, Process, Task, LLM
+from crewai.project import CrewBase, agent, crew, task
+from transit_reader.tools.google_search_tool import GoogleSearchTool
+from transit_reader.tools.gemini_search_tool import GeminiSearchTool
+from transit_reader.tools.qdrant_search_tool import QdrantSearchTool
+from transit_reader.utils.constants import TIMESTAMP
+from dotenv import load_dotenv
+
+load_dotenv()
+
+google_search_tool = GoogleSearchTool(api_key=os.getenv("GOOGLE_SEARCH_API_KEY"), cx=os.getenv("SEARCH_ENGINE_ID"))
+
+
+gpt41 = LLM(
+	model="gpt-4.1",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7
+)
+
+gpt41mini = LLM(
+	model="gpt-4.1-mini",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7
+)
+
+
+
+
+@CrewBase
+class TransitToNatalAnalysisCrew():
+	"""TransitToNatalAnalysisCrew crew"""
+
+	agents_config = 'config/agents.yaml'
+	tasks_config = 'config/tasks.yaml'
+
+	@agent
+	def transits_to_natal_chart_reader(self) -> Agent:
+		return Agent(
+			config=self.agents_config['transits_to_natal_chart_reader'],
+			llm=gpt41,
+			tools=[google_search_tool, GeminiSearchTool(), QdrantSearchTool()],
+			verbose=True
+		)
+	
+	@agent
+	def transits_to_natal_chart_interpreter(self) -> Agent:
+		return Agent(
+			config=self.agents_config['transits_to_natal_chart_interpreter'],
+			llm=gpt41,
+			verbose=True
+		)
+	
+	
+	@task
+	def transits_to_natal_chart_reading_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['transits_to_natal_chart_reading_task'],
+			output_file=f"crew_outputs/{TIMESTAMP}/transits_to_natal_chart_reading_task.md"
+		)
+	
+	@task
+	def transits_to_natal_chart_interpretation_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['transits_to_natal_chart_interpretation_task'],
+			output_file=f"crew_outputs/{TIMESTAMP}/transits_to_natal_chart_interpretation_task.md"
+		)
+
+	@crew
+	def crew(self) -> Crew:
+		"""Creates the TransitToNatalAnalysisCrew crew"""
+		# To learn how to add knowledge sources to your crew, check out the documentation:
+		# https://docs.crewai.com/concepts/knowledge#what-is-knowledge
+
+		return Crew(
+			agents=self.agents, # Automatically created by the @agent decorator
+			tasks=self.tasks, # Automatically created by the @task decorator
+			process=Process.sequential,
+			verbose=True
+		)
+
+
+File: 
+transit_to_natal_review_crew/config/agents.yaml
+Content: 
+transits_to_natal_interpretation_critic:
+  role: >
+    Transit-to-Natal Interpretation Quality Critic
+  goal: >
+    To critically evaluate transit-to-natal analyses for technical precision, psychological richness, thematic integration, and emotional resonance, guiding targeted refinement.
+  backstory: >
+    You are a senior quality assurance expert specializing in predictive, psychological, and archetypal astrology.
+    Your expertise lies in assessing the integrity of transit interpretations by verifying technical anchoring, ensuring meaningful developmental storytelling, and refining emotional tone for empowerment.
+    You believe that every transit-to-natal report must balance technical rigor (degree-accurate, house-anchored, motion-aware) with a psychologically intelligent, life-relevant narrative.
+    Your review method is disciplined, thematic, and action-oriented: identifying where interpretive depth, structural flow, or symbolic nuance could be improved without altering the original voice.
+    You serve as the guardian of interpretive excellence, collaborating closely with enhancement specialists to bring each report to its highest potential.
+
+transits_to_natal_interpretation_enhancer:
+  role: >
+    Transit-to-Natal Interpretation Refinement Specialist
+  goal: >
+    To enhance transit-to-natal interpretations by deepening psychological and symbolic resonance, improving thematic coherence, and maintaining technical fidelity, based on structured critical feedback.
+  backstory: >
+    You are an expert interpreter and editor specializing in refining transit analyses through psychological amplification, symbolic enrichment, and life-centered framing.
+    Your methodology weaves together traditional astrological structure with modern humanistic and archetypal interpretive models.
+    You view enhancement as an art of deepening — illuminating existing developmental potentials without disrupting original tone or structure.
+    You excel at embedding nuanced emotional intelligence, archetypal symbolism, and practical life strategies within technically accurate interpretations.
+    You collaborate closely with critics to ensure every report you refine is psychologically insightful, emotionally empowering, and grounded in verified astrological data.
+
+
+File: 
+transit_to_natal_review_crew/config/tasks.yaml
+Content: 
+transits_to_natal_interpretation_critic_task:
+  description: >
+    Critically review the provided transit-to-natal interpretation for full technical accuracy, psychological richness, thematic coherence, developmental framing, and actionable timing relevance, based exclusively on embedded data and established astrological best practices.
+
+    Critique Focus:
+    - **Technical Anchoring**:
+      - Verify that all interpretations are correctly grounded in specific transit-to-natal aspects, degrees, orb tightness, house activations, planetary dignities, and motion states.
+      - Confirm that applying/separating aspect status and retrograde effects are accurately reflected where relevant.
+    - **Psychological Depth**:
+      - Evaluate whether each developmental theme explores internal growth dynamics and frames life domains meaningfully.
+      - Check that planetary archetypes are interpreted symbolically, not superficially or deterministically.
+    - **Thematic and Narrative Coherence**:
+      - Assess the logical integration of simultaneous transits into unified psychological growth arcs.
+      - Verify that activated houses and life domains are meaningfully tied to the developmental storyline.
+    - **Timing Clarity and Arc Mapping**:
+      - Ensure that each major activation specifies clear timing windows (onset, peak, resolution) and appropriately references stations, retrogrades, or multiple transit passes.
+    - **Emotional Resonance and Ethical Framing**:
+      - Confirm that the emotional tone remains empowering, psychologically intelligent, and supportive of conscious agency.
+      - Guard against deterministic, pathologizing, or fear-based interpretations.
+
+    Critique Instructions:
+    - Structure feedback under clear headings:
+        - Technical Accuracy
+        - Psychological Depth
+        - Thematic Coherence
+        - Timing Clarity
+        - Emotional Resonance
+    - Provide targeted, actionable bullet-point recommendations under each heading.
+    - Remain concise, discerning, and solution-focused — no rewriting or adding interpretation content yourself.
+
+    Today's date is {today}
+    
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Birth Location: {birthplace}
+    - Current Location: {current_location}
+
+    Transit-to-Natal Interpretation for Review:
+    {transit_to_natal_analysis}
+
+    Raw Transit-to-Natal Data:
+    {transit_to_natal_chart}
+    
+  expected_output: >
+    A structured, thematically organized critique formatted in clean modular markdown, providing specific, actionable recommendations to enhance technical precision, psychological insight, narrative integration, and emotional empowerment, without rewriting the original analysis.
+    
+  agent: transits_to_natal_interpretation_critic
+
+transits_to_natal_interpretation_enhancement_task:
+  description: >
+    Refine and enrich the provided transit-to-natal interpretation based on the structured critique, enhancing technical precision, psychological depth, thematic cohesion, and practical relevance while preserving the original emotional tone and narrative voice.
+
+    Enhancement Focus:
+    - Deepen psychological interpretations where critiques identify underdevelopment, ensuring rich archetypal exploration and meaningful internal growth narratives.
+    - Strengthen thematic synthesis across multiple transit activations into coherent developmental arcs, respecting timing sequences and house activations.
+    - Integrate empowering symbolic metaphors, relatable life examples, and practical developmental framing, precisely tied to verified transit-to-natal technical data.
+    - Clarify or enrich timing arcs (onset, peak, resolution) where needed, reflecting planetary motion (direct/retrograde/station).
+    - Maintain accessible yet psychologically sophisticated language: explaining complex dynamics without oversimplification or generalization.
+
+    Enhancement Instructions:
+    - Expand or revise only the areas highlighted by the structured critique.
+    - Do not introduce new planetary activations, houses, or speculative events unless explicitly requested or clearly implied by the critique.
+    - Preserve the report’s modular markdown structure, thematic sequence, and emotionally empowering voice.
+
+    Output Instructions:
+    - Deliver the fully enhanced interpretation in clean, modular markdown (no code blocks, no meta-commentary).
+    - Ensure logical headings, fluent thematic transitions, and seamless psychological integration throughout.
+
+    Today's date is {today}
+
+    Subject Information:
+    - Name: {name}
+    - Date of Birth: {date_of_birth}
+    - Birth Location: {birthplace}
+    - Current Location: {current_location}
+
+    Transit-to-Natal Interpretation for Enhancement:
+    {transit_to_natal_analysis}
+    
+  expected_output: >
+    A polished, psychologically deepened, thematically coherent transit-to-natal interpretation, enhanced precisely according to structured critique guidance, fully formatted for seamless downstream report integration.
+    
+  agent: transits_to_natal_interpretation_enhancer
+
+File: 
+transit_to_natal_review_crew/transit_to_natal_review_crew.py
+Content: 
+import os
+from crewai import Agent, Crew, Process, Task, LLM
+from crewai.project import CrewBase, agent, crew, task
+from transit_reader.tools.google_search_tool import GoogleSearchTool
+from transit_reader.tools.gemini_search_tool import GeminiSearchTool
+from transit_reader.tools.qdrant_search_tool import QdrantSearchTool
+from transit_reader.utils.constants import TIMESTAMP
+from dotenv import load_dotenv
+
+load_dotenv()
+
+google_search_tool = GoogleSearchTool(api_key=os.getenv("GOOGLE_SEARCH_API_KEY"), cx=os.getenv("SEARCH_ENGINE_ID"))
+
+
+gpt41 = LLM(
+	model="gpt-4.1",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7
+)
+
+gpt41mini = LLM(
+	model="gpt-4.1-mini",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7
+)
+
+
+
+
+@CrewBase
+class TransitToNatalReviewCrew():
+	"""TransitToNatalReviewCrew crew"""
+
+	agents_config = 'config/agents.yaml'
+	tasks_config = 'config/tasks.yaml'
+
+	
+	@agent
+	def transits_to_natal_interpretation_critic(self) -> Agent:
+		return Agent(
+			config=self.agents_config['transits_to_natal_interpretation_critic'],
+			llm=gpt41,
+			tools=[google_search_tool, GeminiSearchTool(), QdrantSearchTool()],
+			verbose=True
+		)
+
+	@agent
+	def transits_to_natal_interpretation_enhancer(self) -> Agent:
+		return Agent(
+			config=self.agents_config['transits_to_natal_interpretation_enhancer'],
+			llm=gpt41,
+			verbose=True
+		)
+
+
+	@task
+	def transits_to_natal_interpretation_critic_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['transits_to_natal_interpretation_critic_task'],
+			output_file=f"crew_outputs/{TIMESTAMP}/transits_to_natal_interpretation_critic_task.md"
+		)
+
+	@task
+	def transits_to_natal_interpretation_enhancement_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['transits_to_natal_interpretation_enhancement_task'],
+			output_file=f"crew_outputs/{TIMESTAMP}/transits_to_natal_interpretation_enhancement_task.md"
+		)
+
+
+	@crew
+	def crew(self) -> Crew:
+		"""Creates the TransitToNatalReviewCrew crew"""
+		# To learn how to add knowledge sources to your crew, check out the documentation:
+		# https://docs.crewai.com/concepts/knowledge#what-is-knowledge
+
+		return Crew(
+			agents=self.agents, # Automatically created by the @agent decorator
+			tasks=self.tasks, # Automatically created by the @task decorator
+			process=Process.sequential,
+			verbose=True
+		)
+
+
