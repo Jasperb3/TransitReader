@@ -36,19 +36,19 @@ def get_transit_chart(latitude: float, longitude: float, transit_datetime: datet
     Args:
         latitude: Latitude coordinate
         longitude: Longitude coordinate
-        transit_datetime: Optional datetime for transits (defaults to now)
+        transit_datetime: Optional datetime for transits (defaults to now/current transits)
 
     Returns:
         str: Formatted transit chart summary
     """
     if transit_datetime is None:
-        transit_datetime = datetime.now()
+        # Use Transits class for current moment
+        transit_chart = charts.Transits(latitude=latitude, longitude=longitude)
+    else:
+        # Use Natal class with custom datetime via Subject
+        transit_subject = charts.Subject(transit_datetime, latitude, longitude)
+        transit_chart = charts.Natal(transit_subject)
 
-    transit_chart = charts.Transits(
-        latitude=latitude,
-        longitude=longitude,
-        dt=transit_datetime
-    )
     transit_data = json.dumps(transit_chart, cls=ToJSON, indent=4)
     chart_data = json.loads(transit_data)
 

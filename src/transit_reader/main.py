@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 from typing import Tuple
 from crewai.flow import Flow, listen, start, and_
-from transit_reader.utils.models import TransitState, create_transit_state
+from transit_reader.utils.models import TransitState
 from transit_reader.utils.qdrant_setup import Setup
 from transit_reader.utils.immanuel_transit_chart import get_transit_chart
 from transit_reader.utils.immanuel_natal_chart import get_natal_chart
@@ -343,10 +343,7 @@ class TransitFlow(Flow[TransitState]):
 
 
 def kickoff():
-    # Create state with interactive prompts for subject and transit parameters
-    state = create_transit_state()
     transit_flow = TransitFlow()
-    transit_flow._state = state
     transit_flow.kickoff()
 
 

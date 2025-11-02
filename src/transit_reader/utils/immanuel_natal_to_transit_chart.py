@@ -40,22 +40,27 @@ def get_transit_natal_aspects(location_latitude: float, location_longitude: floa
         dob: Date of birth
         birthplace_latitude: Birth location latitude
         birthplace_longitude: Birth location longitude
-        transit_datetime: Optional datetime for transits (defaults to now)
+        transit_datetime: Optional datetime for transits (defaults to now/current transits)
 
     Returns:
         str: Formatted transit-to-natal chart summary
     """
-    if transit_datetime is None:
-        transit_datetime = datetime.now()
-
+    # Create natal chart
     subject = charts.Subject(dob, birthplace_latitude, birthplace_longitude)
     subject_natal = charts.Natal(subject)
-    transit_chart = charts.Transits(
-        latitude=location_latitude,
-        longitude=location_longitude,
-        dt=transit_datetime,
-        aspects_to=subject_natal
-    )
+
+    # Create transit chart
+    if transit_datetime is None:
+        # Use Transits class for current moment
+        transit_chart = charts.Transits(
+            latitude=location_latitude,
+            longitude=location_longitude,
+            aspects_to=subject_natal
+        )
+    else:
+        # Use Natal class with custom datetime via Subject
+        transit_subject = charts.Subject(transit_datetime, location_latitude, location_longitude)
+        transit_chart = charts.Natal(transit_subject, aspects_to=subject_natal)
 
     transit_data = json.dumps(transit_chart, cls=ToJSON, indent=4)
     chart_data = json.loads(transit_data)
