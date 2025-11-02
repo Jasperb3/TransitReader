@@ -1,33 +1,40 @@
 transits_to_natal_chart_reading_task:
   description: >
-    Perform a comprehensive technical extraction of today's significant transit-to-natal interactions between current planetary positions and the subject’s natal chart, providing degree-perfect, house-specific data for personalized developmental interpretation.
+    Perform a comprehensive technical extraction of today's significant transit-to-natal interactions between current planetary positions and the subject's natal chart, providing degree-perfect, house-specific data for personalized developmental interpretation.
+
+    **Critical Requirements**:
+    - **Orb Precision**: Report ALL transit-to-natal aspect orbs numerically with two decimal places (e.g., "Transit Saturn square Natal Sun, Orb: 1.23°" NOT "tight aspect")
+    - **Applying/Separating Clarity**: For each aspect, explicitly state if it is applying (tightening) or separating (widening)
+    - **Data Verification**: Use QdrantSearchTool to verify interpretation of significant transits, especially outer planet-natal planet combinations
+    - **Prioritization**: If many transits are active, prioritize:
+        1. Transits to angles (ASC, DSC, MC, IC) with orbs <2°
+        2. Outer planet transits (Saturn-Pluto) to personal planets (Sun, Moon, Mercury, Venus, Mars) with orbs <2°
+        3. Planetary returns (transiting planet conjunct its natal position)
+        4. Transits triggering natal configurations (completing T-squares, Grand Crosses, etc.)
+        5. Other transit-to-natal aspects
 
     Extraction Focus:
     - Identify all major transit-to-natal aspects:
         - Prioritize conjunctions, oppositions, squares, trines, and sextiles.
         - Maintain strict tight orbs: ~2° for outer planets (Saturn–Pluto, Chiron), ~1° for inner planets (Sun–Mars).
-    - Note aspect status: indicate whether each aspect is applying or separating.
-    - Map each transiting planet’s current position into the subject’s natal house structure (Placidus system).
+        **MANDATORY**: For each aspect, explicitly state the exact orb measurement in this format: "Orb: X.XX°" (e.g., "Orb: 1.23°")
+    - Note aspect status: indicate whether each aspect is applying or separating (e.g., "Applying, will be exact in 3 days" or "Separating, was exact 2 days ago").
+    - Map each transiting planet's current position into the subject's natal house structure (Placidus system).
     - Highlight activation of natal Angles (ASC, DSC, MC, IC) and major natal planets (especially Sun, Moon, chart ruler, and stelliums).
     - Identify if transiting planets complete or trigger natal configuration patterns (e.g., forming a Grand Cross, Kite, or T-square).
-    - Flag verified planetary returns and critical cyclical milestones, but only when strictly present in the extracted data.
-        **Rules for Flagging Planetary Returns and Critical Cycles:**
-        - **Planetary Return**:
-          - The transiting planet aspects itself via conjunction (0° ± small orb).
-          - Example: Transiting Saturn conjunct Natal Saturn = Saturn Return.
-        - **Planetary Opposition** (Mid-cycle Marker):
-          - The transiting planet aspects its natal position by opposition (180° ± small orb).
-          - Example: Transiting Saturn opposition Natal Saturn = Mid-Saturn cycle.
-        - **Square Cycles** (First and Last Quarter Milestones):
-          - The transiting planet aspects its natal position by square (90° or 270° ± small orb).
-          - Example: Transiting Saturn square Natal Saturn = first quarter Saturn milestone.
-        - **Nodal Return or Inversion**:
-          - True Node conjunct or opposite natal Node (± tight orb).
-        - **Other Critical Milestones** (e.g., Uranus Opposition, Chiron Return, etc.) if present in the extracted aspect list:
-        **Important:**
-        - Only flag planetary returns or critical milestones when **conjunctions, oppositions, or squares** involving the **same planet** appear in the extracted aspect list.
-        - Do not infer or assume returns unless explicitly visible based on the extracted data.
+    - **Planetary Returns Detection**: Flag ONLY when transiting planet conjuncts (0° ± 2°) its own natal position
+        - Examples: Transit Saturn ☌ Natal Saturn = Saturn Return (state exact orb: "Orb: 0.45°")
+        - Transit Jupiter ☌ Natal Jupiter = Jupiter Return
+        - **Do not infer or assume returns** - only report if conjunction exists in extracted data with numerical orb
+    - **Critical Cycle Detection**: Flag mid-cycle points (oppositions) and quarter-cycle points (squares) only when same-planet aspect exists
+        - Example: Transit Saturn ☍ Natal Saturn = Saturn Opposition (mid-cycle)
+        - Example: Transit Saturn □ Natal Saturn = Saturn Square (quarter-cycle)
     - Capture planetary dignity/debility, motion (direct/retrograde), and proximity to stationing points for each transiting body involved.
+
+    **Research Protocol**:
+    - Use QdrantSearchTool for significant outer planet transits
+    - Query examples: "Saturn square natal Sun", "Pluto conjunct natal Moon", "Uranus opposition natal Venus"
+    - Integrate astrological literature insights for rare or intense transits
 
     Output Structure:
     - Transit-to-Natal Aspects Table:

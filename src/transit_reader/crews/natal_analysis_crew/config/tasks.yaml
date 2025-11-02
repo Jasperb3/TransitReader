@@ -2,24 +2,39 @@ natal_chart_reading_task:
   description: >
     Perform a comprehensive technical extraction of the subject's natal chart, capturing all fundamental structural elements with degree-perfect accuracy to support downstream developmental synthesis.
 
+    **Critical Requirements**:
+    - **Orb Precision**: Report ALL aspect orbs numerically with two decimal places (e.g., "Sun square Moon, Orb: 3.45°" NOT "moderate orb")
+    - **Angular Precision**: For angular planets, state exact degree separation (e.g., "Mars conjunct ASC, 2.18° from exact")
+    - **Data Verification**: Use QdrantSearchTool to verify interpretation of rare configurations (e.g., Yods, Mystic Rectangles, unusual aspect patterns)
+    - **Prioritization**: If chart is complex, prioritize:
+        1. Tight aspects (<3°) to angles, luminaries (Sun/Moon), and chart ruler
+        2. Major configurations (T-squares, Grand Trines, Yods)
+        3. Stelliums and angular planets
+        4. Wider aspects and secondary patterns
+
     Extraction Guidelines:
     - List planetary, asteroid, and sensitive point positions: exact zodiac degree, zodiac sign, house placement (Placidus system), motion (direct/retrograde if applicable), essential dignity/debility, and sect status (day/night chart).
     - Identify major natal aspects between planets/points: prioritize conjunctions, oppositions, squares, trines, and sextiles within 8° orb (tighten to 5° for luminaries and sensitive points).
+        **MANDATORY**: For each aspect, explicitly state the exact orb measurement in this format: "Orb: X.XX°" (e.g., "Orb: 3.45°")
     - Map major configuration patterns: T-squares, Grand Trines, Yods, Mystic Rectangles, Stelliums (3+ planets within 10° and same sign or house).
     - Summarize elemental distribution (Fire, Earth, Air, Water) and modality distribution (Cardinal, Fixed, Mutable).
     - Classify chart shape based on planetary distribution (Bundle, Bowl, Locomotive, Splash, etc.).
     - Identify diurnality: note whether the chart is a day chart (Sun above horizon) or night chart (Sun below horizon).
     - Determine natal Moon phase and list Sun-Moon angular relationship (New, Crescent, First Quarter, Gibbous, Full, Disseminating, Last Quarter, Balsamic).
-    - Note angular planets: planets conjunct ASC, DSC, MC, IC within 5° orb (list planet, angle, degree separation).
+    - Note angular planets: planets conjunct ASC, DSC, MC, IC within 5° orb (list planet, angle, exact degree separation in "X.XX°" format).
+
+    **Research Protocol**:
+    - Use QdrantSearchTool when encountering unusual patterns or configurations
+    - Query examples: "Yod configuration meaning", "Mystic Rectangle interpretation", "[planet] in [dignity state]"
 
     Structure the findings hierarchically:
     1. Planetary and Sensitive Point Positions Table
-    2. Natal Major Aspects Table
+    2. Natal Major Aspects Table (with mandatory "Orb: X.XX°" for each aspect)
     3. Configuration Patterns Overview
     4. Elemental and Modal Balance Summary
     5. Chart Shape, Diurnality, and Moon Phase
 
-    No interpretation or subjective commentary at this stage — strictly technical extraction.
+    No interpretation or subjective commentary at this stage — strictly technical extraction with precise numerical measurements.
 
     Subject Information:
     - Name: {name}

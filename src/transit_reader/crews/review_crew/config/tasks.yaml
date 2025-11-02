@@ -2,15 +2,28 @@ report_review_task:
   description: >
     Conduct a full-spectrum quality review of the finalized astrological report to ensure it meets the highest standards of technical accuracy, psychological depth, thematic coherence, and reader accessibility.
 
+    **Technical Verification Protocol** (ENHANCED):
+    You have been provided with the raw chart data (transit_chart, natal_chart, transit_to_natal_chart) and the analysis documents (transit_analysis, natal_analysis, transit_to_natal_analysis). Use these to perform rigorous technical verification.
+
+    **Mandatory Verification Steps**:
+    - Cross-reference ALL planetary positions mentioned in the report against the provided transit_chart, natal_chart, and transit_to_natal_chart raw data
+    - Verify aspect orbs are stated numerically in "Orb: X.XX°" format (e.g., "Orb: 2.34°"), NOT vaguely (e.g., "tight orb", "wide aspect")
+    - Confirm transit-to-natal aspects exist in the transit_to_natal_chart data with correct degrees and aspect types
+    - Check for mathematical errors in house cusps, planetary positions, or orb calculations
+    - Verify that applying/separating status is stated for transit-to-natal aspects where relevant
+    - Use QdrantSearchTool to spot-check interpretations against established astrological literature when uncertain about symbolic accuracy
+
     Review Focus:
     - **Technical Validation**:
-      - Verify all planetary positions, aspects, dignities, house placements, and transit-to-natal activations against embedded data.
+      - Verify all planetary positions, aspects, dignities, house placements, and transit-to-natal activations against the provided chart data (transit_chart, natal_chart, transit_to_natal_chart).
       - Confirm timing arcs (start, peak, culmination) for major transits and returns are accurately represented.
-      - Explicitly check that the orb measurements used for each aspect are stated and consistently applied. Verify clarity and accuracy of nodal house references.
+      - **CRITICAL**: Explicitly check that ALL aspect orb measurements are stated numerically in "Orb: X.XX°" format. Flag any vague descriptors like "tight", "moderate", "wide" as violations requiring correction.
+      - Verify clarity and accuracy of nodal house references and angular planet positions.
     - **Interpretive Integrity**:
       - Assess the consistent application of classical, modern, and psychological astrological frameworks.
       - Confirm correct prioritization: long-term outers, angles, returns, and tight aspects over minor influences.
       - Evaluate the depth of psychological and archetypal interpretation, ensuring it goes beyond surface-level keywords.
+      - Cross-check major interpretations against analysis documents (transit_analysis, natal_analysis, transit_to_natal_analysis) for consistency.
     - **Narrative Coherence**:
       - Ensure clear sequencing: Transit Climate ➔ Natal Foundations ➔ Transit-to-Natal Activations ➔ Practical Guidance.
       - Validate that thematic arcs are logical, interconnected, and flow naturally across sections.

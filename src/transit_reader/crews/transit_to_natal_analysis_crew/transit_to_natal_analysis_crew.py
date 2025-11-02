@@ -12,19 +12,28 @@ load_dotenv()
 google_search_tool = GoogleSearchTool(api_key=os.getenv("GOOGLE_SEARCH_API_KEY"), cx=os.getenv("SEARCH_ENGINE_ID"))
 
 
-gpt41 = LLM(
+# Technical extraction - requires determinism and precision
+gpt41_deterministic = LLM(
 	model="gpt-4.1",
 	api_key = os.getenv("OPENAI_API_KEY"),
-	temperature=0.7
+	temperature=0.1  # Low temperature for factual, precise technical extraction
 )
+
+# Interpretation - benefits from moderate creativity
+gpt41_creative = LLM(
+	model="gpt-4.1",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7  # Moderate temperature for psychological interpretation
+)
+
+# Legacy reference (kept for backward compatibility if needed elsewhere)
+gpt41 = gpt41_creative
 
 gpt41mini = LLM(
 	model="gpt-4.1-mini",
 	api_key = os.getenv("OPENAI_API_KEY"),
 	temperature=0.7
 )
-
-
 
 
 @CrewBase
@@ -38,16 +47,16 @@ class TransitToNatalAnalysisCrew():
 	def transits_to_natal_chart_reader(self) -> Agent:
 		return Agent(
 			config=self.agents_config['transits_to_natal_chart_reader'],
-			llm=gpt41,
+			llm=gpt41_deterministic,  # Technical extraction needs low temperature
 			tools=[google_search_tool, GeminiSearchTool(), QdrantSearchTool()],
 			verbose=True
 		)
-	
+
 	@agent
 	def transits_to_natal_chart_interpreter(self) -> Agent:
 		return Agent(
 			config=self.agents_config['transits_to_natal_chart_interpreter'],
-			llm=gpt41,
+			llm=gpt41_creative,  # Interpretation benefits from moderate temperature
 			verbose=True
 		)
 	
