@@ -30,19 +30,37 @@ class TransitFlow(Flow[TransitState]):
         setup = Setup(self.state)
         setup.process_new_markdown_files()
 
-
+    # PARALLEL CHART GENERATION - All three charts can be generated simultaneously
     @listen(setup_qdrant)
     def generate_current_transits(self):
-        print("Generating current transits")
+        print("Generating current transits (parallel)")
         current_location: Tuple[float, float] = (
             self.state.current_location_latitude,
             self.state.current_location_longitude
         )
-        
-        self.state.current_transits = get_transit_chart(current_location[0], current_location[1])
-    
 
-    @listen(generate_current_transits)
+        self.state.current_transits = get_transit_chart(current_location[0], current_location[1])
+
+    @listen(setup_qdrant)
+    def get_natal_chart_data(self):
+        print("Getting natal chart data (parallel)")
+        natal_chart = get_natal_chart(self.state.date_of_birth, self.state.birthplace_latitude, self.state.birthplace_longitude)
+        self.state.natal_chart = natal_chart
+
+    @listen(setup_qdrant)
+    def get_transit_to_natal_chart_data(self):
+        print("Getting transit to natal chart data (parallel)")
+        transit_to_natal_chart = get_transit_natal_aspects(
+            self.state.current_location_latitude,
+            self.state.current_location_longitude,
+            self.state.date_of_birth,
+            self.state.birthplace_latitude,
+            self.state.birthplace_longitude
+        )
+        self.state.transit_to_natal_chart = transit_to_natal_chart
+
+    # WAIT FOR ALL CHARTS - Use and_() to wait for all three chart generations
+    @listen(and_(generate_current_transits, get_natal_chart_data, get_transit_to_natal_chart_data))
     def generate_transit_analysis(self):
         print("Generating transit analysis")
         inputs = {
@@ -61,36 +79,10 @@ class TransitFlow(Flow[TransitState]):
         self.state.transit_analysis = transit_analysis.raw
 
 
-    @listen(generate_transit_analysis)
-    def review_transit_analysis(self):
-        print("Reviewing transit analysis")
-        inputs = {
-            "transit_analysis": self.state.transit_analysis,
-            "current_transits": self.state.current_transits,
-            "today": self.state.today,
-            "name": self.state.name,
-            "location": self.state.current_location
-        }
-
-        enhanced_transit_analysis = (
-            TransitAnalysisReviewCrew()
-            .crew()
-            .kickoff(inputs=inputs)
-        )
-
-        self.state.transit_analysis = enhanced_transit_analysis.raw
-
-
-    @listen(review_transit_analysis)
-    def get_natal_chart_data(self):
-        print("Getting natal chart data")
-        natal_chart = get_natal_chart(self.state.date_of_birth, self.state.birthplace_latitude, self.state.birthplace_longitude)
-        self.state.natal_chart = natal_chart
-    
-
-    @listen(get_natal_chart_data)
+    # PARALLEL ANALYSIS GENERATION - All three analyses can run simultaneously after charts are ready
+    @listen(and_(generate_current_transits, get_natal_chart_data, get_transit_to_natal_chart_data))
     def generate_natal_analysis(self):
-        print("Generating natal analysis")
+        print("Generating natal analysis (parallel)")
 
         inputs = {
             "natal_chart": self.state.natal_chart,
@@ -99,7 +91,7 @@ class TransitFlow(Flow[TransitState]):
             "birthplace": self.state.birthplace,
             "today": self.state.today
         }
-        
+
         natal_analysis = (
             NatalAnalysisCrew()
             .crew()
@@ -108,45 +100,9 @@ class TransitFlow(Flow[TransitState]):
 
         self.state.natal_analysis = natal_analysis.raw
 
-    
-    @listen(generate_natal_analysis)
-    def review_natal_analysis(self):
-        print("Reviewing natal analysis")
-        inputs = {
-            "natal_analysis": self.state.natal_analysis,
-            "natal_chart": self.state.natal_chart,
-            "name": self.state.name,
-            "today": self.state.today,
-            "date_of_birth": self.state.dob,
-            "birthplace": self.state.birthplace
-        }
-
-        enhanced_natal_analysis = (
-            NatalAnalysisReviewCrew()
-            .crew()
-            .kickoff(inputs=inputs)
-        )
-
-        self.state.natal_analysis = enhanced_natal_analysis.raw
-
-    
-    @listen(review_natal_analysis)
-    def get_transit_to_natal_chart_data(self):
-        print("Getting transit to natal chart data")
-        transit_to_natal_chart = get_transit_natal_aspects(
-            self.state.current_location_latitude,
-            self.state.current_location_longitude,
-            self.state.date_of_birth,
-            self.state.birthplace_latitude,
-            self.state.birthplace_longitude
-        )
-
-        self.state.transit_to_natal_chart = transit_to_natal_chart
-
-
-    @listen(get_transit_to_natal_chart_data)
+    @listen(and_(generate_current_transits, get_natal_chart_data, get_transit_to_natal_chart_data))
     def generate_transit_to_natal_analysis(self):
-        print("Generating transit to natal analysis")
+        print("Generating transit to natal analysis (parallel)")
         inputs = {
             "transit_to_natal_chart": self.state.transit_to_natal_chart,
             "name": self.state.name,
@@ -164,10 +120,49 @@ class TransitFlow(Flow[TransitState]):
 
         self.state.transit_to_natal_analysis = transit_to_natal_analysis.raw
 
+    # PARALLEL REVIEW - All three reviews can run simultaneously after their analyses complete
+    @listen(generate_transit_analysis)
+    def review_transit_analysis(self):
+        print("Reviewing transit analysis (parallel)")
+        inputs = {
+            "transit_analysis": self.state.transit_analysis,
+            "current_transits": self.state.current_transits,
+            "today": self.state.today,
+            "name": self.state.name,
+            "location": self.state.current_location
+        }
+
+        enhanced_transit_analysis = (
+            TransitAnalysisReviewCrew()
+            .crew()
+            .kickoff(inputs=inputs)
+        )
+
+        self.state.transit_analysis = enhanced_transit_analysis.raw
+
+    @listen(generate_natal_analysis)
+    def review_natal_analysis(self):
+        print("Reviewing natal analysis (parallel)")
+        inputs = {
+            "natal_analysis": self.state.natal_analysis,
+            "natal_chart": self.state.natal_chart,
+            "name": self.state.name,
+            "today": self.state.today,
+            "date_of_birth": self.state.dob,
+            "birthplace": self.state.birthplace
+        }
+
+        enhanced_natal_analysis = (
+            NatalAnalysisReviewCrew()
+            .crew()
+            .kickoff(inputs=inputs)
+        )
+
+        self.state.natal_analysis = enhanced_natal_analysis.raw
 
     @listen(generate_transit_to_natal_analysis)
     def review_transit_to_natal_analysis(self):
-        print("Reviewing transit to natal analysis")
+        print("Reviewing transit to natal analysis (parallel)")
 
         inputs = {
             "transit_to_natal_analysis": self.state.transit_to_natal_analysis,
@@ -187,8 +182,8 @@ class TransitFlow(Flow[TransitState]):
 
         self.state.transit_to_natal_analysis = enhanced_transit_to_natal_analysis.raw
 
-
-    @listen(review_transit_to_natal_analysis)
+    # WAIT FOR ALL REVIEWS - Report generation needs all three enhanced analyses
+    @listen(and_(review_transit_analysis, review_natal_analysis, review_transit_to_natal_analysis))
     def generate_report_draft(self):
         print("Generating report draft")
         inputs = {
