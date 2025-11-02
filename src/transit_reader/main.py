@@ -345,7 +345,8 @@ class TransitFlow(Flow[TransitState]):
 def kickoff():
     # Create state with interactive prompts for subject and transit parameters
     state = create_transit_state()
-    transit_flow = TransitFlow(initial_state=state)
+    transit_flow = TransitFlow()
+    transit_flow._state = state
     transit_flow.kickoff()
 
 
