@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 from typing import Tuple
 from crewai.flow import Flow, listen, start, and_
-from transit_reader.utils.models import TransitState
+from transit_reader.utils.models import TransitState, create_transit_state
 from transit_reader.utils.qdrant_setup import Setup
 from transit_reader.utils.immanuel_transit_chart import get_transit_chart
 from transit_reader.utils.immanuel_natal_chart import get_natal_chart
@@ -39,7 +39,11 @@ class TransitFlow(Flow[TransitState]):
             self.state.current_location_longitude
         )
 
-        self.state.current_transits = get_transit_chart(current_location[0], current_location[1])
+        self.state.current_transits = get_transit_chart(
+            current_location[0],
+            current_location[1],
+            self.state.transit_datetime
+        )
 
     @listen(setup_qdrant)
     def get_natal_chart_data(self):
@@ -55,7 +59,8 @@ class TransitFlow(Flow[TransitState]):
             self.state.current_location_longitude,
             self.state.date_of_birth,
             self.state.birthplace_latitude,
-            self.state.birthplace_longitude
+            self.state.birthplace_longitude,
+            self.state.transit_datetime
         )
         self.state.transit_to_natal_chart = transit_to_natal_chart
 
@@ -192,6 +197,8 @@ class TransitFlow(Flow[TransitState]):
             "transit_to_natal_analysis": self.state.transit_to_natal_analysis,
             "name": self.state.name,
             "today": self.state.today,
+            "transit_date": self.state.transit_date_formatted,
+            "is_custom_transit": self.state.is_custom_transit,
             "location": self.state.current_location,
             "date_of_birth": self.state.dob,
             "birthplace": self.state.birthplace,
@@ -238,7 +245,7 @@ class TransitFlow(Flow[TransitState]):
     @listen(interrogate_report_draft)
     def generate_kerykeion_transit_chart(self):
         print("Generating kerykeion transit chart")
-        
+
         main_subject = get_kerykeion_subject(
             self.state.name,
             self.state.date_of_birth.year,
@@ -253,13 +260,15 @@ class TransitFlow(Flow[TransitState]):
             self.state.birthplace_timezone
         )
 
+        # Use transit_datetime instead of NOW_DT
+        transit_dt = self.state.transit_datetime
         transit_subject = get_kerykeion_subject(
-            "Current transits",
-            NOW_DT.year,
-            NOW_DT.month,
-            NOW_DT.day,
-            NOW_DT.hour,
-            NOW_DT.minute,
+            "Transits" if not self.state.is_custom_transit else f"Custom Transits ({transit_dt.strftime('%Y-%m-%d %H:%M')})",
+            transit_dt.year,
+            transit_dt.month,
+            transit_dt.day,
+            transit_dt.hour,
+            transit_dt.minute,
             self.state.current_location_city,
             self.state.current_location_country,
             self.state.current_location_longitude,
@@ -334,7 +343,9 @@ class TransitFlow(Flow[TransitState]):
 
 
 def kickoff():
-    transit_flow = TransitFlow()
+    # Create state with interactive prompts for subject and transit parameters
+    state = create_transit_state()
+    transit_flow = TransitFlow(initial_state=state)
     transit_flow.kickoff()
 
 
