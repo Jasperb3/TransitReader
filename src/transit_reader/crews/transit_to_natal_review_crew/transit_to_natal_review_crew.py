@@ -53,7 +53,6 @@ class TransitToNatalReviewCrew():
 		return Agent(
 			config=self.agents_config['transits_to_natal_interpretation_enhancer'],
 			llm=gpt41,
-			tools=[google_search_tool, GeminiSearchTool(), QdrantSearchTool(), LinkUpSearchTool()],
 			verbose=True
 		)
 

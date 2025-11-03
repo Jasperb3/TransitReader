@@ -47,6 +47,8 @@ transits_interpretation_enhancement_task:
   description: >
     Refine and enrich the provided transit interpretation based on the structured critique feedback, enhancing technical precision, symbolic richness, thematic depth, and collective psychological resonance while preserving the original narrative voice and emotional tone.
 
+    **IMPORTANT**: All necessary chart data is provided below as reference. DO NOT search for additional chart information externally. Verify all technical details against the raw transit data provided.
+
     Enhancement Guidelines:
     - Deepen psychological and symbolic interpretations where the critique highlights gaps, ensuring richer collective storylines and emotional atmospheres.
     - Correct and clarify technical data points as needed:
@@ -72,6 +74,9 @@ transits_interpretation_enhancement_task:
 
     Transit Interpretation for Enhancement:
     {transit_analysis}
+
+    Raw Transit Data for Reference:
+    {current_transits}
     
   expected_output: >
     A polished, thematically unified, symbolically rich, technically accurate interpretation, enhanced precisely according to structured critique feedback, formatted cleanly for downstream integration.

@@ -50,6 +50,8 @@ natal_interpretation_enhancement_task:
   description: >
     Refine, enrich, and deepen the provided natal chart interpretation based on structured critique feedback, enhancing psychological sophistication, deeper archetypal insights, symbolic resonance, thematic clarity, and developmental relevance while strictly preserving the extracted chart structure and original interpretive voice.
 
+    **IMPORTANT**: All necessary chart data is provided below as reference. DO NOT search for additional chart information externally. Verify all technical details against the raw natal chart data provided.
+
     Enhancement Focus:
     - Expand and deepen psychological insights where critiques highlight underdeveloped or thin areas:
         - Integrate richer archetypal symbolism, developmental framing, and emotionally resonant metaphors linked precisely to natal features.
@@ -80,7 +82,7 @@ natal_interpretation_enhancement_task:
     Natal Analysis for Enhancement:
     {natal_analysis}
 
-    Raw Natal Chart Data:
+    Raw Natal Chart Data for Reference:
     {natal_chart}
     
   expected_output: >

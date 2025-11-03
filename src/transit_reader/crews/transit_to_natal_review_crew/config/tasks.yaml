@@ -52,6 +52,8 @@ transits_to_natal_interpretation_enhancement_task:
   description: >
     Refine and enrich the provided transit-to-natal interpretation based on the structured critique, enhancing technical precision, psychological depth, thematic cohesion, and practical relevance while preserving the original emotional tone and narrative voice.
 
+    **IMPORTANT**: All necessary chart data is provided below as reference. DO NOT search for additional chart information externally. Verify all technical details against the raw transit-to-natal chart data provided.
+
     Enhancement Focus:
     - Deepen psychological interpretations where critiques identify underdevelopment, ensuring rich archetypal exploration and meaningful internal growth narratives.
     - Strengthen thematic synthesis across multiple transit activations into coherent developmental arcs, respecting timing sequences and house activations.
@@ -78,6 +80,9 @@ transits_to_natal_interpretation_enhancement_task:
 
     Transit-to-Natal Interpretation for Enhancement:
     {transit_to_natal_analysis}
+
+    Raw Transit-to-Natal Chart Data for Reference:
+    {transit_to_natal_chart}
     
   expected_output: >
     A polished, psychologically deepened, thematically coherent transit-to-natal interpretation, enhanced precisely according to structured critique guidance, fully formatted for seamless downstream report integration.

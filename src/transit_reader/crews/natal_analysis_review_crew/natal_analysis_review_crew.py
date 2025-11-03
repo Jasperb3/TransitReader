@@ -53,7 +53,6 @@ class NatalAnalysisReviewCrew():
 		return Agent(
 			config=self.agents_config['natal_interpretation_enhancer'],
 			llm=gpt41,
-			tools=[google_search_tool, GeminiSearchTool(), QdrantSearchTool(), LinkUpSearchTool()],
 			verbose=True
 		)
 
