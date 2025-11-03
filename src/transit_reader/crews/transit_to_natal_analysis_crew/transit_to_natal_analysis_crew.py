@@ -23,7 +23,7 @@ gpt41_deterministic = LLM(
 gpt41_creative = LLM(
 	model="gpt-4.1",
 	api_key = os.getenv("OPENAI_API_KEY"),
-	temperature=0.7  # Moderate temperature for psychological interpretation
+	temperature=0.9  # Moderate temperature for psychological interpretation
 )
 
 # Legacy reference (kept for backward compatibility if needed elsewhere)
