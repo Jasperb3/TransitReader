@@ -29,13 +29,13 @@ transits_to_natal_interpretation_critic_task:
     - Remain concise, discerning, and solution-focused — no rewriting or adding interpretation content yourself.
     - Maintain a solution-focused tone: identify weaknesses or missed opportunities, but offer guidance for refinement without rewriting or reinterpreting.
 
-    Today's date is {today}
-    
+    The transit date being analyzed is {transit_date}
+
     Subject Information:
     - Name: {name}
     - Date of Birth: {date_of_birth}
     - Birth Location: {birthplace}
-    - Current Location: {current_location}
+    - Transit Location: {transit_location}
 
     Transit-to-Natal Interpretation for Review:
     {transit_to_natal_analysis}

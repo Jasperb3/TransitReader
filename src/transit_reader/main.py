@@ -71,7 +71,7 @@ class TransitFlow(Flow[TransitState]):
         inputs = {
             "current_transits": self.state.current_transits,
             "name": self.state.name,
-            "today": self.state.today,
+            "transit_date": self.state.transit_date_formatted,
             "location": self.state.current_location
         }
 
@@ -94,7 +94,7 @@ class TransitFlow(Flow[TransitState]):
             "name": self.state.name,
             "date_of_birth": self.state.dob,
             "birthplace": self.state.birthplace,
-            "today": self.state.today
+            "analysis_date": self.state.today  # Date report is being generated
         }
 
         natal_analysis = (
@@ -111,10 +111,10 @@ class TransitFlow(Flow[TransitState]):
         inputs = {
             "transit_to_natal_chart": self.state.transit_to_natal_chart,
             "name": self.state.name,
-            "today": self.state.today,
+            "transit_date": self.state.transit_date_formatted,
             "date_of_birth": self.state.dob,
             "birthplace": self.state.birthplace,
-            "current_location": self.state.current_location
+            "transit_location": self.state.current_location
         }
 
         transit_to_natal_analysis = (
@@ -132,7 +132,7 @@ class TransitFlow(Flow[TransitState]):
         inputs = {
             "transit_analysis": self.state.transit_analysis,
             "current_transits": self.state.current_transits,
-            "today": self.state.today,
+            "transit_date": self.state.transit_date_formatted,
             "name": self.state.name,
             "location": self.state.current_location
         }
@@ -152,7 +152,7 @@ class TransitFlow(Flow[TransitState]):
             "natal_analysis": self.state.natal_analysis,
             "natal_chart": self.state.natal_chart,
             "name": self.state.name,
-            "today": self.state.today,
+            "analysis_date": self.state.today,
             "date_of_birth": self.state.dob,
             "birthplace": self.state.birthplace
         }
@@ -173,10 +173,10 @@ class TransitFlow(Flow[TransitState]):
             "transit_to_natal_analysis": self.state.transit_to_natal_analysis,
             "transit_to_natal_chart": self.state.transit_to_natal_chart,
             "name": self.state.name,
-            "today": self.state.today,
+            "transit_date": self.state.transit_date_formatted,
             "date_of_birth": self.state.dob,
             "birthplace": self.state.birthplace,
-            "current_location": self.state.current_location
+            "transit_location": self.state.current_location
         }
 
         enhanced_transit_to_natal_analysis = (
@@ -196,13 +196,12 @@ class TransitFlow(Flow[TransitState]):
             "natal_analysis": self.state.natal_analysis,
             "transit_to_natal_analysis": self.state.transit_to_natal_analysis,
             "name": self.state.name,
-            "today": self.state.today,
-            "transit_date": self.state.transit_date_formatted,
+            "report_date": self.state.today,  # Date report is being generated
+            "transit_date": self.state.transit_date_formatted,  # Date of transits being analyzed
             "is_custom_transit": self.state.is_custom_transit,
-            "location": self.state.current_location,
+            "transit_location": self.state.current_location,
             "date_of_birth": self.state.dob,
-            "birthplace": self.state.birthplace,
-            "current_location": self.state.current_location
+            "birthplace": self.state.birthplace
         }
 
         report_draft = (
@@ -226,9 +225,10 @@ class TransitFlow(Flow[TransitState]):
             "transit_chart": self.state.current_transits,
             "natal_chart": self.state.natal_chart,
             "transit_to_natal_chart": self.state.transit_to_natal_chart,
-            "today": self.state.today,
+            "report_date": self.state.today,
+            "transit_date": self.state.transit_date_formatted,
             "name": self.state.name,
-            "location": self.state.current_location,
+            "transit_location": self.state.current_location,
             "date_of_birth": self.state.dob,
             "birthplace": self.state.birthplace
         }
@@ -327,7 +327,8 @@ class TransitFlow(Flow[TransitState]):
             "client": self.state.name,
             "sender": "Ben Jasper",
             "email_address": self.state.email,
-            "today": self.state.today
+            "report_date": self.state.today,
+            "transit_date": self.state.transit_date_formatted
         }
 
         email_result = (

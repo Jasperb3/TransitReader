@@ -40,13 +40,14 @@ report_review_task:
     - Remain concise, discerning, and solution-focused — no rewriting.
     - Maintain a solution-focused tone: identify weaknesses or missed opportunities, but offer guidance for refinement without rewriting or reinterpreting.
 
-    Today's date is {today}
+    Transit date being analyzed: {transit_date}
+    Report generation date: {report_date}
 
     Subject Information:
     - Name: {name}
     - Date of Birth: {date_of_birth}
     - Location of Birth: {birthplace}
-    - Current Location: {location}
+    - Transit Location: {transit_location}
 
     Report for Review:
     {report}
@@ -100,13 +101,14 @@ report_enhancement_task:
     - Deliver a fully polished, psychologically sophisticated, technically rigorous astrological report, ready for client delivery.
     - Follow the modular sectioning and narrative arc outlined in the enhanced report structure.
 
-    Today's date is {today}
+    Transit date being analyzed: {transit_date}
+    Report generation date: {report_date}
 
     Subject Information:
     - Name: {name}
     - Date of Birth: {date_of_birth}
     - Location of Birth: {birthplace}
-    - Current Location: {location}
+    - Transit Location: {transit_location}
 
     Report for Enhancement:
     {report}

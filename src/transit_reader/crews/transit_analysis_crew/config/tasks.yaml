@@ -37,7 +37,7 @@ current_transits_task:
     6. Current Moon Phase and Key Aspects
     7. Stationing Outer Planets
 
-    Today's date is {today}.
+    The transit date being analyzed is {transit_date}.
     The subject's name is {name}.
     Their current location is {location}.
 
@@ -71,7 +71,7 @@ current_transits_interpretation_task:
     - Maintain a psychologically rich, empowering, and technically precise tone.
     - Format in clean modular markdown with no code blocks.
 
-    Today's date is {today}.
+    The transit date being analyzed is {transit_date}.
     The subject's name is {name}.
     Their current location is {location}.
     

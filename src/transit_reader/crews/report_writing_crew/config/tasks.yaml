@@ -46,7 +46,8 @@ data_interpretation_task:
     - Explicitly anchor all interpretations in verified technical data: degrees, signs, houses, aspects, dignities, planetary conditions, motion status.
     - Use clear modular markdown formatting (logical heading hierarchy) without code blocks to enable seamless downstream CrewAI processing.
 
-    Today's date is {today}
+    The transit date being analyzed is {transit_date}
+    The report is being generated on {report_date}
 
     **Input Data:**
 
@@ -109,8 +110,9 @@ report_writing_task:
     - Name: {name}
     - Date of Birth: {date_of_birth}
     - Birth Location: {birthplace}
-    - Current Location: {location}
-    - Today's Date: {today}
+    - Transit Location: {transit_location}
+    - Transit Date Being Analyzed: {transit_date}
+    - Report Generation Date: {report_date}
 
     **Reference Data:**
 
