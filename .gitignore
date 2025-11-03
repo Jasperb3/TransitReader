@@ -13,3 +13,5 @@ tests/
 crew_outputs/
 src/transit_reader/subjects/
 implementation_docs/
+src/transit_reader/crews/crev-project.txt
+CLAUDE.md
