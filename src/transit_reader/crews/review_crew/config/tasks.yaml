@@ -42,9 +42,24 @@ report_review_task:
       - Check that each developmental theme includes "Questions for Reflection" (2-4 open-ended prompts) and "Real-World Signals" (3-5 concrete scenarios/markers).
       - Confirm "Working With This Energy" section includes quick-start practices, emergency protocols, and daily micro-practices.
       - Assess conversational bridging language—does it acknowledge complexity, offer reassurance, and remind readers of their agency?
+    - **Language Precision and Professionalism**:
+      - Flag vague qualifiers: Replace "can," "may," "often" with "typically," "tends to," "characteristically," "compels"
+      - Identify passive constructions: Change "is being tested" to "tests your assumptions," "you may be pushed" to "compels you to"
+      - Check for repetitive metaphors: Flag "crucible," "alchemy," "compost" used more than once per major theme; suggest concrete terms instead
+      - Verify sentence length: Flag sentences over 40 words; suggest breaking for clarity
+      - Confirm orb-interpretation links: Tight orbs (< 1°) must explicitly connect to immediacy/intensity
+      - Validate planet-guidance connections: All guidance must reference activating planets (e.g., "Under Pluto's conjunction to Mercury...")
+      - Check for micro-headers: Dense theme sections should have "Technical Summary," "Psychological Implications," "Practical Expression"
+      - Verify context lines: Guidance blocks should include brief italicized orienting context
+      - Confirm technical glosses: Terms like "Out of Bounds," "Vertex," "Applying/Separating" should be defined once in parentheticals
+    - **Technical Formatting Consistency**:
+      - Orb precision: Verify all orbs use two decimal places (e.g., "Orb: 3.45°" not "Orb: 3.4°")
+      - Degree symbol: Check for correct ° symbol (not 0°) with no space before it (e.g., "14° Leo" not "14 ° Leo")
+      - Planet order syntax: Verify consistent "Transit Planet → Natal Planet, Orb: X.XX°, Applying/Separating"
+      - Causal continuity: Growth potentials must reflect exact symbolic tensions (e.g., "discipline versus transformation" for Saturn-Pluto, not generic psychology)
 
     Critique Instructions:
-    - Organize feedback under clear headings: Technical Accuracy, Interpretive Integrity, Narrative Coherence, Emotional Resonance and Accessibility.
+    - Organize feedback under clear headings: Technical Accuracy, Interpretive Integrity, Narrative Coherence, Emotional Resonance and Accessibility, Language Precision and Professionalism, Technical Formatting Consistency.
     - Provide specific, actionable bullet points under each heading.
     - Remain concise, discerning, and solution-focused — no rewriting.
     - Maintain a solution-focused tone: identify weaknesses or missed opportunities, but offer guidance for refinement without rewriting or reinterpreting.

@@ -141,6 +141,24 @@ report_writing_task:
     - Use second person ("you") to create intimate connection while maintaining professionalism.
     - Create natural "breathing room" in dense sections with transitional sentences that orient and encourage.
 
+    **Language Precision Requirements**:
+    - Replace vague qualifiers: "can" → "typically," "may" → "tends to," "often" → "characteristically"
+    - Use active agency: "tests your assumptions" not "assumptions are tested," "compels you to" not "you may be pushed to"
+    - Prefer concrete psychological terms: "transformative pressure," "systemic reorganization," "integration phase," "psychological after-effects," "residual activation"
+    - Limit metaphoric language: Use "crucible," "alchemy," "compost" sparingly (max once per major theme); alternate with direct terms
+    - Keep sentences under 40 words for readability
+    - Link orbs to interpretive weight: "With a tight 0.67° orb, this influence is immediate and inescapable"
+    - Reference activating planets in guidance: "Under Pluto's conjunction to Mercury, your thinking restructures under pressure"
+    - Add micro-headers within long theme sections: "Technical Summary," "Psychological Implications," "Practical Expression"
+    - Add brief italicized context lines under guidance blocks (e.g., "*These steps consolidate the mental restructuring underway*")
+    - Define technical terms once in parentheticals: "Out of Bounds (beyond the Sun's maximum declination, intensifying independence)"
+
+    **Technical Formatting Standards**:
+    - Orb precision: Always two decimal places (e.g., "Orb: 3.45°" not "Orb: 3.4°")
+    - Degree symbol: Use ° (not 0°), with no space before it (e.g., "14° Leo" not "14 ° Leo")
+    - Planet order: Consistent syntax "Transit Planet → Natal Planet, Orb: X.XX°, Applying/Separating"
+    - Maintain causal continuity: Growth potentials must reflect exact symbolic tensions (e.g., "discipline versus transformation" for Saturn-Pluto)
+
     Subject Information:
     - Name: {name}
     - Date of Birth: {date_of_birth}
