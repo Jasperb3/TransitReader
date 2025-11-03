@@ -81,10 +81,11 @@ report_writing_task:
         - Present subject information clearly (Name, Birth Data, Current Location, Report Date).
         - Insert standardized '[transit_chart]' placeholder under the main title.
     2. **Executive Summary**:
-        - Open with a 3-sentence plain-language summary of the overall period's essence
-        - List 3-5 key dates to watch with brief explanations of why they matter
-        - Provide one-line accessible versions of each developmental theme (simple language, relatable)
-        - Include an "emotional weather forecast" using clear, relatable metaphor (e.g., "turbulent seas with clearing skies ahead")
+        - Open with a 2-3 sentence compression of the period's developmental arc using plain language
+        - List 3-5 key dates to watch with brief technical explanations (aspect perfection, stations, ingresses)
+        - Provide one-line accessible versions of each developmental theme (use relatable language, avoid astrological jargon)
+        - Include an "emotional weather forecast" using clear, relatable metaphor (e.g., "building pressure with gradual release ahead")
+        - CRITICAL: This section orients and compresses—do NOT synthesize or reflect (that is the Conclusion's function)
     3. **Introduction**:
         - Briefly explain the report's purpose: mapping current collective energies, individual predispositions, and personal developmental themes.
         - Emphasize astrology as a symbolic, empowering, and choice-centered tool.
@@ -93,21 +94,26 @@ report_writing_task:
         - Summarize key energetic patterns and psychological themes visible in today's transit-to-transit configurations.
         - Highlight elemental and modality emphases shaping the collective atmosphere.
         - Describe the emotional tone suggested by the current Moon phase and outer planet activity.
-        - Use a warm transitional sentence to bridge from collective to personal (e.g., "Now let's explore how these cosmic currents interact with your unique chart...").
+        - Use a warm, explicit transitional sentence to bridge from collective to personal that references specific chart connections (e.g., "Now let's explore how these cosmic currents interact with your natal Saturn-Pluto square and 10th house stellium...").
     5. **Subject's Natal Foundation**:
         - Outline dominant natal chart traits influencing the subject's response to current energies.
         - Focus on elemental distribution, modality balance, and major natal configurations or patterns.
         - Include conversational acknowledgment of complexity if appropriate (e.g., "This may feel like a lot—these are the core patterns that shape your responses...").
+        - Include explicit transitional sentence linking natal patterns to upcoming transit themes (e.g., "These foundational patterns shape how you'll experience the Pluto transits activating your Ascendant over the next 18 months...").
     6. **Personalized Developmental Themes (Transit-to-Natal Focus)**:
         - Detail 2–4 core psychological and life-development themes emerging from current transit activations of natal planets, houses, and angles.
         - Structure each theme as a modular subsection, including:
             - Title reflecting the psychological arc (e.g., "Emotional Reinvention and Relational Clarity").
             - Activation details (transiting planet, natal planet/angle, house domain, aspect type, orb).
-            - Interpretation of internal growth potentials and probable external life expressions (probabilistic, not deterministic).
-            - **Questions for Reflection** (2-4 open-ended prompts that invite personal self-inquiry):
-                - Tie questions directly to the psychological growth path of this theme
-                - Frame as invitations to exploration, not diagnostic assessments
-                - Include at least one question about timing or readiness (e.g., "What needs to complete before you can move forward?")
+            - Interpretation of internal growth potentials and probable external life expressions:
+                - For each practical expression, describe 1-2 plausible situational manifestations that link planet, house, and aspect symbolism (e.g., "Tensions with authority figures or team hierarchies may surface as leadership style redefinition, reflecting your natal Saturn square Pluto being activated by transiting Uranus")
+                - Include relational, professional, creative, and somatic/health domains where relevant to house activations
+                - Distinguish between probabilistic event triggers and deeper internal evolution (make this distinction explicit)
+            - **Questions for Reflection** (3-4 open-ended prompts that invite personal self-inquiry):
+                - MANDATORY: Anchor each question to specific chart symbolism (sign, planet, house) relevant to this theme
+                - Frame as invitations to exploration that reference the archetypal tension (e.g., "Which beliefs about achievement [Saturn in 10th] now feel like constraints rather than supports?")
+                - Rotate question types: (1) awareness ("What patterns am I noticing?"), (2) emotional ("What feelings arise when...?"), (3) behavioral ("What actions feel compelled vs. chosen?"), (4) existential/timing ("What needs to complete before...?")
+                - Avoid generic therapeutic language—make questions astrologically specific and psychologically precise
             - **Real-World Signals** (practical box listing concrete experiences to watch for):
                 - List 3-5 specific scenarios or experiences readers might encounter in daily life
                 - Include physical/emotional markers to notice (e.g., "tension in chest, vivid dreams, sudden clarity")
@@ -127,9 +133,11 @@ report_writing_task:
         - Emphasize timing sensitivity (when to act, reflect, release) and emotional agency.
         - Frame guidance as choices and invitations, not prescriptions.
     10. **Conclusion**:
-        - Summarize the overarching growth potentials and challenges identified in the report using clear, accessible, everyday language.
-        - Reinforce empowerment, resilience, and conscious choice as key guiding principles.
-        - Include a warm closing acknowledgment of the reader's journey (e.g., "Trust yourself as you navigate this passage...").
+        - Synthesize how the developmental themes interconnect or reinforce each other (do NOT repeat individual theme descriptions)
+        - Reflect on the meta-pattern: What broader life chapter or psychological arc do these themes collectively indicate?
+        - Reinforce empowerment through specific reference to the reader's agency in choosing how to engage (avoid generic "trust yourself" statements)
+        - Close with a forward-looking acknowledgment tied to the timing arc's resolution phase (e.g., "As this Saturn square completes in March, the structure you're building now will stabilize...")
+        - CRITICAL: This section synthesizes and reflects—do NOT repeat the Executive Summary's orientation function
 
     Tone and Style Guidelines:
     - Maintain scholarly astrological integrity while writing in an emotionally intelligent, accessible, and non-deterministic style.
@@ -142,16 +150,29 @@ report_writing_task:
     - Create natural "breathing room" in dense sections with transitional sentences that orient and encourage.
 
     **Language Precision Requirements**:
-    - Replace vague qualifiers: "can" → "typically," "may" → "tends to," "often" → "characteristically"
+    - Replace vague qualifiers: "can" → "typically," "may" → "tends to," "often" → "characteristically," "might" → "frequently"
     - Use active agency: "tests your assumptions" not "assumptions are tested," "compels you to" not "you may be pushed to"
     - Prefer concrete psychological terms: "transformative pressure," "systemic reorganization," "integration phase," "psychological after-effects," "residual activation"
     - Limit metaphoric language: Use "crucible," "alchemy," "compost" sparingly (max once per major theme); alternate with direct terms
+    - **Avoid self-help idioms**: Replace "Trust yourself" with "Your capacity for self-assessment remains reliable during this period"; replace "Allow uncertainty" with "Uncertainty characterizes this phase—maintain decision-making flexibility"
+    - **Imperative justification**: When using imperatives, provide one-line rationale linked to specific transit (e.g., "Maintain flexibility in long-term planning [because Neptune squares your Mercury, obscuring clarity until June]")
     - Keep sentences under 40 words for readability
     - Link orbs to interpretive weight: "With a tight 0.67° orb, this influence is immediate and inescapable"
     - Reference activating planets in guidance: "Under Pluto's conjunction to Mercury, your thinking restructures under pressure"
     - Add micro-headers within long theme sections: "Technical Summary," "Psychological Implications," "Practical Expression"
     - Add brief italicized context lines under guidance blocks (e.g., "*These steps consolidate the mental restructuring underway*")
     - Define technical terms once in parentheticals: "Out of Bounds (beyond the Sun's maximum declination, intensifying independence)"
+
+    **Metaphor and Symbolic Language Control**:
+    - Limit archetypal metaphors: Use "threshold," "alchemy," "crucible," "metamorphosis," "journey," "crossroads" MAXIMUM once per developmental theme
+    - When archetypal metaphors are exhausted, substitute with process-based language: "integration phase," "reorganization," "emergence pattern," "consolidation period," "catalytic tension"
+    - Prefer psychological and neuroscientific framings over mystical ones: "neural repatterning" over "spiritual awakening," "attachment reconfiguration" over "soul lessons"
+
+    **Sentence Structure and Rhythm**:
+    - Vary paragraph openings across sections: descriptive (theme-based), imperative (action-based), interrogative (question-based), temporal (timing-based)
+    - Limit repetitive phrase patterns: "This is a time..." (max 2 per report), "These steps..." (max 2 per report), "You may..." (rephrase as "You'll likely," "Expect to," "This period tends to")
+    - Alternate sentence structures within paragraphs: declarative → compound → simple → complex (avoid 3+ consecutive sentences of same structure)
+    - Maximum 2 consecutive sentences starting with subject pronoun ("You"); insert subordinate clauses or transitional phrases to vary rhythm
 
     **Technical Formatting Standards**:
     - Orb precision: Always two decimal places (e.g., "Orb: 3.45°" not "Orb: 3.4°")

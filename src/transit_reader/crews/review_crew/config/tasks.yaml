@@ -2,7 +2,7 @@ report_review_task:
   description: >
     Conduct a full-spectrum quality review of the finalized astrological report to ensure it meets the highest standards of technical accuracy, psychological depth, thematic coherence, and reader accessibility.
 
-    **Technical Verification Protocol** (ENHANCED):
+    **Technical Verification Protocol**:
     You have been provided with the raw chart data (transit_chart, natal_chart, transit_to_natal_chart) and the analysis documents (transit_analysis, natal_analysis, transit_to_natal_analysis). Use these to perform rigorous technical verification.
 
     **Mandatory Verification Steps**:
@@ -12,16 +12,16 @@ report_review_task:
     - Check for mathematical errors in house cusps, planetary positions, or orb calculations
     - Verify that applying/separating status is stated for transit-to-natal aspects where relevant
     - Use QdrantSearchTool to spot-check interpretations against established astrological literature when uncertain about symbolic accuracy
-    - **Query Strategy**: Use SHORT, technical astrological terms ONLY (2-4 words maximum)
-    - **GOOD queries**: "Neptune square Mercury", "Grand Trine water", "Chiron return"
-    - **BAD queries**: "Neptune square Mercury interpretation validity", "Grand Trine in water signs meaning"
-    - **Rule**: Omit words like "interpretation", "meaning", "validity" - use core astrological terms only
+      - **Query Strategy**: Use SHORT, technical astrological terms ONLY (2-4 words maximum)
+      - **GOOD queries**: "Neptune square Mercury", "Grand Trine water", "Chiron return"
+      - **BAD queries**: "Neptune square Mercury interpretation validity", "Grand Trine in water signs meaning"
+      - **Rule**: Omit words like "interpretation", "meaning", "validity" - use core astrological terms only
 
     Review Focus:
     - **Technical Validation**:
       - Verify all planetary positions, aspects, dignities, house placements, and transit-to-natal activations against the provided chart data (transit_chart, natal_chart, transit_to_natal_chart).
       - Confirm timing arcs (start, peak, culmination) for major transits and returns are accurately represented.
-      - **CRITICAL**: Explicitly check that ALL aspect orb measurements are stated numerically in "Orb: X.XX°" format. Flag any vague descriptors like "tight", "moderate", "wide" as violations requiring correction.
+      - Explicitly check that ALL aspect orb measurements are stated numerically in "Orb: X.XX°" format. Flag any vague descriptors like "tight", "moderate", "wide" as violations requiring correction.
       - Verify clarity and accuracy of nodal house references and angular planet positions.
     - **Interpretive Integrity**:
       - Assess the consistent application of classical, modern, and psychological astrological frameworks.
@@ -32,14 +32,23 @@ report_review_task:
       - Ensure clear sequencing: Executive Summary ➔ Introduction ➔ Transit Climate ➔ Natal Foundations ➔ Personalized Themes ➔ Working With This Energy ➔ Technical Overview ➔ Actionable Guidance ➔ Conclusion.
       - Validate that thematic arcs are logical, interconnected, and flow naturally across sections.
       - Assess how well the interaction between the main developmental themes is synthesized.
-      - Verify that conversational transitions between sections are warm, natural, and enhance readability.
+      - Verify explicit transitional sentences between major sections that:
+          - Reference specific upcoming chart themes (not generic bridging language)
+          - Create narrative continuity by linking the previous section's conclusion to the next section's opening
+          - Acknowledge the reader's journey through complex material with specific encouragement
+      - Flag any section boundaries that lack contextual connective tissue
     - **Emotional Resonance and Accessibility**:
       - Evaluate emotional tone: is it empowering, psychologically intelligent, and non-deterministic?
       - Confirm technical details are embedded fluently without disrupting readability.
       - Explicitly check if challenging aspects/periods are framed as opportunities for growth.
       - Assess whether real-world relevance and timing strategies are clearly conveyed for varying experience levels.
       - Verify Executive Summary provides clear, accessible entry point with plain-language essence, key dates, and emotional weather forecast.
-      - Check that each developmental theme includes "Questions for Reflection" (2-4 open-ended prompts) and "Real-World Signals" (3-5 concrete scenarios/markers).
+      - Check that each developmental theme includes "Questions for Reflection" (3-4 prompts) that:
+          - Are anchored to specific chart symbolism (sign, planet, house) mentioned in the theme
+          - Rotate between awareness, emotional, behavioral, and timing question types
+          - Avoid generic therapeutic language (flag questions that could apply to any chart)
+          - Include at least one question referencing the specific archetypal tension (e.g., Saturn-Pluto = discipline vs. transformation)
+      - Check that each developmental theme includes "Real-World Signals" (3-5 concrete scenarios/markers).
       - Confirm "Working With This Energy" section includes quick-start practices, emergency protocols, and daily micro-practices.
       - Assess conversational bridging language—does it acknowledge complexity, offer reassurance, and remind readers of their agency?
     - **Language Precision and Professionalism**:
@@ -57,21 +66,34 @@ report_review_task:
       - Degree symbol: Check for correct ° symbol (not 0°) with no space before it (e.g., "14° Leo" not "14 ° Leo")
       - Planet order syntax: Verify consistent "Transit Planet → Natal Planet, Orb: X.XX°, Applying/Separating"
       - Causal continuity: Growth potentials must reflect exact symbolic tensions (e.g., "discipline versus transformation" for Saturn-Pluto, not generic psychology)
+    - **Metaphor and Symbolic Language Audit**:
+      - Count archetypal metaphors: Flag if "threshold," "alchemy," "crucible," "metamorphosis," "journey," "crossroads" appear more than once per developmental theme
+      - Identify LLM pattern artifacts: Flag repetitive symbolic framings that lack chart-specific context
+      - Verify psychological language diversity: Check that interpretations use varied vocabulary (not just recycled mystical terms)
+      - Suggest process-based alternatives when metaphors are overused
 
     Critique Instructions:
-    - Organize feedback under clear headings: Technical Accuracy, Interpretive Integrity, Narrative Coherence, Emotional Resonance and Accessibility, Language Precision and Professionalism, Technical Formatting Consistency.
+    - Organize feedback under clear headings: Technical Accuracy, Interpretive Integrity, Narrative Coherence, Emotional Resonance and Accessibility, Language Precision and Professionalism, Technical Formatting Consistency, Metaphor and Symbolic Language Audit.
     - Provide specific, actionable bullet points under each heading.
     - Remain concise, discerning, and solution-focused — no rewriting.
     - Maintain a solution-focused tone: identify weaknesses or missed opportunities, but offer guidance for refinement without rewriting or reinterpreting.
-
-    Transit date being analyzed: {transit_date}
-    Report generation date: {report_date}
 
     Subject Information:
     - Name: {name}
     - Date of Birth: {date_of_birth}
     - Location of Birth: {birthplace}
     - Transit Location: {transit_location}
+    - Transit date being analyzed: {transit_date}
+    - Report generation date: {report_date}
+
+    Transit chart:
+    {transit_chart}
+
+    Natal chart:
+    {natal_chart}
+
+    Transit to Natal chart:
+    {transit_to_natal_chart}
 
     Report for Review:
     {report}
@@ -83,7 +105,27 @@ report_review_task:
 
 report_enhancement_task:
   description: >
-    Refine, deepen, and polish the finalized astrological report based on structured critique feedback, ensuring complete alignment with the enhanced modular report structure and maximizing psychological, technical, and practical excellence.
+    Refine, deepen, and polish the finalized astrological report based on structured critique feedback, ensuring complete alignment with the modular report structure and maximizing psychological, technical, and practical excellence.
+
+    **CRITICAL: Mandatory Report Structure to Preserve**:
+    The report MUST maintain this exact section sequence and structure:
+    1. **Cover Page** (Name, Birth Data, Current Location, Report Date, '[transit_chart]' placeholder)
+    2. **Executive Summary** (2-3 sentence compression, key dates, theme one-liners, emotional weather forecast)
+    3. **Introduction** (purpose, astrology as symbolic tool, warm invitational language)
+    4. **Transit Climate Overview** (collective patterns, elemental/modality emphasis, Moon phase, explicit transition to personal chart)
+    5. **Subject's Natal Foundation** (dominant traits, elemental/modality balance, configurations, explicit transition to transit themes)
+    6. **Personalized Developmental Themes (Transit-to-Natal Focus)** (2-4 themes, each with: Title, Activation details, Interpretation with situational specificity, Questions for Reflection [3-4, chart-anchored], Real-World Signals [3-5 scenarios], Timing arcs)
+    7. **Working With This Energy** (quick-start practices, emergency protocols, daily micro-practices, resource types)
+    8. **Technical Overview for Active Themes** (tabular/bullet-point technical summary)
+    9. **Actionable Life Guidance** (1-3 recommendations per theme, timing sensitivity, framed as choices)
+    10. **Conclusion** (synthesize theme interactions, reflect on meta-pattern, specific agency reinforcement, forward-looking timing acknowledgment)
+
+    DO NOT:
+    - Reorder sections
+    - Merge sections
+    - Remove sections
+    - Add new major sections not listed above
+    - Change section numbering or hierarchy
 
     Enhancement Focus:
     - Expand and deepen psychological insight where critiques highlight gaps, particularly within personalized Transit-to-Natal developmental arcs.
@@ -110,10 +152,22 @@ report_enhancement_task:
         - Expand interpretations only where feedback indicates underdevelopment or potential enrichment.
         - Use verified technical data (planet, degree, house, aspect) to ground all new insights and metaphoric framing.
         - Integrate emotional nuance, archetypal symbolism, and real-world strategies tied to active life domains.
+        - When adding "Questions for Reflection": MUST anchor to specific chart symbolism (sign, planet, house); rotate question types (awareness, emotional, behavioral, timing); avoid generic therapeutic language
+        - When enhancing "Practical Expression": Add 1-2 situational manifestations linking planet, house, aspect (e.g., "tensions with authority figures reflecting natal Saturn square Pluto activated by transiting Uranus")
     3. **Maintain Voice and Flow**:
         - Preserve the original emotional tone and narrative style.
         - Avoid duplicating existing content or introducing new chart points unless justified by critique.
         - Ensure fluent integration of technical information into readable narrative arcs.
+    4. **Language and Metaphor Discipline**:
+        - Apply metaphor limits: "threshold," "alchemy," "crucible," "metamorphosis," "journey," "crossroads" MAXIMUM once per developmental theme
+        - Substitute with process-based language: "integration phase," "reorganization," "emergence pattern," "consolidation period," "catalytic tension"
+        - Replace self-help idioms: "Trust yourself" → "Your capacity for self-assessment remains reliable"; "Allow uncertainty" → "Uncertainty characterizes this phase—maintain flexibility"
+        - Add imperative justifications: Link directives to specific transits (e.g., "Maintain planning flexibility [Neptune squares Mercury through June]")
+        - Vary sentence openings: Limit "This is a time..." (max 2), "These steps..." (max 2), "You may..." (rephrase to "You'll likely," "Expect to")
+    5. **Transition Enhancement**:
+        - Add explicit transitional sentences between major sections that reference specific chart themes
+        - Link previous section's conclusion to next section's opening
+        - Create narrative continuity with chart-specific context (not generic bridging)
 
     Special Instructions:
     - Insert the standardized placeholder '[transit_chart]' immediately after the Cover Page header.
@@ -125,14 +179,14 @@ report_enhancement_task:
     - Deliver a fully polished, psychologically sophisticated, technically rigorous astrological report, ready for client delivery.
     - Follow the modular sectioning and narrative arc outlined in the enhanced report structure.
 
-    Transit date being analyzed: {transit_date}
-    Report generation date: {report_date}
-
+    
     Subject Information:
     - Name: {name}
     - Date of Birth: {date_of_birth}
     - Location of Birth: {birthplace}
     - Transit Location: {transit_location}
+    - Transit date being analyzed: {transit_date}
+    - Report generation date: {report_date}
 
     Report for Enhancement:
     {report}
@@ -145,8 +199,6 @@ report_enhancement_task:
 
     Transit to Natal chart:
     {transit_to_natal_chart}
-
-
     
   expected_output: >
     A refined, fully modular, psychologically resonant, technically precise astrological report enhanced according to structured critique feedback, formatted cleanly in markdown with the '[transit_chart]' placeholder correctly inserted.
