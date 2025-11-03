@@ -30,25 +30,48 @@ class TransitFlow(Flow[TransitState]):
         setup = Setup(self.state)
         setup.process_new_markdown_files()
 
-
+    # PARALLEL CHART GENERATION - All three charts can be generated simultaneously
     @listen(setup_qdrant)
     def generate_current_transits(self):
-        print("Generating current transits")
+        print("Generating current transits (parallel)")
         current_location: Tuple[float, float] = (
             self.state.current_location_latitude,
             self.state.current_location_longitude
         )
-        
-        self.state.current_transits = get_transit_chart(current_location[0], current_location[1])
-    
 
-    @listen(generate_current_transits)
+        self.state.current_transits = get_transit_chart(
+            current_location[0],
+            current_location[1],
+            self.state.transit_datetime
+        )
+
+    @listen(setup_qdrant)
+    def get_natal_chart_data(self):
+        print("Getting natal chart data (parallel)")
+        natal_chart = get_natal_chart(self.state.date_of_birth, self.state.birthplace_latitude, self.state.birthplace_longitude)
+        self.state.natal_chart = natal_chart
+
+    @listen(setup_qdrant)
+    def get_transit_to_natal_chart_data(self):
+        print("Getting transit to natal chart data (parallel)")
+        transit_to_natal_chart = get_transit_natal_aspects(
+            self.state.current_location_latitude,
+            self.state.current_location_longitude,
+            self.state.date_of_birth,
+            self.state.birthplace_latitude,
+            self.state.birthplace_longitude,
+            self.state.transit_datetime
+        )
+        self.state.transit_to_natal_chart = transit_to_natal_chart
+
+    # WAIT FOR ALL CHARTS - Use and_() to wait for all three chart generations
+    @listen(and_(generate_current_transits, get_natal_chart_data, get_transit_to_natal_chart_data))
     def generate_transit_analysis(self):
         print("Generating transit analysis")
         inputs = {
             "current_transits": self.state.current_transits,
             "name": self.state.name,
-            "today": self.state.today,
+            "transit_date": self.state.transit_date_formatted,
             "location": self.state.current_location
         }
 
@@ -61,13 +84,55 @@ class TransitFlow(Flow[TransitState]):
         self.state.transit_analysis = transit_analysis.raw
 
 
+    # PARALLEL ANALYSIS GENERATION - All three analyses can run simultaneously after charts are ready
+    @listen(and_(generate_current_transits, get_natal_chart_data, get_transit_to_natal_chart_data))
+    def generate_natal_analysis(self):
+        print("Generating natal analysis (parallel)")
+
+        inputs = {
+            "natal_chart": self.state.natal_chart,
+            "name": self.state.name,
+            "date_of_birth": self.state.dob,
+            "birthplace": self.state.birthplace,
+            "analysis_date": self.state.today  # Date report is being generated
+        }
+
+        natal_analysis = (
+            NatalAnalysisCrew()
+            .crew()
+            .kickoff(inputs=inputs)
+        )
+
+        self.state.natal_analysis = natal_analysis.raw
+
+    @listen(and_(generate_current_transits, get_natal_chart_data, get_transit_to_natal_chart_data))
+    def generate_transit_to_natal_analysis(self):
+        print("Generating transit to natal analysis (parallel)")
+        inputs = {
+            "transit_to_natal_chart": self.state.transit_to_natal_chart,
+            "name": self.state.name,
+            "transit_date": self.state.transit_date_formatted,
+            "date_of_birth": self.state.dob,
+            "birthplace": self.state.birthplace,
+            "transit_location": self.state.current_location
+        }
+
+        transit_to_natal_analysis = (
+            TransitToNatalAnalysisCrew()
+            .crew()
+            .kickoff(inputs=inputs)
+        )
+
+        self.state.transit_to_natal_analysis = transit_to_natal_analysis.raw
+
+    # PARALLEL REVIEW - All three reviews can run simultaneously after their analyses complete
     @listen(generate_transit_analysis)
     def review_transit_analysis(self):
-        print("Reviewing transit analysis")
+        print("Reviewing transit analysis (parallel)")
         inputs = {
             "transit_analysis": self.state.transit_analysis,
             "current_transits": self.state.current_transits,
-            "today": self.state.today,
+            "transit_date": self.state.transit_date_formatted,
             "name": self.state.name,
             "location": self.state.current_location
         }
@@ -80,43 +145,14 @@ class TransitFlow(Flow[TransitState]):
 
         self.state.transit_analysis = enhanced_transit_analysis.raw
 
-
-    @listen(review_transit_analysis)
-    def get_natal_chart_data(self):
-        print("Getting natal chart data")
-        natal_chart = get_natal_chart(self.state.date_of_birth, self.state.birthplace_latitude, self.state.birthplace_longitude)
-        self.state.natal_chart = natal_chart
-    
-
-    @listen(get_natal_chart_data)
-    def generate_natal_analysis(self):
-        print("Generating natal analysis")
-
-        inputs = {
-            "natal_chart": self.state.natal_chart,
-            "name": self.state.name,
-            "date_of_birth": self.state.dob,
-            "birthplace": self.state.birthplace,
-            "today": self.state.today
-        }
-        
-        natal_analysis = (
-            NatalAnalysisCrew()
-            .crew()
-            .kickoff(inputs=inputs)
-        )
-
-        self.state.natal_analysis = natal_analysis.raw
-
-    
     @listen(generate_natal_analysis)
     def review_natal_analysis(self):
-        print("Reviewing natal analysis")
+        print("Reviewing natal analysis (parallel)")
         inputs = {
             "natal_analysis": self.state.natal_analysis,
             "natal_chart": self.state.natal_chart,
             "name": self.state.name,
-            "today": self.state.today,
+            "analysis_date": self.state.today,
             "date_of_birth": self.state.dob,
             "birthplace": self.state.birthplace
         }
@@ -129,54 +165,18 @@ class TransitFlow(Flow[TransitState]):
 
         self.state.natal_analysis = enhanced_natal_analysis.raw
 
-    
-    @listen(review_natal_analysis)
-    def get_transit_to_natal_chart_data(self):
-        print("Getting transit to natal chart data")
-        transit_to_natal_chart = get_transit_natal_aspects(
-            self.state.current_location_latitude,
-            self.state.current_location_longitude,
-            self.state.date_of_birth,
-            self.state.birthplace_latitude,
-            self.state.birthplace_longitude
-        )
-
-        self.state.transit_to_natal_chart = transit_to_natal_chart
-
-
-    @listen(get_transit_to_natal_chart_data)
-    def generate_transit_to_natal_analysis(self):
-        print("Generating transit to natal analysis")
-        inputs = {
-            "transit_to_natal_chart": self.state.transit_to_natal_chart,
-            "name": self.state.name,
-            "today": self.state.today,
-            "date_of_birth": self.state.dob,
-            "birthplace": self.state.birthplace,
-            "current_location": self.state.current_location
-        }
-
-        transit_to_natal_analysis = (
-            TransitToNatalAnalysisCrew()
-            .crew()
-            .kickoff(inputs=inputs)
-        )
-
-        self.state.transit_to_natal_analysis = transit_to_natal_analysis.raw
-
-
     @listen(generate_transit_to_natal_analysis)
     def review_transit_to_natal_analysis(self):
-        print("Reviewing transit to natal analysis")
+        print("Reviewing transit to natal analysis (parallel)")
 
         inputs = {
             "transit_to_natal_analysis": self.state.transit_to_natal_analysis,
             "transit_to_natal_chart": self.state.transit_to_natal_chart,
             "name": self.state.name,
-            "today": self.state.today,
+            "transit_date": self.state.transit_date_formatted,
             "date_of_birth": self.state.dob,
             "birthplace": self.state.birthplace,
-            "current_location": self.state.current_location
+            "transit_location": self.state.current_location
         }
 
         enhanced_transit_to_natal_analysis = (
@@ -187,8 +187,8 @@ class TransitFlow(Flow[TransitState]):
 
         self.state.transit_to_natal_analysis = enhanced_transit_to_natal_analysis.raw
 
-
-    @listen(review_transit_to_natal_analysis)
+    # WAIT FOR ALL REVIEWS - Report generation needs all three enhanced analyses
+    @listen(and_(review_transit_analysis, review_natal_analysis, review_transit_to_natal_analysis))
     def generate_report_draft(self):
         print("Generating report draft")
         inputs = {
@@ -196,11 +196,12 @@ class TransitFlow(Flow[TransitState]):
             "natal_analysis": self.state.natal_analysis,
             "transit_to_natal_analysis": self.state.transit_to_natal_analysis,
             "name": self.state.name,
-            "today": self.state.today,
-            "location": self.state.current_location,
+            "report_date": self.state.today,  # Date report is being generated
+            "transit_date": self.state.transit_date_formatted,  # Date of transits being analyzed
+            "is_custom_transit": self.state.is_custom_transit,
+            "transit_location": self.state.current_location,
             "date_of_birth": self.state.dob,
-            "birthplace": self.state.birthplace,
-            "current_location": self.state.current_location
+            "birthplace": self.state.birthplace
         }
 
         report_draft = (
@@ -224,9 +225,10 @@ class TransitFlow(Flow[TransitState]):
             "transit_chart": self.state.current_transits,
             "natal_chart": self.state.natal_chart,
             "transit_to_natal_chart": self.state.transit_to_natal_chart,
-            "today": self.state.today,
+            "report_date": self.state.today,
+            "transit_date": self.state.transit_date_formatted,
             "name": self.state.name,
-            "location": self.state.current_location,
+            "transit_location": self.state.current_location,
             "date_of_birth": self.state.dob,
             "birthplace": self.state.birthplace
         }
@@ -243,7 +245,7 @@ class TransitFlow(Flow[TransitState]):
     @listen(interrogate_report_draft)
     def generate_kerykeion_transit_chart(self):
         print("Generating kerykeion transit chart")
-        
+
         main_subject = get_kerykeion_subject(
             self.state.name,
             self.state.date_of_birth.year,
@@ -258,13 +260,15 @@ class TransitFlow(Flow[TransitState]):
             self.state.birthplace_timezone
         )
 
+        # Use transit_datetime instead of NOW_DT
+        transit_dt = self.state.transit_datetime
         transit_subject = get_kerykeion_subject(
-            "Current transits",
-            NOW_DT.year,
-            NOW_DT.month,
-            NOW_DT.day,
-            NOW_DT.hour,
-            NOW_DT.minute,
+            "Transits" if not self.state.is_custom_transit else f"Custom Transits ({transit_dt.strftime('%Y-%m-%d %H:%M')})",
+            transit_dt.year,
+            transit_dt.month,
+            transit_dt.day,
+            transit_dt.hour,
+            transit_dt.minute,
             self.state.current_location_city,
             self.state.current_location_country,
             self.state.current_location_longitude,
@@ -323,7 +327,8 @@ class TransitFlow(Flow[TransitState]):
             "client": self.state.name,
             "sender": "Ben Jasper",
             "email_address": self.state.email,
-            "today": self.state.today
+            "report_date": self.state.today,
+            "transit_date": self.state.transit_date_formatted
         }
 
         email_result = (

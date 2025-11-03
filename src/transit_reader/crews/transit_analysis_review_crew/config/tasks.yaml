@@ -27,9 +27,9 @@ transits_interpretation_critic_task:
     - Focus on precise improvement guidance — no rewriting or speculation beyond the embedded transit data.
     - Maintain a solution-focused tone: identify weaknesses or missed opportunities, but offer guidance for refinement without rewriting or reinterpreting.
 
-    Today's date is {today}
+    The transit date being analyzed is {transit_date}
     The subject's name is {name}
-    Their current location is {location}
+    The transit location is {location}
 
     Transit Interpretation for Review:
     {transit_analysis}
@@ -66,9 +66,9 @@ transits_interpretation_enhancement_task:
     - Deliver the fully enhanced interpretation in clean modular markdown (no code blocks, no meta-commentary).
     - Ensure modular headings, symbolic richness, and thematic cohesion throughout.
 
-    Today's date is {today}
+    The transit date being analyzed is {transit_date}
     The subject's name is {name}
-    Their current location is {location}
+    The transit location is {location}
 
     Transit Interpretation for Enhancement:
     {transit_analysis}

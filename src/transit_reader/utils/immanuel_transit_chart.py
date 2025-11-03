@@ -29,8 +29,26 @@ settings.objects.append(chart.LILITH)
 # settings.objects.append(chart.POST_NATAL_LUNAR_ECLIPSE)
 
 
-def get_transit_chart(latitude: float, longitude: float) -> str:
-    transit_chart = charts.Transits(latitude, longitude)
+def get_transit_chart(latitude: float, longitude: float, transit_datetime: datetime = None) -> str:
+    """
+    Generate a transit chart for the given location and time.
+
+    Args:
+        latitude: Latitude coordinate
+        longitude: Longitude coordinate
+        transit_datetime: Optional datetime for transits (defaults to now/current transits)
+
+    Returns:
+        str: Formatted transit chart summary
+    """
+    if transit_datetime is None:
+        # Use Transits class for current moment
+        transit_chart = charts.Transits(latitude=latitude, longitude=longitude)
+    else:
+        # Use Natal class with custom datetime via Subject
+        transit_subject = charts.Subject(transit_datetime, latitude, longitude)
+        transit_chart = charts.Natal(transit_subject)
+
     transit_data = json.dumps(transit_chart, cls=ToJSON, indent=4)
     chart_data = json.loads(transit_data)
 
@@ -42,7 +60,7 @@ def get_transit_chart(latitude: float, longitude: float) -> str:
     date_time_info = native_info.get("date_time", {})
     coords_info = native_info.get("coordinates", {})
     
-    output_lines.append(f"Transit Date/Time: {datetime.now().strftime('%A, %d %B %Y %H:%M:%S')}")
+    output_lines.append(f"Transit Date/Time: {transit_datetime.strftime('%A, %d %B %Y %H:%M:%S')}")
     output_lines.append(f"Julian Day: {date_time_info.get('julian', 'N/A'):.5f}")
     output_lines.append(f"Sidereal Time: {date_time_info.get('sidereal_time', 'N/A')}")
     

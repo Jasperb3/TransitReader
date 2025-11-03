@@ -2,33 +2,52 @@ current_transits_task:
   description: >
     Perform a comprehensive technical analysis of today's transiting planetary positions and configurations to provide complete structural and energetic data for downstream interpretive synthesis.
 
+    **Critical Requirements**:
+    - **Orb Precision**: Report ALL aspect orbs numerically with two decimal places (e.g., "Mars square Jupiter, Orb: 2.34°" NOT "tight orb" or "wide orb")
+    - **Data Verification**: Cross-reference technical interpretations using the QdrantSearchTool to validate astrological symbolism against reference documents when encountering complex or rare configurations
+    - **Prioritization**: If data exceeds reasonable scope, prioritize in this order:
+        1. Tight aspects (<2°) involving outer planets or angles
+        2. Stationing planets within ±5 days of station
+        3. Stelliums (3+ planets within 10° in same sign) and major configurations (T-squares, Grand Trines, Yods)
+        4. Chart shape and elemental/modal imbalances
+        5. Other aspects and technical details
+
     Your objective is to systematically extract and prioritize:
     - Exact planetary positions: degree, sign, house (Placidus), motion (direct/retrograde), and essential dignity or debility.
     - Chart Shape Type: classify the current transit chart shape (Bundle, Bowl, Locomotive, etc.).
     - Diurnality: note whether the majority of transiting planets are above or below the horizon.
     - Significant transiting aspects among planets: prioritize conjunctions, oppositions, squares (within ~2° orb), and strong harmonic trines/sextiles where applicable.
+        **MANDATORY**: For each aspect, explicitly state the exact orb measurement in this format: "Orb: X.XX°" (e.g., "Orb: 1.85°")
     - Geometric transit patterns formed by transiting planets (T-square, Grand Trine, Stellium, Yod).
     - Elemental (Fire, Earth, Air, Water) and modality (Cardinal, Fixed, Mutable) distributions across the current chart.
-    - Current Moon Phase and Moon’s key aspects.
+    - Current Moon Phase and Moon's key aspects.
     - Any outer planets (Saturn–Pluto, Chiron) slowing, stationing, or recently stationing (within ±5 days).
-    
+
+    **Research Protocol**:
+    - Use QdrantSearchTool to verify astrological interpretations for unfamiliar configurations
+    - **Query Strategy**: Use SHORT, technical astrological terms ONLY (2-4 words maximum)
+    - **GOOD queries**: "Saturn square Pluto", "T-square", "stellium Pisces", "Uranus station direct"
+    - **BAD queries**: "Saturn square Pluto meaning", "T-square interpretation", "stellium in Pisces collective impact"
+    - **Rule**: Omit words like "meaning", "interpretation", "collective", "impact" - use core astrological terms only
+    - Integrate reference material insights to enrich technical accuracy
+
     Structure the findings logically in the following hierarchy:
     1. Planetary Positions (alphabetical or by planetary speed)
     2. Chart Shape and Diurnality Summary
-    3. Transit-to-Transit Aspects with orb measurements
+    3. Transit-to-Transit Aspects with numerical orb measurements (MANDATORY: "Orb: X.XX°" format)
     4. Transit Geometric Patterns (if present)
     5. Elemental and Modality Distribution Summary
     6. Current Moon Phase and Key Aspects
     7. Stationing Outer Planets
 
-    Today's date is {today}.
+    The transit date being analyzed is {transit_date}.
     The subject's name is {name}.
     Their current location is {location}.
 
     Current Transits data:
     {current_transits}
   expected_output: >
-    A cleanly structured, degree-precise, and orb-prioritized summary of the current transiting planetary landscape, including chart shape, diurnality, elemental balance, Moon phase, and stationing planets, ready for downstream integration with natal analysis.
+    A cleanly structured, degree-precise, and orb-prioritized summary of the current transiting planetary landscape, including chart shape, diurnality, elemental balance, Moon phase, stationing planets, with explicit numerical orb measurements for ALL aspects in "Orb: X.XX°" format, ready for downstream integration with natal analysis.
     
   agent: current_transits_reader
 
@@ -55,7 +74,7 @@ current_transits_interpretation_task:
     - Maintain a psychologically rich, empowering, and technically precise tone.
     - Format in clean modular markdown with no code blocks.
 
-    Today's date is {today}.
+    The transit date being analyzed is {transit_date}.
     The subject's name is {name}.
     Their current location is {location}.
     

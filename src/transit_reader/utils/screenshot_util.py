@@ -116,4 +116,4 @@ def capture_svg_screenshot(svg_path: str, output_dir: str = "./screenshots") -> 
     return screenshot_path
 
 if __name__ == "__main__":
-    capture_svg_screenshot("/home/j/ai/crewAI/astro/transit_reader/output/2025-04-08/Benjamin_Jasper_-_Transit_Chart.svg")
+    capture_svg_screenshot("/home/j/ai/crewAI/astro/transit_reader_II/transit_reader/outputs/2025-11-02/charts/Benjamin_Jasper_-_Transit_Chart.svg")

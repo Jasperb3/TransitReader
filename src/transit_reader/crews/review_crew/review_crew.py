@@ -12,11 +12,22 @@ load_dotenv()
 
 google_search_tool = GoogleSearchTool(api_key=os.getenv("GOOGLE_SEARCH_API_KEY"), cx=os.getenv("SEARCH_ENGINE_ID"))
 
-gpt41 = LLM(
+# Review/critique - requires analytical precision
+gpt41_review = LLM(
 	model="gpt-4.1",
 	api_key = os.getenv("OPENAI_API_KEY"),
-	temperature=0.7
+	temperature=0.2  # Low-moderate temperature for critical analysis
 )
+
+# Enhancement - benefits from moderate creativity
+gpt41_creative = LLM(
+	model="gpt-4.1",
+	api_key = os.getenv("OPENAI_API_KEY"),
+	temperature=0.7  # Moderate temperature for creative enhancement
+)
+
+# Legacy reference (kept for backward compatibility)
+gpt41 = gpt41_creative
 
 gpt41mini = LLM(
 	model="gpt-4.1-mini",
@@ -24,10 +35,10 @@ gpt41mini = LLM(
 	temperature=0.7
 )
 
-gemini_flash = LLM(
-	model="gemini/gemini-2.5-flash-preview-04-17",
+gemini_flash_review = LLM(
+	model="gemini/gemini-2.5-flash",
 	api_key = os.getenv("GEMINI_API_KEY"),
-	temperature=0.7
+	temperature=0.2  # Low-moderate temperature for review tasks
 )
 
 
@@ -44,7 +55,7 @@ class ReviewCrew():
 	def report_critic(self) -> Agent:
 		return Agent(
 			config=self.agents_config['report_critic'],
-			llm=gemini_flash,
+			llm=gemini_flash_review,  # Critical analysis needs lower temperature
 			verbose=True
 		)
 
@@ -52,7 +63,7 @@ class ReviewCrew():
 	def report_enhancer(self) -> Agent:
 		return Agent(
 			config=self.agents_config['report_enhancer'],
-			llm=gpt41,
+			llm=gpt41_creative,  # Enhancement benefits from moderate temperature
 			tools=[google_search_tool, GeminiSearchTool(), QdrantSearchTool(), LinkUpSearchTool()],
 			verbose=True
 		)

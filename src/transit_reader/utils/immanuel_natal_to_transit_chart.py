@@ -30,11 +30,37 @@ settings.objects.append(chart.LILITH)
 
 
 
-def get_transit_natal_aspects(location_latitude: float, location_longitude: float, dob: datetime, birthplace_latitude: float, birthplace_longitude: float) -> dict:
+def get_transit_natal_aspects(location_latitude: float, location_longitude: float, dob: datetime, birthplace_latitude: float, birthplace_longitude: float, transit_datetime: datetime = None) -> dict:
+    """
+    Generate transit-to-natal chart showing aspects between transits and natal positions.
+
+    Args:
+        location_latitude: Transit location latitude
+        location_longitude: Transit location longitude
+        dob: Date of birth
+        birthplace_latitude: Birth location latitude
+        birthplace_longitude: Birth location longitude
+        transit_datetime: Optional datetime for transits (defaults to now/current transits)
+
+    Returns:
+        str: Formatted transit-to-natal chart summary
+    """
+    # Create natal chart
     subject = charts.Subject(dob, birthplace_latitude, birthplace_longitude)
     subject_natal = charts.Natal(subject)
-    transit_date = datetime.now()
-    transit_chart = charts.Transits(location_latitude, location_longitude, aspects_to=subject_natal)
+
+    # Create transit chart
+    if transit_datetime is None:
+        # Use Transits class for current moment
+        transit_chart = charts.Transits(
+            latitude=location_latitude,
+            longitude=location_longitude,
+            aspects_to=subject_natal
+        )
+    else:
+        # Use Natal class with custom datetime via Subject
+        transit_subject = charts.Subject(transit_datetime, location_latitude, location_longitude)
+        transit_chart = charts.Natal(transit_subject, aspects_to=subject_natal)
 
     transit_data = json.dumps(transit_chart, cls=ToJSON, indent=4)
     chart_data = json.loads(transit_data)
@@ -47,7 +73,7 @@ def get_transit_natal_aspects(location_latitude: float, location_longitude: floa
     date_time_info = native_info.get("date_time", {})
     coords_info = native_info.get("coordinates", {})
     
-    output_lines.append(f"Transit Date/Time: {transit_date.strftime('%A, %d %B %Y %H:%M:%S')}")
+    output_lines.append(f"Transit Date/Time: {transit_datetime.strftime('%A, %d %B %Y %H:%M:%S')}")
     output_lines.append(f"Julian Day: {date_time_info.get('julian', 'N/A'):.5f}")
     output_lines.append(f"Sidereal Time: {date_time_info.get('sidereal_time', 'N/A')}")
 
