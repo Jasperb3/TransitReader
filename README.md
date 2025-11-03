@@ -450,13 +450,6 @@ MIT License - see [LICENSE](LICENSE) file for details
 - [uv](https://github.com/astral-sh/uv) - Fast Python package installer
 - [WeasyPrint](https://weasyprint.org/) - PDF rendering
 
----
-
-## 📧 Contact
-
-**Author:** Benjamin Jasper
-**Email:** ben.j.jasper@gmail.com
-**GitHub:** [@Jasperb3](https://github.com/Jasperb3)
 
 ---
 

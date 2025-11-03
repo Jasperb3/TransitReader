@@ -3,7 +3,7 @@ email_writing_task:
     Analyze the email content to craft a concise, engaging subject line that captures the essence of the following astrological report.
     Optimize for open rates while maintaining clarity and professionalism.
     Consider both the technical nature of the content and the personal delivery context.
-    Know that today's date is {today}
+    The report was generated on {report_date} for transit analysis on {transit_date}
 
     Requirements:
     - Write in a professional, engaging tone.

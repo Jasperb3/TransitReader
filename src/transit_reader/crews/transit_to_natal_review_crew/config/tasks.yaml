@@ -68,7 +68,7 @@ transits_to_natal_interpretation_enhancement_task:
     - Deliver the fully enhanced interpretation in clean, modular markdown (no code blocks, no meta-commentary).
     - Ensure logical headings, fluent thematic transitions, and seamless psychological integration throughout.
 
-    Today's date is {today}
+    The transit date being analyzed is {transit_date}
 
     Subject Information:
     - Name: {name}
