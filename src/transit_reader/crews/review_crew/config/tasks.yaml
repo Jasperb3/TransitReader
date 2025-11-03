@@ -12,6 +12,10 @@ report_review_task:
     - Check for mathematical errors in house cusps, planetary positions, or orb calculations
     - Verify that applying/separating status is stated for transit-to-natal aspects where relevant
     - Use QdrantSearchTool to spot-check interpretations against established astrological literature when uncertain about symbolic accuracy
+    - **Query Strategy**: Use SHORT, technical astrological terms ONLY (2-4 words maximum)
+    - **GOOD queries**: "Neptune square Mercury", "Grand Trine water", "Chiron return"
+    - **BAD queries**: "Neptune square Mercury interpretation validity", "Grand Trine in water signs meaning"
+    - **Rule**: Omit words like "interpretation", "meaning", "validity" - use core astrological terms only
 
     Review Focus:
     - **Technical Validation**:

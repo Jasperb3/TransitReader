@@ -25,7 +25,10 @@ natal_chart_reading_task:
 
     **Research Protocol**:
     - Use QdrantSearchTool when encountering unusual patterns or configurations
-    - Query examples: "Yod configuration meaning", "Mystic Rectangle interpretation", "[planet] in [dignity state]"
+    - **Query Strategy**: Use SHORT, technical astrological terms ONLY (2-4 words maximum)
+    - **GOOD queries**: "Yod configuration", "Mystic Rectangle", "Saturn peregrine", "Mars combust"
+    - **BAD queries**: "Yod configuration natal meaning", "Mystic Rectangle psychological interpretation"
+    - **Rule**: Omit words like "meaning", "interpretation", "natal", "psychological" - use core astrological terms only
 
     Structure the findings hierarchically:
     1. Planetary and Sensitive Point Positions Table
