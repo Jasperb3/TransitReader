@@ -74,7 +74,7 @@ transits_to_natal_interpretation_enhancement_task:
     - Name: {name}
     - Date of Birth: {date_of_birth}
     - Birth Location: {birthplace}
-    - Current Location: {current_location}
+    - Transit Location: {transit_location}
 
     Transit-to-Natal Interpretation for Enhancement:
     {transit_to_natal_analysis}

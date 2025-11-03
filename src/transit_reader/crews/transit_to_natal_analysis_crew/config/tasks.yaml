@@ -55,7 +55,7 @@ transits_to_natal_chart_reading_task:
     - Name: {name}
     - Date of Birth: {date_of_birth}
     - Birth Location: {birthplace}
-    - Current Location: {current_location}
+    - Transit Location: {transit_location}
 
     Transit to Natal Chart Data:
     {transit_to_natal_chart}
@@ -100,7 +100,7 @@ transits_to_natal_chart_interpretation_task:
     - Name: {name}
     - Date of Birth: {date_of_birth}
     - Birth Location: {birthplace}
-    - Current Location: {current_location}
+    - Transit Location: {transit_location}
 
   expected_output: >
     A richly layered, technically anchored, psychologically empowering interpretation of the subject's active transit-to-natal themes, structured in clean markdown for seamless downstream integration into the final report.
