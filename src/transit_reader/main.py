@@ -17,6 +17,7 @@ from transit_reader.crews.natal_analysis_crew.natal_analysis_crew import NatalAn
 from transit_reader.crews.natal_analysis_review_crew.natal_analysis_review_crew import NatalAnalysisReviewCrew
 from transit_reader.crews.transit_to_natal_analysis_crew.transit_to_natal_analysis_crew import TransitToNatalAnalysisCrew
 from transit_reader.crews.transit_to_natal_review_crew.transit_to_natal_review_crew import TransitToNatalReviewCrew
+from transit_reader.crews.chart_appendices_crew.chart_appendices_crew import ChartAppendicesCrew
 from transit_reader.crews.report_writing_crew.report_writing_crew import ReportWritingCrew
 from transit_reader.crews.review_crew.review_crew import ReviewCrew
 from transit_reader.crews.gmail_crew.gmail_crew import GmailCrew
@@ -187,8 +188,35 @@ class TransitFlow(Flow[TransitState]):
 
         self.state.transit_to_natal_analysis = enhanced_transit_to_natal_analysis.raw
 
-    # WAIT FOR ALL REVIEWS - Report generation needs all three enhanced analyses
+    # GENERATE APPENDICES - Create structured appendices from all three analyses
     @listen(and_(review_transit_analysis, review_natal_analysis, review_transit_to_natal_analysis))
+    def generate_chart_appendices(self):
+        print("Generating chart appendices")
+        inputs = {
+            "transit_analysis": self.state.transit_analysis,
+            "current_transits": self.state.current_transits,
+            "natal_analysis": self.state.natal_analysis,
+            "natal_chart": self.state.natal_chart,
+            "transit_to_natal_analysis": self.state.transit_to_natal_analysis,
+            "transit_to_natal_chart": self.state.transit_to_natal_chart,
+            "name": self.state.name,
+            "transit_date": self.state.transit_date_formatted,
+            "date_of_birth": self.state.dob,
+            "birthplace": self.state.birthplace,
+            "location": self.state.current_location,
+            "transit_location": self.state.current_location
+        }
+
+        appendices_result = (
+            ChartAppendicesCrew()
+            .crew()
+            .kickoff(inputs=inputs)
+        )
+
+        self.state.chart_appendices = appendices_result.raw
+
+    # WAIT FOR APPENDICES - Report generation needs all three enhanced analyses AND appendices
+    @listen(generate_chart_appendices)
     def generate_report_draft(self):
         print("Generating report draft")
         inputs = {
@@ -286,9 +314,18 @@ class TransitFlow(Flow[TransitState]):
         print("Saving transit analysis")
         markdown_file_path = OUTPUT_DIR / f"{self.state.name.replace(' ', '_')}_{TIMESTAMP}.md"
 
+        # Replace chart placeholder and append the appendices
         self.state.report_markdown = self.state.report_markdown.replace("[transit_chart]", f"![Transit Chart]({self.state.kerykeion_transit_chart})")
+
+        # Insert appendices at the end of the report (before writing to file)
+        if self.state.chart_appendices:
+            # Add page break and appendices section
+            full_markdown = self.state.report_markdown + "\n\n---\n\n" + self.state.chart_appendices
+        else:
+            full_markdown = self.state.report_markdown
+
         with open(markdown_file_path, "w") as f:
-            f.write(self.state.report_markdown)
+            f.write(full_markdown)
 
         print(f"Final report markdown saved to {markdown_file_path}")
 
