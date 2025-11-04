@@ -1,0 +1,241 @@
+transit_chart_appendix_task:
+  description: >
+    Create a dense, structured appendix synthesizing the complete Transit Chart analysis into a hierarchical reference format that preserves all essential technical data, symbolic themes, and interpretive insights while maximizing informational accessibility.
+
+    **Critical Requirements**:
+    - **Hierarchical Organization**: Use clear markdown headings (H3-H4) to structure sections logically
+    - **Informational Density**: Preserve all meaningful technical data and thematic insights without narrative redundancy
+    - **Technical Precision**: Maintain all numerical orb measurements, degree positions, and astronomical data
+    - **Thematic Clustering**: Group related interpretations into coherent symbolic/psychological themes
+    - **Reference Quality**: Format for easy navigation and lookup (tables, lists, consistent structure)
+
+    **Required Sections**:
+    1. **Technical Summary**
+       - Chart shape, diurnality, elemental/modal distribution
+       - Moon phase and key lunar aspects
+       - Stationing planets (if any)
+
+    2. **Planetary Positions**
+       - Organize by planet with degree, sign, house, dignity, motion status
+       - Table or structured list format for quick reference
+
+    3. **Aspect Patterns**
+       - Major aspects by type (conjunctions, oppositions, squares, trines, sextiles)
+       - Include exact orb measurements in "Orb: X.XX°" format
+       - Organized by orb strength (tightest first) or by aspect type
+
+    4. **Geometric Configurations**
+       - T-squares, Grand Trines, Stelliums, Yods, Grand Crosses (if present)
+       - List participating planets and describe structure
+
+    5. **Thematic Interpretation Clusters**
+       - Extract and organize major collective psychological themes from the analysis
+       - Group related symbolic narratives (e.g., "Contraction & Discipline", "Innovation & Disruption")
+       - Preserve archetypal insights and emotional climate descriptions
+       - Use bullet points or structured paragraphs for clarity
+
+    **Formatting Guidelines**:
+    - Use markdown tables for planetary positions and aspect lists where appropriate
+    - Use H3 (###) for main sections, H4 (####) for subsections
+    - Use bullet points for thematic clusters and interpretations
+    - Preserve all numerical precision from source analysis
+    - Avoid narrative prose - prioritize structured reference format
+    - Omit redundant phrasing - maximize information per word
+
+    The transit date being analyzed is {transit_date}.
+    The subject's name is {name}.
+    The transit location is {location}.
+
+    Source Transit Analysis:
+    {transit_analysis}
+
+    Raw Transit Chart Data:
+    {current_transits}
+
+  expected_output: >
+    A densely structured, hierarchically organized Transit Chart Appendix in clean markdown format (H3/H4 headings, tables, lists), preserving all essential technical data, aspect details with numerical orbs, geometric patterns, and thematic interpretive clusters, formatted for reference utility and informational accessibility without narrative redundancy.
+
+  agent: chart_data_synthesizer
+
+
+natal_chart_appendix_task:
+  description: >
+    Create a dense, structured appendix synthesizing the complete Natal Chart analysis into a hierarchical reference format that preserves all essential birth chart data, symbolic themes, and interpretive insights while maximizing informational accessibility.
+
+    **Critical Requirements**:
+    - **Hierarchical Organization**: Use clear markdown headings (H3-H4) to structure sections logically
+    - **Informational Density**: Preserve all meaningful technical data and thematic insights without narrative redundancy
+    - **Technical Precision**: Maintain all numerical orb measurements, degree positions, and astronomical data
+    - **Thematic Clustering**: Group related interpretations into coherent symbolic/psychological themes
+    - **Reference Quality**: Format for easy navigation and lookup (tables, lists, consistent structure)
+
+    **Required Sections**:
+    1. **Technical Summary**
+       - Chart shape, diurnality, elemental/modal distribution
+       - Dominant planets, signs, houses
+       - Chart ruler and sect
+
+    2. **Planetary Positions**
+       - Organize by planet with degree, sign, house, dignity, aspects
+       - Table or structured list format for quick reference
+       - Include angular/succedent/cadent house distribution
+
+    3. **Aspect Patterns**
+       - Major aspects by type (conjunctions, oppositions, squares, trines, sextiles)
+       - Include exact orb measurements in "Orb: X.XX°" format
+       - Organized by orb strength (tightest first) or by aspect type
+
+    4. **Geometric Configurations**
+       - T-squares, Grand Trines, Stelliums, Yods, Grand Crosses (if present)
+       - List participating planets and describe structure
+
+    5. **House Emphases**
+       - Planets by house with brief interpretive themes
+       - Hemispheric emphasis (above/below, left/right)
+
+    6. **Thematic Interpretation Clusters**
+       - Extract and organize major psychological/life themes from the analysis
+       - Group related symbolic narratives (e.g., "Core Identity Patterns", "Relational Dynamics", "Vocational Potential")
+       - Preserve archetypal insights and developmental patterns
+       - Use bullet points or structured paragraphs for clarity
+
+    **Formatting Guidelines**:
+    - Use markdown tables for planetary positions and aspect lists where appropriate
+    - Use H3 (###) for main sections, H4 (####) for subsections
+    - Use bullet points for thematic clusters and interpretations
+    - Preserve all numerical precision from source analysis
+    - Avoid narrative prose - prioritize structured reference format
+    - Omit redundant phrasing - maximize information per word
+
+    The subject's name is {name}.
+    Date of birth: {date_of_birth}
+    Birthplace: {birthplace}
+
+    Source Natal Analysis:
+    {natal_analysis}
+
+    Raw Natal Chart Data:
+    {natal_chart}
+
+  expected_output: >
+    A densely structured, hierarchically organized Natal Chart Appendix in clean markdown format (H3/H4 headings, tables, lists), preserving all essential birth chart data, aspect details with numerical orbs, geometric patterns, house distributions, and thematic interpretive clusters, formatted for reference utility and informational accessibility without narrative redundancy.
+
+  agent: chart_data_synthesizer
+
+
+transit_to_natal_appendix_task:
+  description: >
+    Create a dense, structured appendix synthesizing the complete Transit-to-Natal interaction analysis into a hierarchical reference format that preserves all essential aspect data, timing insights, and interpretive themes while maximizing informational accessibility.
+
+    **Critical Requirements**:
+    - **Hierarchical Organization**: Use clear markdown headings (H3-H4) to structure sections logically
+    - **Informational Density**: Preserve all meaningful technical data and thematic insights without narrative redundancy
+    - **Technical Precision**: Maintain all numerical orb measurements, exact transit-to-natal aspects, and timing data
+    - **Thematic Clustering**: Group related interpretations into coherent developmental/psychological themes
+    - **Reference Quality**: Format for easy navigation and lookup (tables, lists, consistent structure)
+    - **Timing Emphasis**: Highlight active vs. approaching aspects, retrograde cycles, peak timing windows
+
+    **Required Sections**:
+    1. **Technical Summary**
+       - Total number of active transit-to-natal aspects
+       - Breakdown by outer planet activity (Saturn, Uranus, Neptune, Pluto)
+       - Timing overview (immediate vs. building aspects)
+
+    2. **Transit Aspects by Planet**
+       - Organize by transiting planet (outer planets first)
+       - List all aspects with natal planets/points
+       - Include exact orb measurements in "Orb: X.XX°" format
+       - Note aspect type, applying/separating, retrograde status
+       - Table or structured list format for quick reference
+
+    3. **Transit Aspects by Natal Planet/Point**
+       - Alternative organization showing which natal points are being activated
+       - Useful for identifying "hot spots" in the natal chart
+       - Cross-reference with transiting planet data
+
+    4. **Major Configurations & Patterns**
+       - Transit-triggered T-squares, Grand Crosses, or other geometric patterns
+       - Multiple planet activations of single natal point
+       - Transiting stelliums aspecting natal points
+
+    5. **House Activations**
+       - Transiting planets by house (current position)
+       - Which natal houses are being aspected by transit
+       - Developmental areas under focus
+
+    6. **Thematic Interpretation Clusters**
+       - Extract and organize major developmental themes from the analysis
+       - Group related symbolic narratives by life area (e.g., "Career Transformation", "Relationship Evolution", "Spiritual Awakening")
+       - Preserve timing insights and psychological growth opportunities
+       - Organize by urgency/intensity (immediate focus vs. background influence)
+       - Use bullet points or structured paragraphs for clarity
+
+    **Formatting Guidelines**:
+    - Use markdown tables for aspect lists where appropriate
+    - Use H3 (###) for main sections, H4 (####) for subsections
+    - Use bullet points for thematic clusters and interpretations
+    - Preserve all numerical precision from source analysis
+    - Bold or highlight the tightest/most significant aspects
+    - Avoid narrative prose - prioritize structured reference format
+    - Omit redundant phrasing - maximize information per word
+
+    The transit date being analyzed is {transit_date}.
+    The subject's name is {name}.
+    Date of birth: {date_of_birth}
+    Birthplace: {birthplace}
+    Transit location: {transit_location}
+
+    Source Transit-to-Natal Analysis:
+    {transit_to_natal_analysis}
+
+    Raw Transit-to-Natal Chart Data:
+    {transit_to_natal_chart}
+
+  expected_output: >
+    A densely structured, hierarchically organized Transit-to-Natal Appendix in clean markdown format (H3/H4 headings, tables, lists), preserving all essential transit aspect data with numerical orbs, timing details, house activations, geometric patterns, and thematic developmental clusters, formatted for reference utility and informational accessibility without narrative redundancy.
+
+  agent: chart_data_synthesizer
+
+
+combined_appendices_task:
+  description: >
+    Compile the three individual chart appendices (Transit, Natal, Transit-to-Natal) from the preceding task outputs into a single, cohesively formatted "Appendices" section ready for insertion into the final report markdown.
+
+    **Context Available**: You have access to the outputs of the three preceding appendix generation tasks. These contain the structured appendices for Transit Chart, Natal Chart, and Transit-to-Natal interactions.
+
+    **Critical Requirements**:
+    - **Master Heading**: Begin with "# Appendices" (H1 level)
+    - **Subheadings**: Format each appendix as H2 (##):
+        - ## Appendix A: Transit Chart Details
+        - ## Appendix B: Natal Chart Details
+        - ## Appendix C: Transit-to-Natal Interaction Details
+    - **Consistent Formatting**: Ensure all three appendices follow the same structural patterns
+    - **Clean Markdown**: No code blocks, no meta-commentary, ready for direct markdown insertion
+    - **Navigation**: Maintain clear hierarchical structure for easy reference lookup
+    - **Completeness**: Include all three appendices in their entirety
+
+    **Compilation Instructions**:
+    - Take the outputs from the three preceding tasks (transit_chart_appendix_task, natal_chart_appendix_task, transit_to_natal_appendix_task)
+    - Add the master "# Appendices" heading
+    - Add H2 (##) subheadings for each appendix section (Appendix A, B, C)
+    - Preserve all internal structure (H3, H4, tables, lists) from each appendix
+    - Ensure consistent spacing and formatting between sections
+    - Verify markdown syntax is clean and valid
+    - NO additional narrative or introduction - just structured reference data
+
+    **Output Format Example**:
+    # Appendices
+
+    ## Appendix A: Transit Chart Details
+    [Full transit appendix content from first task]
+
+    ## Appendix B: Natal Chart Details
+    [Full natal appendix content from second task]
+
+    ## Appendix C: Transit-to-Natal Interaction Details
+    [Full transit-to-natal appendix content from third task]
+
+  expected_output: >
+    A complete, cohesively formatted "Appendices" section in clean markdown with master H1 heading and three H2 subsections (Transit, Natal, Transit-to-Natal), preserving all hierarchical structure and technical data, ready for direct insertion into the final report markdown.
+
+  agent: chart_data_synthesizer

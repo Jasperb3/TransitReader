@@ -65,6 +65,7 @@ class TransitState(BaseModel):
     natal_analysis: str = ""
     transit_to_natal_chart: str = ""
     transit_to_natal_analysis: str = ""
+    chart_appendices: str = ""  # Combined appendices from all three chart analyses
     kerykeion_transit_chart: str = ""
     report_markdown: str = ""
     report_pdf: str = ""
