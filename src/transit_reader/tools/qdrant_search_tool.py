@@ -25,7 +25,7 @@ class QdrantSearchToolSchema(BaseModel):
 
     query: str = Field(
         ...,
-        description="The word or phrase to search for in the astrology reference docs. Must be a single string to match on similarity.",
+        description="The word or phrase to search for in the astrology reference docs. Use SHORT, technical astrological terms ONLY to match on similarity.",
     )
     # filter_by: Optional[str] = Field(
     #     default=None,

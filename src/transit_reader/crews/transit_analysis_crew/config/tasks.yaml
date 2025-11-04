@@ -25,11 +25,11 @@ current_transits_task:
 
     **Research Protocol**:
     - Use QdrantSearchTool to verify astrological interpretations for unfamiliar configurations
-    - **Query Strategy**: Use SHORT, technical astrological terms ONLY (2-4 words maximum)
-    - **GOOD queries**: "Saturn square Pluto", "T-square", "stellium Pisces", "Uranus station direct"
-    - **BAD queries**: "Saturn square Pluto meaning", "T-square interpretation", "stellium in Pisces collective impact"
-    - **Rule**: Omit words like "meaning", "interpretation", "collective", "impact" - use core astrological terms only
-    - Integrate reference material insights to enrich technical accuracy
+      - **Query Strategy**: Use SHORT, technical astrological terms ONLY (2-4 words maximum)
+      - **GOOD queries**: "Saturn square Pluto", "T-square", "stellium Pisces", "Uranus station direct"
+      - **BAD queries**: "Saturn square Pluto meaning", "T-square interpretation", "stellium in Pisces collective impact"
+      - **Rule**: Omit words like "meaning", "interpretation", "collective", "impact" - use core astrological terms only
+      - Integrate reference material insights to enrich technical accuracy
 
     Structure the findings logically in the following hierarchy:
     1. Planetary Positions (alphabetical or by planetary speed)

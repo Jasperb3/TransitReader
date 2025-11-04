@@ -33,11 +33,11 @@ transits_to_natal_chart_reading_task:
 
     **Research Protocol**:
     - Use QdrantSearchTool for significant outer planet transits
-    - **Query Strategy**: Use SHORT, technical astrological terms ONLY (2-4 words maximum)
-    - **GOOD queries**: "Saturn square Sun", "Pluto conjunct Moon", "Uranus opposition Venus", "Saturn return"
-    - **BAD queries**: "Saturn square natal Sun meaning", "Pluto conjunct natal Moon psychological development", "transit Uranus opposition"
-    - **Rule**: Omit words like "natal", "meaning", "transit", "interpretation" - use core planet-aspect-planet terms only
-    - Integrate astrological literature insights for rare or intense transits
+      - **Query Strategy**: Use SHORT, technical astrological terms ONLY (2-4 words maximum)
+      - **GOOD queries**: "Saturn square Sun", "Pluto conjunct Moon", "Uranus opposition Venus", "Saturn return"
+      - **BAD queries**: "Saturn square natal Sun meaning", "Pluto conjunct natal Moon psychological development", "transit Uranus opposition"
+      - **Rule**: Omit words like "natal", "meaning", "transit", "interpretation" - use core planet-aspect-planet terms only
+      - Integrate astrological literature insights for rare or intense transits
 
     Output Structure:
     - Transit-to-Natal Aspects Table:
