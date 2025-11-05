@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 from transit_reader.utils.subject_selection import get_subject_data
 from transit_reader.utils.transit_selection import get_transit_parameters
+from transit_reader.utils.biographical_questionnaire import format_biographical_context_for_prompt
 from transit_reader.utils.constants import TODAY
 
 # Get subject data at module load
@@ -57,6 +58,10 @@ class TransitState(BaseModel):
     current_location_longitude: float = transit_location["longitude"]
     current_location_timezone: str = transit_location["timezone"]
     is_custom_transit: bool = transit_params["is_custom"]
+
+    # Biographical context
+    biographical_context_raw: dict = subject_data.get("biographical_context", {})
+    biographical_context: str = format_biographical_context_for_prompt(subject_data.get("biographical_context", {}))
 
     # Analysis outputs
     current_transits: str = ""
