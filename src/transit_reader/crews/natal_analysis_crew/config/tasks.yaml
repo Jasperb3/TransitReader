@@ -58,6 +58,19 @@ natal_chart_interpretation_task:
     Analyze the extracted natal chart structure to uncover the subject's core psychological themes, symbolic life potentials, and developmental arcs, following humanistic, archetypal, and psychological astrological principles.
     Ensure deeper archetypal exploration rooted in specific natal placements and configurations.
 
+    **Biographical Context Integration** (when provided):
+    The subject may have provided biographical context about their current life circumstances, developmental challenges, and historical patterns.
+    When biographical context is available:
+    - Identify which natal potentials appear to be currently active or developing based on reported life circumstances
+    - Highlight natal patterns that resonate with the subject's described challenges or themes
+    - Use life history to validate symbolic patterns (do reported experiences correspond to expected natal themes?)
+    - Note which natal potentials may be latent or unexpressed based on current life focus
+    - Maintain developmental framing - natal chart shows potentials, biographical context shows current actualization
+    - If no biographical context is provided, interpret natal potentials universally
+
+    Subject's Biographical Context:
+    {biographical_context}
+
     Interpretation Guidelines:
     - Extract 2–4 dominant psychological archetypes or growth themes rooted in strong planetary placements, aspect configurations, and house concentrations.
     - Analyze elemental and modality balance for core temperament and habitual style (e.g., emotionally fluid, intellectually dominant, practically stabilizing).
@@ -86,7 +99,10 @@ natal_chart_interpretation_task:
     - Date of Birth: {date_of_birth}
     - Location of Birth: {birthplace}
 
+    Subject's Biographical Context:
+    {biographical_context}
+
   expected_output: >
-    A richly layered, thematically organized psychological interpretation of the subject's natal chart, weaving verified technical structure into coherent developmental narratives, formatted clearly in markdown for downstream integration.
-    
+    A richly layered, thematically organized psychological interpretation of the subject's natal chart, weaving verified technical structure into coherent developmental narratives, formatted clearly in markdown for downstream integration. When biographical context is provided, identify which natal potentials are currently active or developing in the subject's lived experience.
+
   agent: natal_chart_interpreter

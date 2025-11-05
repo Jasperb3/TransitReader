@@ -67,7 +67,22 @@ transits_to_natal_chart_reading_task:
 
 transits_to_natal_chart_interpretation_task:
   description: >
-    Interpret the extracted transit-to-natal data to identify the subject’s key personal developmental themes, psychological challenges, growth opportunities, and timing arcs for the current transit cycle.
+    Interpret the extracted transit-to-natal data to identify the subject's key personal developmental themes, psychological challenges, growth opportunities, and timing arcs for the current transit cycle.
+
+    **Biographical Context Integration** (when provided):
+    The subject may have provided biographical context about current life circumstances, active challenges, decisions under pressure, and developmental transitions.
+    When biographical context is available:
+    - **Ground Symbolic Timing**: Test whether transit symbolism corresponds to reported life circumstances (does Saturn square Sun align with reported career pressure? Does Uranus transit resonate with described need for change?)
+    - **Identify Active Transits**: Determine which transits are most likely manifesting based on which life domains the subject reports as active
+    - **Validate Developmental Timing**: Cross-reference major transits (returns, outer planet aspects) with reported major life transitions or historical patterns
+    - **Prioritize Relevant Themes**: Emphasize transits that directly address the subject's stated areas of focus or concern
+    - **Contextualize Pressure Points**: If subject reports decisions or tensions, identify which transits may correlate with these choice points
+    - **Temporal Anchoring**: Use reported recent history (2-3 years) to understand whether current transits represent continuation, culmination, or initiation of developmental arcs
+    - **Preserve Symbolic Depth**: Biographical context reveals which symbolic potentials are actualizing, but maintain archetypal richness beyond literal circumstances
+    - If no biographical context is provided, interpret transit symbolism universally based on archetypal principles
+
+    Subject's Biographical Context:
+    {biographical_context}
 
     Interpretation Focus:
     - Synthesize major transit-to-natal activations into 2–4 overarching psychological or symbolic growth themes.
@@ -101,8 +116,12 @@ transits_to_natal_chart_interpretation_task:
     - Date of Birth: {date_of_birth}
     - Birth Location: {birthplace}
     - Transit Location: {transit_location}
+    - Transit Date: {transit_date}
+
+    Subject's Biographical Context:
+    {biographical_context}
 
   expected_output: >
-    A richly layered, technically anchored, psychologically empowering interpretation of the subject's active transit-to-natal themes, structured in clean markdown for seamless downstream integration into the final report.
-    
+    A richly layered, technically anchored, psychologically empowering interpretation of the subject's active transit-to-natal themes, structured in clean markdown for seamless downstream integration into the final report. When biographical context is provided, ground transit symbolism in reported life circumstances while preserving archetypal depth.
+
   agent: transits_to_natal_chart_interpreter

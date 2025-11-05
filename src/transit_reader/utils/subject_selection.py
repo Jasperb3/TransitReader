@@ -2,6 +2,11 @@ import json
 import os
 import googlemaps
 from transit_reader.utils.constants import SUBJECT_DIR
+from transit_reader.utils.biographical_questionnaire import (
+    ask_if_update_biographical_context,
+    get_biographical_context,
+    update_subject_biographical_context
+)
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -197,6 +202,16 @@ def get_subject_data(subject_name=None):
         try:
             with open(selected_subject_file, 'r') as f:
                 subject_data = json.load(f)
+
+            # Offer to update biographical context
+            if ask_if_update_biographical_context(subject_data['name']):
+                biographical_context = get_biographical_context(subject_data['name'])
+                if biographical_context:
+                    update_subject_biographical_context(selected_subject_file, biographical_context)
+                    # Reload subject data to include new biographical context
+                    with open(selected_subject_file, 'r') as f:
+                        subject_data = json.load(f)
+
             return subject_data
         except json.JSONDecodeError:
              # Format error message in red

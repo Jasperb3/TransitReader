@@ -2,6 +2,20 @@ data_interpretation_task:
   description: >
     Synthesize the extracted transit analysis, natal chart analysis, and transit-to-natal activation analysis into a cohesive, psychologically developmental astrological interpretation, integrating technical precision, symbolic richness, and practical life relevance.
 
+    **Biographical Context Integration** (when provided):
+    The subject may have provided biographical context describing current life circumstances, developmental challenges, active life domains, emotional themes, and significant decisions.
+    When biographical context is available:
+    - **Validate Symbolic Timing**: Test whether identified transit themes correspond to reported life circumstances - this is a critical validation of astrological timing
+    - **Prioritize Resonant Themes**: Emphasize developmental themes that directly address reported challenges, decisions, or areas of focus
+    - **Ground Practical Guidance**: Tailor "Real-World Signals" and "Reflective Questions" to the subject's actual life domains and stated concerns
+    - **Contextualize Intensity**: Use reported emotional themes to calibrate the tone and framing of interpretations (avoid overwhelming already stressed individuals)
+    - **Honor Lived Experience**: When biographical context reveals life circumstances, acknowledge that transits manifest through the lens of actual situations
+    - **Preserve Universality**: Biographical context shows which potentials are active, but maintain symbolic depth beyond literal circumstances
+    - If no biographical context is provided, interpret themes universally while maintaining practical applicability
+
+    Subject's Biographical Context:
+    {biographical_context}
+
     Planning and Synthesis Workflow:
     1. **Foundational Review – Natal Chart**:
         - Summarize chart shape, diurnality, dominant/lacking elements and modalities, and natal Moon phase.
@@ -57,18 +71,21 @@ data_interpretation_task:
 
     **Input Data:**
 
+    Subject's Biographical Context:
+    {biographical_context}
+
     Transit to Natal Analysis:
     {transit_to_natal_analysis}
-    
+
     Transits Analysis:
     {transit_analysis}
-    
+
     Natal Analysis:
     {natal_analysis}
-    
+
   expected_output: >
-    A psychologically insightful, technically rigorous (including specific orb measurements and nodal house details), thematically coherent astrological interpretation organized around developmental growth themes (including theme interactions), precise timing arcs, and empowering life strategies, formatted cleanly in modular markdown for seamless report generation.
-    
+    A psychologically insightful, technically rigorous (including specific orb measurements and nodal house details), thematically coherent astrological interpretation organized around developmental growth themes (including theme interactions), precise timing arcs, and empowering life strategies, formatted cleanly in modular markdown for seamless report generation. When biographical context is provided, ground all themes and guidance in the subject's reported life circumstances while preserving symbolic depth.
+
   agent: astrological_data_interpreter
 
 
