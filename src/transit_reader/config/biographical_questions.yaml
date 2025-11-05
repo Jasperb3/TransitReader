@@ -1,0 +1,63 @@
+# Biographical Context Questionnaire Configuration
+#
+# This file contains the questions used in the biographical context questionnaire.
+# Questions are organized into thematic sections that capture the key domains
+# respected astrologers use to ground symbolic patterns in lived experience.
+#
+# Each question has:
+#   - key: The field name stored in the subject's JSON
+#   - question: The main question text
+#   - hint: Optional guidance or examples for the user
+
+sections:
+  - section_name: "Life Stage & Development"
+    questions:
+      - key: life_stage
+        question: "1. What phase of life are you currently in?"
+        hint: "(e.g., student, early career, established career, major transition, retirement, etc.)"
+
+      - key: developmental_focus
+        question: "2. What are you actively building, developing, or releasing in your life right now?"
+        hint: "(e.g., new career path, ending relationship, establishing home, spiritual practice, etc.)"
+
+  - section_name: "Active Life Domains"
+    questions:
+      - key: active_domains
+        question: "3. Which life domains feel most active or demanding of your attention?"
+        hint: "(e.g., career, intimate relationships, family, health, finances, spirituality, creativity, etc.)"
+
+      - key: primary_challenges
+        question: "4. What are the primary challenges or obstacles you're navigating?"
+        hint: "(Be as specific or general as feels comfortable)"
+
+  - section_name: "Emotional & Psychological Tone"
+    questions:
+      - key: emotional_themes
+        question: "5. What emotional themes or psychological patterns have been recurring lately?"
+        hint: "(e.g., restlessness, grief, enthusiasm, anxiety, empowerment, confusion, etc.)"
+
+      - key: inner_tension
+        question: "6. What internal tensions, conflicts, or paradoxes are you working with?"
+        hint: "(e.g., security vs. freedom, ambition vs. rest, independence vs. intimacy, etc.)"
+
+  - section_name: "Decisions & Crossroads"
+    questions:
+      - key: significant_decisions
+        question: "7. Are you facing any significant decisions or life crossroads at this time?"
+        hint: "(If yes, describe the nature of the decision without needing to reveal specifics)"
+
+  - section_name: "Long-term Context & Transitions"
+    questions:
+      - key: major_transitions
+        question: "8. What major life transitions are currently underway or approaching?"
+        hint: "(e.g., career change, relocation, relationship shift, identity evolution, etc.)"
+
+      - key: recent_history
+        question: "9. Looking back 2-3 years, what significant changes have shaped your current situation?"
+        hint: "(This helps contextualize current transits within your recent developmental arc)"
+
+  - section_name: "Focus & Intentions"
+    questions:
+      - key: specific_focus
+        question: "10. Is there anything specific you'd like this transit analysis to address or explore?"
+        hint: "(Optional: areas of particular interest or concern)"

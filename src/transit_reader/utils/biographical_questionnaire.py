@@ -8,16 +8,46 @@ grounding symbolic patterns in developmental tasks, active life arenas, emotiona
 choices under pressure, and long-term narrative arcs.
 
 All questions are optional. Subjects can skip any question or the entire questionnaire.
+
+Questions are defined in: src/transit_reader/config/biographical_questions.yaml
 """
 
 import json
+import yaml
 from pathlib import Path
 
 # ANSI color codes
 CYAN = "\033[96m"
 YELLOW = "\033[93m"
 GREEN = "\033[92m"
+RED = "\033[91m"
 RESET = "\033[0m"
+
+# Path to questions configuration
+QUESTIONS_CONFIG_PATH = Path(__file__).parent.parent / "config" / "biographical_questions.yaml"
+
+
+def _load_questions_config() -> dict:
+    """
+    Load questions configuration from YAML file.
+
+    Returns:
+        Dictionary containing questions configuration
+
+    Raises:
+        FileNotFoundError: If questions config file doesn't exist
+        yaml.YAMLError: If YAML is malformed
+    """
+    try:
+        with open(QUESTIONS_CONFIG_PATH, 'r') as f:
+            return yaml.safe_load(f)
+    except FileNotFoundError:
+        raise FileNotFoundError(
+            f"Questions configuration file not found at {QUESTIONS_CONFIG_PATH}. "
+            "Please ensure biographical_questions.yaml exists in src/transit_reader/config/"
+        )
+    except yaml.YAMLError as e:
+        raise yaml.YAMLError(f"Error parsing questions configuration: {e}")
 
 
 def get_biographical_context(subject_name: str, skip_questionnaire: bool = False) -> dict:
@@ -35,6 +65,13 @@ def get_biographical_context(subject_name: str, skip_questionnaire: bool = False
         print(f"{YELLOW}Skipping biographical questionnaire.{RESET}")
         return {}
 
+    # Load questions from configuration
+    try:
+        config = _load_questions_config()
+    except (FileNotFoundError, yaml.YAMLError) as e:
+        print(f"{RED}Error loading questionnaire: {e}{RESET}")
+        return {}
+
     print(f"\n{CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{RESET}")
     print(f"{CYAN}         Biographical Context Questionnaire{RESET}")
     print(f"{CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{RESET}\n")
@@ -44,80 +81,31 @@ def get_biographical_context(subject_name: str, skip_questionnaire: bool = False
     print(f"\n{YELLOW}All questions are optional. Press Enter to skip any question.{RESET}\n")
 
     biographical_context = {}
+    total_questions = 0
 
-    # Section 1: Life Stage & Developmental Tasks
-    print(f"{GREEN}━━━ Life Stage & Development ━━━{RESET}\n")
+    # Iterate through sections and questions
+    for section in config.get('sections', []):
+        section_name = section.get('section_name', 'Unnamed Section')
+        print(f"{GREEN}━━━ {section_name} ━━━{RESET}\n")
 
-    biographical_context['life_stage'] = _ask_question(
-        "1. What phase of life are you currently in?",
-        "   (e.g., student, early career, established career, major transition, retirement, etc.)"
-    )
+        for question_config in section.get('questions', []):
+            total_questions += 1
+            key = question_config.get('key')
+            question = question_config.get('question')
+            hint = question_config.get('hint')
 
-    biographical_context['developmental_focus'] = _ask_question(
-        "2. What are you actively building, developing, or releasing in your life right now?",
-        "   (e.g., new career path, ending relationship, establishing home, spiritual practice, etc.)"
-    )
+            if key and question:
+                biographical_context[key] = _ask_question(question, hint)
 
-    # Section 2: Active Life Arenas
-    print(f"\n{GREEN}━━━ Active Life Domains ━━━{RESET}\n")
-
-    biographical_context['active_domains'] = _ask_question(
-        "3. Which life domains feel most active or demanding of your attention?",
-        "   (e.g., career, intimate relationships, family, health, finances, spirituality, creativity, etc.)"
-    )
-
-    biographical_context['primary_challenges'] = _ask_question(
-        "4. What are the primary challenges or obstacles you're navigating?",
-        "   (Be as specific or general as feels comfortable)"
-    )
-
-    # Section 3: Emotional & Psychological Climate
-    print(f"\n{GREEN}━━━ Emotional & Psychological Tone ━━━{RESET}\n")
-
-    biographical_context['emotional_themes'] = _ask_question(
-        "5. What emotional themes or psychological patterns have been recurring lately?",
-        "   (e.g., restlessness, grief, enthusiasm, anxiety, empowerment, confusion, etc.)"
-    )
-
-    biographical_context['inner_tension'] = _ask_question(
-        "6. What internal tensions, conflicts, or paradoxes are you working with?",
-        "   (e.g., security vs. freedom, ambition vs. rest, independence vs. intimacy, etc.)"
-    )
-
-    # Section 4: Choices Under Pressure
-    print(f"\n{GREEN}━━━ Decisions & Crossroads ━━━{RESET}\n")
-
-    biographical_context['significant_decisions'] = _ask_question(
-        "7. Are you facing any significant decisions or life crossroads at this time?",
-        "   (If yes, describe the nature of the decision without needing to reveal specifics)"
-    )
-
-    # Section 5: Long-term Narrative Arcs
-    print(f"\n{GREEN}━━━ Long-term Context & Transitions ━━━{RESET}\n")
-
-    biographical_context['major_transitions'] = _ask_question(
-        "8. What major life transitions are currently underway or approaching?",
-        "   (e.g., career change, relocation, relationship shift, identity evolution, etc.)"
-    )
-
-    biographical_context['recent_history'] = _ask_question(
-        "9. Looking back 2-3 years, what significant changes have shaped your current situation?",
-        "   (This helps contextualize current transits within your recent developmental arc)"
-    )
-
-    # Section 6: Specific Intentions
-    print(f"\n{GREEN}━━━ Focus & Intentions ━━━{RESET}\n")
-
-    biographical_context['specific_focus'] = _ask_question(
-        "10. Is there anything specific you'd like this transit analysis to address or explore?",
-        "    (Optional: areas of particular interest or concern)"
-    )
+        # Add spacing between sections (except after last section)
+        if section != config['sections'][-1]:
+            print()
 
     # Filter out empty responses
     biographical_context = {k: v for k, v in biographical_context.items() if v}
 
     print(f"\n{GREEN}✓ Biographical context collected.{RESET}")
-    print(f"  Responses provided: {len(biographical_context)}/10 questions")
+    print(f"  Responses provided: {len(biographical_context)}/{total_questions} questions")
 
     return biographical_context
 
@@ -135,7 +123,7 @@ def _ask_question(question: str, hint: str = None) -> str:
     """
     print(f"{CYAN}{question}{RESET}")
     if hint:
-        print(f"{hint}")
+        print(f"   {hint}")
 
     response = input("   → ").strip()
 
@@ -172,7 +160,7 @@ def update_subject_biographical_context(subject_file_path: Path, biographical_co
         return True
 
     except Exception as e:
-        print(f"\033[91mError saving biographical context: {e}{RESET}")
+        print(f"{RED}Error saving biographical context: {e}{RESET}")
         return False
 
 
@@ -198,7 +186,7 @@ def ask_if_update_biographical_context(subject_name: str) -> bool:
         elif choice == "2":
             return False
         else:
-            print(f"\033[91mInvalid choice. Please enter 1 or 2.{RESET}")
+            print(f"{RED}Invalid choice. Please enter 1 or 2.{RESET}")
 
 
 def format_biographical_context_for_prompt(biographical_context: dict) -> str:
