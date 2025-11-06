@@ -1,39 +1,16 @@
 import os
-from crewai import Agent, Crew, Process, Task, LLM
+from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from transit_reader.tools.google_search_tool import GoogleSearchTool
 from transit_reader.tools.gemini_search_tool import GeminiSearchTool
 from transit_reader.tools.qdrant_search_tool import QdrantSearchTool
 from transit_reader.utils.constants import TIMESTAMP
+from transit_reader.utils.llm_manager import get_llm_for_agent
 from dotenv import load_dotenv
 
 load_dotenv()
 
 google_search_tool = GoogleSearchTool(api_key=os.getenv("GOOGLE_SEARCH_API_KEY"), cx=os.getenv("SEARCH_ENGINE_ID"))
-
-
-# Technical extraction - requires determinism and precision
-gpt41_deterministic = LLM(
-	model="gpt-4.1",
-	api_key = os.getenv("OPENAI_API_KEY"),
-	temperature=0.1  # Low temperature for factual, precise technical extraction
-)
-
-# Interpretation - benefits from moderate creativity
-gpt41_creative = LLM(
-	model="gpt-4.1",
-	api_key = os.getenv("OPENAI_API_KEY"),
-	temperature=0.9  # Moderate temperature for psychological interpretation
-)
-
-# Legacy reference (kept for backward compatibility if needed elsewhere)
-gpt41 = gpt41_creative
-
-gpt41mini = LLM(
-	model="gpt-4.1-mini",
-	api_key = os.getenv("OPENAI_API_KEY"),
-	temperature=0.7
-)
 
 
 @CrewBase
@@ -47,7 +24,7 @@ class TransitAnalysisCrew():
 	def current_transits_reader(self) -> Agent:
 		return Agent(
 			config=self.agents_config['current_transits_reader'],
-			llm=gpt41_deterministic,  # Technical extraction needs low temperature
+			llm=get_llm_for_agent('current_transits_reader'),
 			tools=[google_search_tool, GeminiSearchTool(), QdrantSearchTool()],
 			verbose=True
 		)
@@ -56,18 +33,18 @@ class TransitAnalysisCrew():
 	def current_transits_interpreter(self) -> Agent:
 		return Agent(
 			config=self.agents_config['current_transits_interpreter'],
-			llm=gpt41_creative,  # Interpretation benefits from moderate temperature
+			llm=get_llm_for_agent('current_transits_interpreter'),
 			verbose=True
 		)
-	
-	
+
+
 	@task
 	def current_transits_task(self) -> Task:
 		return Task(
 			config=self.tasks_config['current_transits_task'],
 			output_file=f"crew_outputs/{TIMESTAMP}/current_transits_task.md"
 		)
-	
+
 	@task
 	def current_transits_interpretation_task(self) -> Task:
 		return Task(

@@ -1,5 +1,5 @@
 import os
-from crewai import Agent, Crew, Process, Task, LLM
+from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from transit_reader.tools.gmail_tool_with_attachment import GmailAttachmentTool
 from transit_reader.utils.models import Email
@@ -7,18 +7,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
-gpt41 = LLM(
-	model="gpt-4.1",
-	api_key = os.getenv("OPENAI_API_KEY"),
-	temperature=0.7
-)
-
-gpt41mini = LLM(
-	model="gpt-4.1-mini",
-	api_key = os.getenv("OPENAI_API_KEY"),
-	temperature=0.7
-)
 
 @CrewBase
 class GmailCrew():
@@ -31,7 +19,7 @@ class GmailCrew():
 	def email_writing_agent(self) -> Agent:
 		return Agent(
 			config=self.agents_config['email_writing_agent'],
-			llm=gpt41,
+			llm=get_llm_for_agent('email_drafter'),
 			verbose=True
 )
 
@@ -40,7 +28,7 @@ class GmailCrew():
 		return Agent(
 			config=self.agents_config['gmail_draft_agent'],
 			tools=[GmailAttachmentTool()],
-			llm=gpt41,
+			llm=get_llm_for_agent('email_drafter'),
 			verbose=True
 )
 

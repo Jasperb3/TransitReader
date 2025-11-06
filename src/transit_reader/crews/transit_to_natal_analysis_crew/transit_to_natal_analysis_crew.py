@@ -1,39 +1,14 @@
 import os
-from crewai import Agent, Crew, Process, Task, LLM
+from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from transit_reader.tools.google_search_tool import GoogleSearchTool
 from transit_reader.tools.gemini_search_tool import GeminiSearchTool
 from transit_reader.tools.qdrant_search_tool import QdrantSearchTool
 from transit_reader.utils.constants import TIMESTAMP
+from transit_reader.utils.llm_manager import get_llm_for_agent
 from dotenv import load_dotenv
 
 load_dotenv()
-
-google_search_tool = GoogleSearchTool(api_key=os.getenv("GOOGLE_SEARCH_API_KEY"), cx=os.getenv("SEARCH_ENGINE_ID"))
-
-
-# Technical extraction - requires determinism and precision
-gpt41_deterministic = LLM(
-	model="gpt-4.1",
-	api_key = os.getenv("OPENAI_API_KEY"),
-	temperature=0.1  # Low temperature for factual, precise technical extraction
-)
-
-# Interpretation - benefits from moderate creativity
-gpt41_creative = LLM(
-	model="gpt-4.1",
-	api_key = os.getenv("OPENAI_API_KEY"),
-	temperature=0.9  # Moderate temperature for psychological interpretation
-)
-
-# Legacy reference (kept for backward compatibility if needed elsewhere)
-gpt41 = gpt41_creative
-
-gpt41mini = LLM(
-	model="gpt-4.1-mini",
-	api_key = os.getenv("OPENAI_API_KEY"),
-	temperature=0.7
-)
 
 
 @CrewBase
@@ -47,7 +22,7 @@ class TransitToNatalAnalysisCrew():
 	def transits_to_natal_chart_reader(self) -> Agent:
 		return Agent(
 			config=self.agents_config['transits_to_natal_chart_reader'],
-			llm=gpt41_deterministic,  # Technical extraction needs low temperature
+			llm=get_llm_for_agent('transits_to_natal_chart_reader'),  # Technical extraction needs low temperature
 			tools=[google_search_tool, GeminiSearchTool(), QdrantSearchTool()],
 			verbose=True
 		)
@@ -56,7 +31,7 @@ class TransitToNatalAnalysisCrew():
 	def transits_to_natal_chart_interpreter(self) -> Agent:
 		return Agent(
 			config=self.agents_config['transits_to_natal_chart_interpreter'],
-			llm=gpt41_creative,  # Interpretation benefits from moderate temperature
+			llm=get_llm_for_agent('transits_to_natal_chart_reader'),  # Interpretation benefits from moderate temperature
 			verbose=True
 		)
 	
