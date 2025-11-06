@@ -1,19 +1,12 @@
 import os
-from crewai import Agent, Crew, Process, Task, LLM
+from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from transit_reader.tools.qdrant_search_tool import QdrantSearchTool
 from transit_reader.utils.constants import TIMESTAMP
+from transit_reader.utils.llm_manager import get_llm_for_agent
 from dotenv import load_dotenv
 
 load_dotenv()
-
-# Summarization and synthesis - requires moderate creativity with precision
-# Lower temperature for factual data synthesis, but enough creativity for thematic organization
-gpt41_synthesis = LLM(
-	model="gpt-4.1",
-	api_key=os.getenv("OPENAI_API_KEY"),
-	temperature=0.4  # Moderate-low temperature balances structure with thematic insight
-)
 
 
 @CrewBase
@@ -27,7 +20,7 @@ class ChartAppendicesCrew():
 	def chart_data_synthesizer(self) -> Agent:
 		return Agent(
 			config=self.agents_config['chart_data_synthesizer'],
-			llm=gpt41_synthesis,
+			llm=get_llm_for_agent('chart_data_synthesizer'),
 			tools=[QdrantSearchTool()],
 			verbose=True
 		)

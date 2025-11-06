@@ -1,26 +1,14 @@
 import os
-from crewai import Agent, Crew, Process, Task, LLM
+from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from transit_reader.tools.google_search_tool import GoogleSearchTool
 from transit_reader.tools.gemini_search_tool import GeminiSearchTool
 from transit_reader.tools.qdrant_search_tool import QdrantSearchTool
 from transit_reader.utils.constants import TIMESTAMP
+from transit_reader.utils.llm_manager import get_llm_for_agent
 from dotenv import load_dotenv
 
 load_dotenv()
-
-google_search_tool = GoogleSearchTool(
-    api_key=os.getenv("GOOGLE_SEARCH_API_KEY"), cx=os.getenv("SEARCH_ENGINE_ID")
-)
-
-
-gpt41 = LLM(
-    model="gpt-4.1", api_key=os.getenv("OPENAI_API_KEY"), temperature=0.7
-)
-
-gpt41mini = LLM(
-    model="gpt-4.1-mini", api_key=os.getenv("OPENAI_API_KEY"), temperature=0.7
-)
 
 
 @CrewBase
@@ -34,7 +22,7 @@ class ReportWritingCrew:
     def astrological_data_interpreter(self) -> Agent:
         return Agent(
             config=self.agents_config["astrological_data_interpreter"],
-            llm=gpt41,
+            llm=get_llm_for_agent('astrological_data_interpreter'),
             verbose=True,
         )
 
@@ -42,7 +30,7 @@ class ReportWritingCrew:
     def astrological_report_writer(self) -> Agent:
         return Agent(
             config=self.agents_config["astrological_report_writer"],
-            llm=gpt41,
+            llm=get_llm_for_agent('astrological_data_interpreter'),
             verbose=True,
         )
 

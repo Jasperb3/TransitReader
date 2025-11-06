@@ -1,45 +1,15 @@
 import os
-from crewai import Agent, Crew, Process, Task, LLM
+from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from transit_reader.tools.google_search_tool import GoogleSearchTool
 from transit_reader.tools.gemini_search_tool import GeminiSearchTool
 from transit_reader.tools.qdrant_search_tool import QdrantSearchTool
 from transit_reader.tools.linkup_search_tool import LinkUpSearchTool
 from transit_reader.utils.constants import TIMESTAMP
+from transit_reader.utils.llm_manager import get_llm_for_agent
 from dotenv import load_dotenv
 
 load_dotenv()
-
-google_search_tool = GoogleSearchTool(api_key=os.getenv("GOOGLE_SEARCH_API_KEY"), cx=os.getenv("SEARCH_ENGINE_ID"))
-
-# Review/critique - requires analytical precision
-gpt41_review = LLM(
-	model="gpt-4.1",
-	api_key = os.getenv("OPENAI_API_KEY"),
-	temperature=0.2  # Low-moderate temperature for critical analysis
-)
-
-# Enhancement - benefits from moderate creativity
-gpt41_creative = LLM(
-	model="gpt-4.1",
-	api_key = os.getenv("OPENAI_API_KEY"),
-	temperature=0.7  # Moderate temperature for creative enhancement
-)
-
-# Legacy reference (kept for backward compatibility)
-gpt41 = gpt41_creative
-
-gpt41mini = LLM(
-	model="gpt-4.1-mini",
-	api_key = os.getenv("OPENAI_API_KEY"),
-	temperature=0.7
-)
-
-gemini_flash_review = LLM(
-	model="gemini/gemini-2.5-flash",
-	api_key = os.getenv("GEMINI_API_KEY"),
-	temperature=0.2  # Low-moderate temperature for review tasks
-)
 
 
 @CrewBase
@@ -63,7 +33,7 @@ class ReviewCrew():
 	def report_enhancer(self) -> Agent:
 		return Agent(
 			config=self.agents_config['report_enhancer'],
-			llm=gpt41_creative,  # Enhancement benefits from moderate temperature
+			llm=get_llm_for_agent('report_critic'),  # Enhancement benefits from moderate temperature
 			tools=[google_search_tool, GeminiSearchTool(), QdrantSearchTool(), LinkUpSearchTool()],
 			verbose=True
 		)

@@ -1,0 +1,205 @@
+# LLM Configuration
+#
+# Central configuration for all Language Model providers and agent assignments.
+# Edit this file to change which LLM each agent uses without modifying code.
+#
+# Supported providers: gpt, gemini, deepseek, ollama, mistral, claude
+
+# ============================================================================
+# LLM PROVIDER DEFINITIONS
+# ============================================================================
+# Define available LLM providers with their configuration
+# api_key_env: Environment variable name containing the API key
+# base_url: Optional base URL for the provider (used by Ollama, custom endpoints)
+
+providers:
+  gpt:
+    model: "gpt-4.1"
+    api_key_env: "OPENAI_API_KEY"
+    description: "OpenAI GPT-4.1 - Most capable, highest cost"
+
+  gpt_mini:
+    model: "gpt-4.1-mini"
+    api_key_env: "OPENAI_API_KEY"
+    description: "OpenAI GPT-4.1 Mini - Faster, lower cost"
+
+  gemini:
+    model: "gemini-1.5-pro"
+    api_key_env: "GEMINI_API_KEY"
+    description: "Google Gemini 1.5 Pro - Strong reasoning"
+
+  gemini_flash:
+    model: "gemini-1.5-flash"
+    api_key_env: "GEMINI_API_KEY"
+    description: "Google Gemini Flash - Fast, cost-effective"
+
+  deepseek:
+    model: "deepseek-chat"
+    api_key_env: "DEEPSEEK_API_KEY"
+    description: "DeepSeek Chat - Cost-effective alternative"
+
+  ollama:
+    model: "llama3.1:70b"
+    base_url: "http://localhost:11434"
+    description: "Ollama local models - Free, private"
+
+  mistral:
+    model: "mistral-large-latest"
+    api_key_env: "MISTRAL_API_KEY"
+    description: "Mistral Large - European alternative"
+
+  claude:
+    model: "claude-3-5-sonnet-20241022"
+    api_key_env: "ANTHROPIC_API_KEY"
+    description: "Anthropic Claude 3.5 Sonnet - Strong reasoning"
+
+
+# ============================================================================
+# TEMPERATURE PRESETS
+# ============================================================================
+# Temperature values for different agent task types
+# Lower = more deterministic, higher = more creative
+
+temperatures:
+  deterministic: 0.1   # Technical extraction, data reading
+  creative: 0.9        # Interpretation, synthesis, narrative
+  review: 0.2          # Critical review, enhancement
+  synthesis: 0.4       # Data synthesis, structuring
+
+
+# ============================================================================
+# AGENT LLM ASSIGNMENTS
+# ============================================================================
+# Assign each agent to a provider and temperature preset
+# Format: provider must match a key in providers section above
+#         temperature must match a key in temperatures section above
+
+agents:
+  # Transit Analysis Crew
+  current_transits_reader:
+    provider: gpt
+    temperature: deterministic
+    notes: "Technical extraction requires precision"
+
+  current_transits_interpreter:
+    provider: gpt
+    temperature: creative
+    notes: "Interpretation benefits from creativity"
+
+  # Natal Analysis Crew
+  natal_chart_reader:
+    provider: gpt
+    temperature: deterministic
+    notes: "Technical extraction requires precision"
+
+  natal_chart_interpreter:
+    provider: gpt
+    temperature: creative
+    notes: "Psychological interpretation needs creativity"
+
+  # Transit-to-Natal Analysis Crew
+  transits_to_natal_chart_reader:
+    provider: gpt
+    temperature: deterministic
+    notes: "Technical extraction requires precision"
+
+  transits_to_natal_chart_interpreter:
+    provider: gpt
+    temperature: creative
+    notes: "Personal interpretation needs creativity"
+
+  # Transit Analysis Review Crew
+  transits_interpretation_critic:
+    provider: gpt
+    temperature: review
+    notes: "Critical review requires moderate determinism"
+
+  transits_interpretation_enhancer:
+    provider: gpt
+    temperature: review
+    notes: "Enhancement maintains quality while refining"
+
+  # Natal Analysis Review Crew
+  natal_interpretation_critic:
+    provider: gpt
+    temperature: review
+    notes: "Critical review requires moderate determinism"
+
+  natal_interpretation_enhancer:
+    provider: gpt
+    temperature: review
+    notes: "Enhancement maintains quality while refining"
+
+  # Transit-to-Natal Review Crew
+  transits_to_natal_interpretation_critic:
+    provider: gpt
+    temperature: review
+    notes: "Critical review requires moderate determinism"
+
+  transits_to_natal_interpretation_enhancer:
+    provider: gpt
+    temperature: review
+    notes: "Enhancement maintains quality while refining"
+
+  # Chart Appendices Crew
+  chart_data_synthesizer:
+    provider: gpt
+    temperature: synthesis
+    notes: "Structured synthesis balances precision and organization"
+
+  # Report Writing Crew
+  astrological_data_interpreter:
+    provider: gpt
+    temperature: creative
+    notes: "Report synthesis needs creative integration"
+
+  report_writer:
+    provider: gpt
+    temperature: creative
+    notes: "Final report writing benefits from narrative creativity"
+
+  # Review Crew (Final Report Review)
+  report_critic:
+    provider: gpt
+    temperature: review
+    notes: "Final review requires critical assessment"
+
+  report_enhancer:
+    provider: gpt
+    temperature: review
+    notes: "Final enhancement polishes the report"
+
+  # Gmail Crew
+  email_drafter:
+    provider: gpt
+    temperature: creative
+    notes: "Email composition benefits from natural language"
+
+
+# ============================================================================
+# USAGE NOTES
+# ============================================================================
+#
+# To change an agent's LLM:
+# 1. Find the agent name in the agents section above
+# 2. Change the "provider" value to one of the providers defined above
+# 3. Optionally adjust the "temperature" preset
+# 4. Save this file - no code changes needed!
+#
+# To add a new LLM provider:
+# 1. Add it to the providers section with model name and API key env var
+# 2. Ensure the API key exists in your .env file
+# 3. It will be available for assignment to any agent
+#
+# Cost optimization strategies:
+# - Use gpt_mini or gemini_flash for technical extraction tasks
+# - Use gpt or claude for complex interpretation tasks
+# - Use ollama for local/free development
+# - Mix providers based on task complexity and budget
+#
+# Temperature guidance:
+# - deterministic (0.1): Chart reading, data extraction, technical tasks
+# - review (0.2): Critical review, quality assessment
+# - synthesis (0.4): Data structuring, organization
+# - creative (0.9): Interpretation, narrative, synthesis
+#
