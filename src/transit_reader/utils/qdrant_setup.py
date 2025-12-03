@@ -60,6 +60,20 @@ class Setup:
 
         md_files = list(DOCS_DIR.glob("*.md"))
 
+        # Ensure payload index exists for "source" field before checking files
+        if self.qdrant_client and self.qdrant_client.collection_exists(self.collection_name):
+            try:
+                self.qdrant_client.create_payload_index(
+                    collection_name=self.collection_name,
+                    field_name="source",
+                    field_schema="keyword"
+                )
+                print("✓ Ensured payload index exists for 'source' field")
+            except Exception as e:
+                # Index may already exist, which is fine
+                if "already exists" not in str(e).lower():
+                    print(f"⚠️  Note: Could not create/verify payload index: {e}")
+
         # Check which files are actually new by checking if they exist in Qdrant
         new_files = []
         for md_file in md_files:
