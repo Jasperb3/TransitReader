@@ -14,9 +14,15 @@
 
 providers:
   gpt:
+    model: "gpt-5.1"
+    api_key_env: "OPENAI_API_KEY"
+    description: "OpenAI GPT-5.1 - Most capable, highest cost"
+
+  gpt4:
     model: "gpt-4.1"
     api_key_env: "OPENAI_API_KEY"
-    description: "OpenAI GPT-4.1 - Most capable, highest cost"
+    description: "OpenAI GPT-4.1 - Legacy model, high cost"
+
 
   gpt_mini:
     model: "gpt-4.1-mini"
@@ -33,8 +39,8 @@ providers:
     api_key_env: "GEMINI_API_KEY"
     description: "Google Gemini Flash - Fast, cost-effective"
 
-  ollama-gpt-oss:
-    model: "ollama/gpt-oss:latest"
+  ollama:
+    model: "ollama/glm-4.6:cloud"
     base_url: "http://localhost:11434"
     description: "Ollama local models - Free, private"
 
@@ -77,107 +83,107 @@ temperatures:
 agents:
   # Transit Analysis Crew
   current_transits_reader:
-    provider: gpt_mini
+    provider: mistral
     temperature: deterministic
     notes: "Technical extraction requires precision"
 
   current_transits_interpreter:
-    provider: gpt
+    provider: mistral
     temperature: creative
     notes: "Interpretation benefits from creativity"
 
   # Natal Analysis Crew
   natal_chart_reader:
-    provider: gpt_mini
+    provider: mistral
     temperature: deterministic
     notes: "Technical extraction requires precision"
 
   natal_chart_interpreter:
-    provider: gpt
+    provider: mistral
     temperature: creative
     notes: "Psychological interpretation needs creativity"
 
   # Transit-to-Natal Analysis Crew
   transits_to_natal_chart_reader:
-    provider: gpt_mini
+    provider: mistral
     temperature: deterministic
     notes: "Technical extraction requires precision"
 
   transits_to_natal_chart_interpreter:
-    provider: gpt
+    provider: mistral
     temperature: creative
     notes: "Personal interpretation needs creativity"
 
   # Transit Analysis Review Crew
   transits_interpretation_critic:
-    provider: gpt
+    provider: mistral
     temperature: review
     notes: "Critical review requires moderate determinism"
 
   transits_interpretation_enhancer:
-    provider: gpt
+    provider: mistral
     temperature: review
     notes: "Enhancement maintains quality while refining"
 
   # Natal Analysis Review Crew
   natal_interpretation_critic:
-    provider: gpt
+    provider: mistral
     temperature: review
     notes: "Critical review requires moderate determinism"
 
   natal_interpretation_enhancer:
-    provider: gpt
+    provider: mistral
     temperature: review
     notes: "Enhancement maintains quality while refining"
 
   # Transit-to-Natal Review Crew
   transits_to_natal_interpretation_critic:
-    provider: gpt
+    provider: mistral
     temperature: review
     notes: "Critical review requires moderate determinism"
 
   transits_to_natal_interpretation_enhancer:
-    provider: gpt
+    provider: mistral
     temperature: review
     notes: "Enhancement maintains quality while refining"
 
   # Chart Appendices Crew
   chart_data_synthesizer:
-    provider: gpt
+    provider: mistral
     temperature: synthesis
     notes: "Structured synthesis balances precision and organization"
 
   # Report Writing Crew
   astrological_data_interpreter:
-    provider: gpt
+    provider: mistral
     temperature: creative
     notes: "Report synthesis needs creative integration"
 
   astrological_report_writer:
-    provider: gpt
+    provider: mistral
     temperature: creative
     notes: "Final report writing benefits from narrative creativity"
 
   # Review Crew (Final Report Review)
   report_critic:
-    provider: gpt
+    provider: mistral
     temperature: review
     notes: "Final review requires critical assessment"
 
   report_enhancer:
-    provider: gpt
+    provider: mistral
     temperature: review
     notes: "Final enhancement polishes the report"
 
   # Gmail Crew
   email_writer:
-    provider: gpt_mini
+    provider: mistral
     temperature: creative
     notes: "Email composition benefits from natural language"
   
   
   email_drafter:
-    provider: gpt_mini
+    provider: mistral
     temperature: creative
     notes: "Email composition benefits from natural language"
 
