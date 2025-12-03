@@ -1,10 +1,5 @@
-import os
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-from transit_reader.tools.google_search_tool import GoogleSearchTool
-from transit_reader.tools.gemini_search_tool import GeminiSearchTool
-from transit_reader.tools.qdrant_search_tool import QdrantSearchTool
-from transit_reader.tools.linkup_search_tool import LinkUpSearchTool
 from transit_reader.utils.constants import TIMESTAMP
 from transit_reader.utils.llm_manager import get_llm_for_agent
 from dotenv import load_dotenv
@@ -24,7 +19,7 @@ class NatalAnalysisReviewCrew():
 	def natal_interpretation_critic(self) -> Agent:
 		return Agent(
 			config=self.agents_config['natal_interpretation_critic'],
-			llm=gemini_flash,
+			llm=get_llm_for_agent('natal_interpretation_critic'),
 			verbose=True
 		)
 
@@ -32,7 +27,7 @@ class NatalAnalysisReviewCrew():
 	def natal_interpretation_enhancer(self) -> Agent:
 		return Agent(
 			config=self.agents_config['natal_interpretation_enhancer'],
-			llm=get_llm_for_agent('natal_interpretation_critic'),
+			llm=get_llm_for_agent('natal_interpretation_enhancer'),
 			verbose=True
 		)
 

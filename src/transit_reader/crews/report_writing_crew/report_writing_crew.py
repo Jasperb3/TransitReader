@@ -1,9 +1,5 @@
-import os
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-from transit_reader.tools.google_search_tool import GoogleSearchTool
-from transit_reader.tools.gemini_search_tool import GeminiSearchTool
-from transit_reader.tools.qdrant_search_tool import QdrantSearchTool
 from transit_reader.utils.constants import TIMESTAMP
 from transit_reader.utils.llm_manager import get_llm_for_agent
 from dotenv import load_dotenv
@@ -30,7 +26,7 @@ class ReportWritingCrew:
     def astrological_report_writer(self) -> Agent:
         return Agent(
             config=self.agents_config["astrological_report_writer"],
-            llm=get_llm_for_agent('astrological_data_interpreter'),
+            llm=get_llm_for_agent('astrological_report_writer'),
             verbose=True,
         )
 

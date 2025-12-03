@@ -1,8 +1,8 @@
-import os
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from transit_reader.tools.gmail_tool_with_attachment import GmailAttachmentTool
 from transit_reader.utils.models import Email
+from transit_reader.utils.llm_manager import get_llm_for_agent
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -19,7 +19,7 @@ class GmailCrew():
 	def email_writing_agent(self) -> Agent:
 		return Agent(
 			config=self.agents_config['email_writing_agent'],
-			llm=get_llm_for_agent('email_drafter'),
+			llm=get_llm_for_agent('email_writer'),
 			verbose=True
 )
 

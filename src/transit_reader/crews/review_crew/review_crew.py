@@ -11,6 +11,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+google_search_tool = GoogleSearchTool(api_key=os.getenv("GOOGLE_SEARCH_API_KEY"), cx=os.getenv("SEARCH_ENGINE_ID"))
+
 
 @CrewBase
 class ReviewCrew():
@@ -25,7 +27,7 @@ class ReviewCrew():
 	def report_critic(self) -> Agent:
 		return Agent(
 			config=self.agents_config['report_critic'],
-			llm=gemini_flash_review,  # Critical analysis needs lower temperature
+			llm=get_llm_for_agent('report_critic'),  # Critical analysis needs lower temperature
 			verbose=True
 		)
 
@@ -33,7 +35,7 @@ class ReviewCrew():
 	def report_enhancer(self) -> Agent:
 		return Agent(
 			config=self.agents_config['report_enhancer'],
-			llm=get_llm_for_agent('report_critic'),  # Enhancement benefits from moderate temperature
+			llm=get_llm_for_agent('report_enhancer'),  # Enhancement benefits from moderate temperature
 			tools=[google_search_tool, GeminiSearchTool(), QdrantSearchTool(), LinkUpSearchTool()],
 			verbose=True
 		)

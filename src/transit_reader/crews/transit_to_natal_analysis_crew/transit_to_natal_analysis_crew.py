@@ -10,6 +10,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+google_search_tool = GoogleSearchTool(api_key=os.getenv("GOOGLE_SEARCH_API_KEY"), cx=os.getenv("SEARCH_ENGINE_ID"))
+
 
 @CrewBase
 class TransitToNatalAnalysisCrew():
@@ -31,7 +33,7 @@ class TransitToNatalAnalysisCrew():
 	def transits_to_natal_chart_interpreter(self) -> Agent:
 		return Agent(
 			config=self.agents_config['transits_to_natal_chart_interpreter'],
-			llm=get_llm_for_agent('transits_to_natal_chart_reader'),  # Interpretation benefits from moderate temperature
+			llm=get_llm_for_agent('transits_to_natal_chart_interpreter'),  # Interpretation benefits from moderate temperature
 			verbose=True
 		)
 	
