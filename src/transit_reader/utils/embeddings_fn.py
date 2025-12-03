@@ -8,7 +8,7 @@ def custom_gemini_embedding_fn(text):
     """
     Generate embeddings for text using Gemini API.
 
-    IMPORTANT: Uses text-embedding-004 (768 dimensions) to match the Qdrant collection.
+    IMPORTANT: Uses gemini-embedding-001 (3072 dimensions) to match the Qdrant collection.
     If you change this model, you must recreate the Qdrant collection with the new dimensions.
     """
 
@@ -23,7 +23,7 @@ def custom_gemini_embedding_fn(text):
 
         # CRITICAL: Must match the model used in qdrant_setup.py
         result = genai_client.models.embed_content(
-            model="text-embedding-004",  # 768 dimensions - matches Qdrant collection
+            model="gemini-embedding-001",  # 3072 dimensions - matches Qdrant collection
             contents=text
         )
         # Extract the list of floats from the embeddings object

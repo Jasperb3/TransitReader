@@ -1,5 +1,6 @@
 import os
 import uuid
+import warnings
 from pathlib import Path
 from google import genai
 from qdrant_client import QdrantClient
@@ -14,6 +15,10 @@ from qdrant_client.models import (
 from transit_reader.utils.constants import DOCS_DIR
 import time
 from dotenv import load_dotenv
+
+# Suppress Qdrant client version mismatch warnings (we keep client up to date)
+warnings.filterwarnings("ignore", message=".*Qdrant client version.*incompatible.*")
+
 load_dotenv()
 
 
@@ -218,7 +223,8 @@ class Setup:
 
     def generate_gemini_embeddings(self, text_chunks):
         """Generate embeddings for text chunks using Gemini API."""
-        print("Generating Gemini embeddings...")
+        total_chunks = len(text_chunks)
+        print(f"📝 Generating embeddings for {total_chunks} text chunks using gemini-embedding-001...")
 
         if not self.genai_client:
             print("❌ Gemini client not initialized. Cannot generate embeddings.")
@@ -232,10 +238,17 @@ class Setup:
             60.0 / requests_per_minute
         )  # Calculate delay in seconds
 
-        for i in range(0, len(text_chunks), batch_size):
+        total_batches = (total_chunks + batch_size - 1) // batch_size
+        processed_chunks = 0
+
+        for i in range(0, total_chunks, batch_size):
             batch = text_chunks[i : i + batch_size]
+            current_batch = i // batch_size + 1
+
+            # Progress indicator with percentage
+            progress_pct = int((processed_chunks / total_chunks) * 100)
             print(
-                f"Processing batch {i // batch_size + 1}/{(len(text_chunks) + batch_size - 1) // batch_size}...",
+                f"⚙️  Processing batch {current_batch}/{total_batches} ({progress_pct}% complete)...",
                 end="\r",
             )
 
@@ -243,7 +256,7 @@ class Setup:
                 try:
                     # Generate embedding using Gemini
                     result = self.genai_client.models.embed_content(
-                        model="text-embedding-004", contents=chunk["text"]
+                        model="gemini-embedding-001", contents=chunk["text"]
                     )
 
                     # Correctly access the embedding values
@@ -259,25 +272,28 @@ class Setup:
                             "embedding": embedding_values,
                         }
                     )
+                    processed_chunks += 1
                     time.sleep(delay_between_requests)  # delay
                 except Exception as e:
                     failed_chunks += 1
-                    print(
-                        f"❌ Error generating embedding for chunk from {chunk['source']}: {e}"
-                    )
+                    # Clear the progress line and show error
+                    print(f"\n❌ Error generating embedding for chunk from {chunk['source']}: {e}")
                     # Continue processing other chunks despite this error
+
+        # Clear the progress line
+        print(" " * 80, end="\r")
 
         if failed_chunks > 0:
             print(
-                f"⚠️ Failed to generate embeddings for {failed_chunks} chunks out of {len(text_chunks)}"
+                f"⚠️  Failed to generate embeddings for {failed_chunks}/{total_chunks} chunks"
             )
 
-        print(f"Generated {len(embeddings_with_text)} embeddings ✅")
+        print(f"✅ Generated {len(embeddings_with_text)} embeddings successfully")
         return embeddings_with_text
 
     def store_in_qdrant(self, embeddings_with_text):
         """Store text and embeddings in Qdrant."""
-        print(f"Storing embeddings in Qdrant collection '{self.collection_name}'...")
+        print(f"💾 Storing embeddings in Qdrant collection '{self.collection_name}'...")
 
         if not self.qdrant_client:
             print("❌ Qdrant client not initialized. Cannot store embeddings.")
@@ -285,7 +301,7 @@ class Setup:
 
         try:
             # Check if collection exists and has correct vector size
-            vector_size = 768  # Gemini text-embedding-004 has 768 dimensions
+            vector_size = 3072  # Gemini gemini-embedding-001 has 3072 dimensions
 
             if self.qdrant_client.collection_exists(self.collection_name):
                 try:
@@ -296,23 +312,23 @@ class Setup:
 
                     if existing_vector_size != vector_size:
                         print(
-                            f"Collection '{self.collection_name}' exists but with incorrect vector size ({existing_vector_size}). Recreating with size {vector_size}."
+                            f"⚠️  Collection exists with {existing_vector_size}D vectors. Recreating with {vector_size}D..."
                         )
                         self.qdrant_client.delete_collection(self.collection_name)
                         create_collection = True
                     else:
                         print(
-                            f"Collection '{self.collection_name}' already exists with correct vector size. Updating points."
+                            f"✓ Collection exists with correct vector size ({vector_size}D). Updating points..."
                         )
                         create_collection = False
                 except Exception as e:
-                    print(f"❌ Error checking collection info: {e}")
-                    print(f"Recreating collection '{self.collection_name}'.")
+                    print(f"❌ Error checking collection: {e}")
+                    print(f"🔄 Recreating collection '{self.collection_name}'...")
                     self.qdrant_client.delete_collection(self.collection_name)
                     create_collection = True
             else:
                 print(
-                    f"Collection '{self.collection_name}' does not exist. Creating it."
+                    f"🆕 Collection '{self.collection_name}' does not exist. Creating with {vector_size}D vectors..."
                 )
                 create_collection = True
 
@@ -324,6 +340,8 @@ class Setup:
                         size=vector_size, distance=Distance.COSINE
                     ),
                 )
+                print(f"✓ Created collection '{self.collection_name}'")
+
                 # Create a payload index for "source" so we can filter on it
                 try:
                     self.qdrant_client.create_payload_index(
@@ -331,9 +349,9 @@ class Setup:
                         field_name="source",
                         field_schema="keyword"
                     )
-                    print("Created payload index for 'source' field.")
+                    print("✓ Created payload index for 'source' field")
                 except Exception as e:
-                    print(f"Warning: Could not create payload index for 'source': {e}")
+                    print(f"⚠️  Could not create payload index: {e}")
             else:
                 # Ensure "source" payload index exists even if collection already existed
                 try:
@@ -343,7 +361,8 @@ class Setup:
                         field_schema="keyword"
                     )
                 except Exception as e:
-                    print(f"Warning: Could not create payload index for 'source' (may already exist): {e}")
+                    # Silently ignore if index already exists
+                    pass
 
             # Prepare points for Qdrant
             points = []
@@ -358,23 +377,30 @@ class Setup:
 
             # Upload points to Qdrant in batches
             if points:
-                batch_size = 100  # Adjust based on your needs
+                batch_size = 100
+                total_batches = (len(points) + batch_size - 1) // batch_size
+
                 for i in range(0, len(points), batch_size):
                     batch = points[i : i + batch_size]
+                    current_batch = i // batch_size + 1
+                    progress_pct = int(((i + len(batch)) / len(points)) * 100)
+
                     print(
-                        f"Uploading batch {i // batch_size + 1}/{(len(points) + batch_size - 1) // batch_size} to Qdrant...",
+                        f"⬆️  Uploading batch {current_batch}/{total_batches} ({progress_pct}% complete)...",
                         end="\r",
                     )
                     self.qdrant_client.upsert(
                         collection_name=self.collection_name, points=batch
                     )
-                print(f"Successfully stored {len(points)} points in Qdrant ✅")
+
+                # Clear the progress line
+                print(" " * 80, end="\r")
+                print(f"✅ Successfully stored {len(points)} vectors in Qdrant")
                 return True
             else:
-                print("⚠️ No points to store in Qdrant")
+                print("⚠️  No points to store in Qdrant")
                 return False
 
         except Exception as e:
             print(f"❌ Error storing embeddings in Qdrant: {e}")
-            print(f"Error details: {str(e)}")  # More detailed error information
             return False

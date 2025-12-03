@@ -62,7 +62,7 @@ The factory function handles interactive prompts, geocoding, and timezone lookup
 
 **Vector Search (Qdrant)**:
 - Reference docs in `astro_docs/*.md` are chunked (1500 chars, 250 overlap)
-- Embedded using Gemini `text-embedding-004` (768 dimensions)
+- Embedded using Gemini `gemini-embedding-001` (3072 dimensions)
 - Stored in Qdrant for semantic search by AI agents
 - Tool: `QdrantSearchTool` for agent access
 
