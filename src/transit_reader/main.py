@@ -194,6 +194,12 @@ class TransitFlow(Flow[TransitState]):
     # GENERATE APPENDICES - Create structured appendices from all three analyses
     @listen(and_(review_transit_analysis, review_natal_analysis, review_transit_to_natal_analysis))
     def generate_chart_appendices(self):
+        # Check if user wants appendices
+        if not self.state.include_appendices:
+            print("⏭️  Skipping chart appendices generation (user preference)")
+            self.state.chart_appendices = ""  # Set to empty string
+            return self.state
+
         print("Generating chart appendices")
         inputs = {
             "transit_analysis": self.state.transit_analysis,

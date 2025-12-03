@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
 from transit_reader.utils.subject_selection import get_subject_data
-from transit_reader.utils.transit_selection import get_transit_parameters
+from transit_reader.utils.transit_selection import get_transit_parameters, get_appendices_preference
 from transit_reader.utils.biographical_questionnaire import format_biographical_context_for_prompt
 from transit_reader.utils.constants import TODAY
 
@@ -31,6 +31,9 @@ else:
 transit_params = get_transit_parameters(subject_data, current_loc)
 transit_location = transit_params["location"]
 
+# Ask user about appendices preference
+include_appendices = get_appendices_preference()
+
 
 class TransitState(BaseModel):
     # Subject identification
@@ -58,6 +61,7 @@ class TransitState(BaseModel):
     current_location_longitude: float = transit_location["longitude"]
     current_location_timezone: str = transit_location["timezone"]
     is_custom_transit: bool = transit_params["is_custom"]
+    include_appendices: bool = include_appendices  # Whether to generate detailed chart appendices
 
     # Biographical context
     biographical_context_raw: dict = subject_data.get("biographical_context", {})

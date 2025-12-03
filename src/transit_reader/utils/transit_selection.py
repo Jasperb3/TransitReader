@@ -297,6 +297,37 @@ def get_transit_parameters(subject_data: dict, current_location: dict = None) ->
     }
 
 
+def get_appendices_preference() -> bool:
+    """
+    Ask user whether to include detailed chart appendices in the report.
+
+    Returns:
+        bool: True to include appendices, False to skip them
+    """
+    print(f"\n{GREEN}{'='*60}{RESET}")
+    print(f"{GREEN}APPENDICES OPTIONS{RESET}")
+    print(f"{GREEN}{'='*60}{RESET}")
+    print("\nChart appendices include detailed technical references:")
+    print("  • Appendix A: Transit Chart Details (positions, aspects, patterns)")
+    print("  • Appendix B: Natal Chart Details (complete birth chart reference)")
+    print("  • Appendix C: Transit-to-Natal Interactions (activation analysis)")
+    print("\nAppendices increase token usage and report length.")
+    print("Skip them for quicker, more concise reports.")
+
+    while True:
+        choice = input(f"\nInclude detailed appendices? [Y/n] (default: Yes): ").strip().lower()
+
+        # Default to Yes if user just presses Enter
+        if choice == "" or choice == "y" or choice == "yes":
+            print(f"{GREEN}✓ Appendices will be included in the report{RESET}")
+            return True
+        elif choice == "n" or choice == "no":
+            print(f"{GREEN}✓ Appendices will be skipped (report will be more concise){RESET}")
+            return False
+        else:
+            print(f"{RED}❌ Invalid input. Please enter 'y' for yes or 'n' for no.{RESET}")
+
+
 if __name__ == "__main__":
     # Test the module with dummy subject data
     test_subject = {
