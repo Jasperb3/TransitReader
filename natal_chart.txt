@@ -1,0 +1,337 @@
+--- Natal Chart Summary ---
+Birth Date/Time: 1984-01-11 18:45:00+00:00 (Europe/London)
+Julian Day: 2445711.28125
+Sidereal Time: 02:06:26
+Birth Location: Latitude 51N23.32, Longitude 0W6.5600000000000005
+-------------------------
+--- Chart Details ---
+House System: Placidus
+Chart Shape: Bucket
+Diurnal/Nocturnal: Nocturnal
+Moon Phase: First Quarter
+-------------------------
+--- Celestial Objects ---
+
+* Sun (Planet)
+  Position: 20°44'13" Capricorn (Earth, Cardinal)
+  Zodiac Longitude: 290°44'13"
+  House: 6th House
+  Decan: 3rd Decan
+  Latitude: 00°00'00"
+  Declination: -21°50'32"
+  Movement: Direct (Speed: 1.0190°/day)
+  Distance: 0.9834 AU
+  In Sect: No
+  Dignities/Debilities: Face Ruler
+
+* Moon (Planet)
+  Position: 24°55'32" Aries (Fire, Cardinal)
+  Zodiac Longitude: 24°55'32"
+  House: 9th House
+  Decan: 3rd Decan
+  Latitude: -04°00'30"
+  Declination: 05°55'07"
+  Movement: Direct (Speed: 12.3053°/day)
+  Distance: 0.0027 AU
+  In Sect: Yes
+  Dignities/Debilities: Face Ruler by mutual reception
+
+* Mercury (Planet)
+  Position: 00°25'26" Capricorn (Earth, Cardinal)
+  Zodiac Longitude: 270°25'26"
+  House: 5th House
+  Decan: 1st Decan
+  Latitude: 02°53'33"
+  Declination: -20°32'56"
+  Movement: Direct (Speed: 0.1068°/day)
+  Distance: 0.8064 AU
+  In Sect: No
+  Dignities/Debilities: Term Ruler
+
+* Venus (Planet)
+  Position: 12°55'43" Sagittarius (Fire, Mutable)
+  Zodiac Longitude: 252°55'43"
+  House: 4th House
+  Decan: 2nd Decan
+  Latitude: 01°49'01"
+  Declination: -20°32'57"
+  Movement: Direct (Speed: 1.2136°/day)
+  Distance: 1.1716 AU
+  In Sect: Yes
+  Dignities/Debilities: Term Ruler, Face Ruler by mutual reception
+
+* Mars (Planet)
+  Position: 00°19'52" Scorpio (Water, Fixed)
+  Zodiac Longitude: 210°19'52"
+  House: 3rd House
+  Decan: 1st Decan
+  Latitude: 01°39'52"
+  Declination: -10°01'48"
+  Movement: Direct (Speed: 0.5147°/day)
+  Distance: 1.5073 AU
+  In Sect: Yes
+  Dignities/Debilities: Term Ruler, Face Ruler
+
+* Jupiter (Planet)
+  Position: 28°18'09" Sagittarius (Fire, Mutable)
+  Zodiac Longitude: 268°18'09"
+  House: 5th House
+  Decan: 3rd Decan
+  Latitude: 00°18'34"
+  Declination: -23°07'18"
+  Movement: Direct (Speed: 0.2190°/day)
+  Distance: 6.1779 AU
+  In Sect: No
+  Dignities/Debilities: Ruler, Triplicity Ruler, In rulership element
+
+* Saturn (Planet)
+  Position: 14°46'38" Scorpio (Water, Fixed)
+  Zodiac Longitude: 224°46'38"
+  House: 4th House
+  Decan: 2nd Decan
+  Latitude: 02°18'18"
+  Declination: -14°04'06"
+  Movement: Direct (Speed: 0.0705°/day)
+  Distance: 10.1936 AU
+  In Sect: No
+  Dignities/Debilities: Peregrine
+
+* Uranus (Planet)
+  Position: 11°43'01" Sagittarius (Fire, Mutable)
+  Zodiac Longitude: 251°43'01"
+  House: 4th House
+  Decan: 2nd Decan
+  Latitude: 00°03'13"
+  Declination: -22°08'26"
+  Movement: Direct (Speed: 0.0511°/day)
+  Distance: 19.7418 AU
+  Dignities/Debilities: Peregrine
+
+* Neptune (Planet)
+  Position: 29°44'32" Sagittarius (Fire, Mutable)
+  Zodiac Longitude: 269°44'32"
+  House: 5th House
+  Decan: 3rd Decan
+  Latitude: 01°09'44"
+  Declination: -22°16'46"
+  Movement: Direct (Speed: 0.0358°/day)
+  Distance: 31.1800 AU
+  Dignities/Debilities: Peregrine
+
+* Pluto (Planet)
+  Position: 01°58'18" Scorpio (Water, Fixed)
+  Zodiac Longitude: 211°58'18"
+  House: 3rd House
+  Decan: 1st Decan
+  Latitude: 16°47'46"
+  Declination: 03°38'17"
+  Movement: Direct (Speed: 0.0140°/day)
+  Distance: 30.0144 AU
+  Dignities/Debilities: Ruler, In rulership element
+
+* Chiron (Asteroid)
+  Position: 28°06'20" Taurus (Earth, Fixed)
+  Zodiac Longitude: 58°06'20"
+  House: 10th House
+  Decan: 3rd Decan
+  Latitude: -03°49'50"
+  Declination: 16°00'16"
+  Movement: Retrograde (Speed: -0.0272°/day)
+  Distance: 14.5698 AU
+
+* True North Node (Point)
+  Position: 15°18'32" Gemini (Air, Mutable)
+  Zodiac Longitude: 75°18'32"
+  House: 11th House
+  Decan: 2nd Decan
+  Latitude: 00°00'00"
+  Declination: 22°37'56"
+  Movement: Direct (Speed: 0.0083°/day)
+
+* True South Node (Point)
+  Position: 15°18'32" Sagittarius (Fire, Mutable)
+  Zodiac Longitude: 255°18'32"
+  House: 5th House
+  Decan: 2nd Decan
+  Latitude: 00°00'00"
+  Declination: -22°37'56"
+  Movement: Direct (Speed: 0.0083°/day)
+
+* Asc (Angle)
+  Position: 18°58'43" Leo (Fire, Fixed)
+  Zodiac Longitude: 138°58'43"
+  House: 1st House
+  Decan: 2nd Decan
+  Declination: 15°08'08"
+
+* MC (Angle)
+  Position: 03°51'07" Taurus (Earth, Fixed)
+  Zodiac Longitude: 33°51'07"
+  House: 10th House
+  Decan: 1st Decan
+  Declination: 12°48'12"
+
+* IC (Angle)
+  Position: 03°51'07" Scorpio (Water, Fixed)
+  Zodiac Longitude: 213°51'07"
+  House: 4th House
+  Decan: 1st Decan
+  Declination: -12°48'12"
+
+* Desc (Angle)
+  Position: 18°58'43" Aquarius (Air, Fixed)
+  Zodiac Longitude: 318°58'43"
+  House: 7th House
+  Decan: 2nd Decan
+  Declination: -15°08'08"
+
+* Part of Fortune (Point)
+  Position: 14°47'24" Taurus (Earth, Fixed)
+  Zodiac Longitude: 44°47'24"
+  House: 10th House
+  Decan: 2nd Decan
+  Latitude: 00°00'00"
+  Declination: 16°16'35"
+  Movement: Stationary (Speed: 0.0000°/day)
+
+* Vertex (Point)
+  Position: 10°50'38" Capricorn (Earth, Cardinal)
+  Zodiac Longitude: 280°50'38"
+  House: 5th House
+  Decan: 2nd Decan
+  Declination: -22°59'57"
+  Movement: Direct (Speed: 360.5162°/day)
+
+* True Lilith (Point)
+  Position: 07°08'15" Pisces (Water, Mutable)
+  Zodiac Longitude: 337°08'15"
+  House: 7th House
+  Decan: 1st Decan
+  Latitude: -05°08'43"
+  Declination: -13°39'48"
+  Movement: Retrograde (Speed: -1.1346°/day)
+
+* Lilith (Point)
+  Position: 03°24'37" Pisces (Water, Mutable)
+  Zodiac Longitude: 333°24'37"
+  House: 7th House
+  Decan: 1st Decan
+  Latitude: -05°03'32"
+  Declination: -14°58'03"
+  Movement: Direct (Speed: 0.1120°/day)
+-------------------------
+--- Houses (Cusps) ---
+
+* 1st House Cusp:
+  Position: 18°58'43" Leo (Fire, Fixed)
+  Zodiac Longitude: 138°58'43"
+  Size: 18.39°
+
+* 2nd House Cusp:
+  Position: 07°21'55" Virgo (Earth, Mutable)
+  Zodiac Longitude: 157°21'55"
+  Size: 24.12°
+
+* 3rd House Cusp:
+  Position: 01°29'02" Libra (Air, Cardinal)
+  Zodiac Longitude: 181°29'02"
+  Size: 32.37°
+
+* 4th House Cusp:
+  Position: 03°51'07" Scorpio (Water, Fixed)
+  Zodiac Longitude: 213°51'07"
+  Size: 39.52°
+
+* 5th House Cusp:
+  Position: 13°22'18" Sagittarius (Fire, Mutable)
+  Zodiac Longitude: 253°22'18"
+  Size: 36.77°
+
+* 6th House Cusp:
+  Position: 20°08'35" Capricorn (Earth, Cardinal)
+  Zodiac Longitude: 290°08'35"
+  Size: 28.84°
+
+* 7th House Cusp:
+  Position: 18°58'43" Aquarius (Air, Fixed)
+  Zodiac Longitude: 318°58'43"
+  Size: 18.39°
+
+* 8th House Cusp:
+  Position: 07°21'55" Pisces (Water, Mutable)
+  Zodiac Longitude: 337°21'55"
+  Size: 24.12°
+
+* 9th House Cusp:
+  Position: 01°29'02" Aries (Fire, Cardinal)
+  Zodiac Longitude: 01°29'02"
+  Size: 32.37°
+
+* 10th House Cusp:
+  Position: 03°51'07" Taurus (Earth, Fixed)
+  Zodiac Longitude: 33°51'07"
+  Size: 39.52°
+
+* 11th House Cusp:
+  Position: 13°22'18" Gemini (Air, Mutable)
+  Zodiac Longitude: 73°22'18"
+  Size: 36.77°
+
+* 12th House Cusp:
+  Position: 20°08'35" Cancer (Water, Cardinal)
+  Zodiac Longitude: 110°08'35"
+  Size: 28.84°
+-------------------------
+--- Aspects ---
+* MC Conjunction Moon (Orb: 10.00°, Diff: 08°55'35", Separative, Dissociate)
+* IC Conjunction Mars (Orb: 10.00°, Diff: 03°31'15", Separative, Associate)
+* IC Conjunction Pluto (Orb: 10.00°, Diff: 01°52'49", Separative, Associate)
+* True North Node Opposition Venus (Orb: 5.00°, Diff: -02°22'49", Applicative, Associate)
+* True North Node Quincunx Saturn (Orb: 1.50°, Diff: -00°31'55", Applicative, Associate)
+* True North Node Opposition Uranus (Orb: 5.00°, Diff: -03°35'32", Applicative, Associate)
+* True South Node Conjunction Venus (Orb: 5.00°, Diff: 02°22'49", Applicative, Associate)
+* True South Node Conjunction Uranus (Orb: 5.00°, Diff: 03°35'32", Applicative, Associate)
+* Part of Fortune Opposition Saturn (Orb: 5.00°, Diff: -00°00'47", Exact, Associate)
+* Sun Square Moon (Orb: 10.00°, Diff: 04°11'19", Separative, Associate)
+* Sun Square Mars (Orb: 10.00°, Diff: -09°35'39", Applicative, Dissociate)
+* Sun Sextile Saturn (Orb: 6.00°, Diff: 05°57'35", Separative, Associate)
+* Moon Trine Mercury (Orb: 10.00°, Diff: -05°29'55", Applicative, Dissociate)
+* Moon Opposition Mars (Orb: 10.00°, Diff: -05°24'20", Applicative, Dissociate)
+* Moon Trine Jupiter (Orb: 10.00°, Diff: -03°22'38", Applicative, Associate)
+* Moon Trine Neptune (Orb: 10.00°, Diff: -04°49'00", Applicative, Associate)
+* Moon Opposition Pluto (Orb: 10.00°, Diff: -07°02'46", Applicative, Dissociate)
+* Mercury Sextile Mars (Orb: 6.00°, Diff: 00°05'34", Exact, Associate)
+* Mercury Conjunction Jupiter (Orb: 10.00°, Diff: 02°07'17", Applicative, Dissociate)
+* Mercury Conjunction Neptune (Orb: 10.00°, Diff: 00°40'54", Separative, Dissociate)
+* Mercury Sextile Pluto (Orb: 6.00°, Diff: -01°32'51", Applicative, Associate)
+* Venus Conjunction Uranus (Orb: 10.00°, Diff: 01°12'43", Separative, Associate)
+* Mars Sextile Jupiter (Orb: 6.00°, Diff: -02°01'43", Separative, Dissociate)
+* Mars Sextile Neptune (Orb: 6.00°, Diff: -00°35'20", Separative, Dissociate)
+* Mars Conjunction Pluto (Orb: 10.00°, Diff: 01°38'26", Applicative, Associate)
+* Mars Trine Lilith (Orb: 5.00°, Diff: 03°04'45", Applicative, Associate)
+* Jupiter Conjunction Neptune (Orb: 10.00°, Diff: 01°26'23", Applicative, Associate)
+* Jupiter Sextile Pluto (Orb: 6.00°, Diff: -03°40'09", Applicative, Dissociate)
+* Jupiter Quincunx Chiron (Orb: 2.00°, Diff: -00°11'49", Exact, Associate)
+* Neptune Sextile Pluto (Orb: 6.00°, Diff: -02°13'46", Applicative, Dissociate)
+* Neptune Quincunx Chiron (Orb: 2.00°, Diff: -01°38'12", Separative, Associate)
+-------------------------
+--- Chart Weightings ---
+
+Elements:
+  Fire: 7 objects
+  Earth: 6 objects
+  Air: 2 objects
+  Water: 6 objects
+
+Modalities:
+  Cardinal: 4 objects
+  Fixed: 9 objects
+  Mutable: 8 objects
+
+Quadrants (based on object count):
+  First (Houses 1-3): 3 objects
+  Second (Houses 4-6): 10 objects
+  Third (Houses 7-9): 4 objects
+  Fourth (Houses 10-12): 4 objects
+-------------------------
+--- End of Natal Chart ---

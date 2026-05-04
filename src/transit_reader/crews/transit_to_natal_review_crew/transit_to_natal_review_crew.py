@@ -43,7 +43,8 @@ class TransitToNatalReviewCrew():
 	def transits_to_natal_interpretation_enhancement_task(self) -> Task:
 		return Task(
 			config=self.tasks_config['transits_to_natal_interpretation_enhancement_task'],
-			output_file=f"crew_outputs/{TIMESTAMP}/transits_to_natal_interpretation_enhancement_task.md"
+			output_file=f"crew_outputs/{TIMESTAMP}/transits_to_natal_interpretation_enhancement_task.md",
+			context=[self.transits_to_natal_interpretation_critic_task()]
 		)
 
 

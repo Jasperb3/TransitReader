@@ -42,7 +42,8 @@ class NatalAnalysisReviewCrew():
 	def natal_interpretation_enhancement_task(self) -> Task:
 		return Task(
 			config=self.tasks_config['natal_interpretation_enhancement_task'],
-			output_file=f"crew_outputs/{TIMESTAMP}/natal_interpretation_enhancement_task.md"
+			output_file=f"crew_outputs/{TIMESTAMP}/natal_interpretation_enhancement_task.md",
+			context=[self.natal_interpretation_critic_task()]
 		)
 
 	@crew

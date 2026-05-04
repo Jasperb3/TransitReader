@@ -1,4 +1,6 @@
+import inspect
 import os
+from urllib.parse import urlparse, urlunparse
 import uuid
 import warnings
 from pathlib import Path
@@ -22,6 +24,23 @@ warnings.filterwarnings("ignore", message=".*Qdrant client version.*incompatible
 load_dotenv()
 
 
+def _normalize_qdrant_url(raw_url: str) -> str:
+    url = (raw_url or "").strip().rstrip("/")
+    if not url:
+        return url
+    if "://" not in url:
+        url = f"https://{url}"
+    parsed = urlparse(url)
+    netloc = parsed.netloc
+    path = parsed.path
+    if not netloc and path:
+        netloc = path
+        path = ""
+    if ":" not in netloc:
+        netloc = f"{netloc}:6333"
+    return urlunparse((parsed.scheme, netloc, path, "", "", ""))
+
+
 class Setup:
     def __init__(self, state):
         self.state = state
@@ -35,14 +54,20 @@ class Setup:
             self.genai_client = None
 
         # Initialize Qdrant client
-        self.qdrant_url = os.environ.get("QDRANT_CLUSTER_URL")
-        self.qdrant_api_key = os.environ.get("QDRANT_API_KEY")
+        self.qdrant_url = os.environ.get("QDRANT_LOCAL_URL")
+        self.qdrant_api_key = os.environ.get("QDRANT_LOCAL_API_KEY")
+        if self.qdrant_url:
+            self.qdrant_url = _normalize_qdrant_url(self.qdrant_url)
         if self.qdrant_url and self.qdrant_api_key:
-            self.qdrant_client = QdrantClient(
-                url=self.qdrant_url, api_key=self.qdrant_api_key
-            )
+            client_kwargs = {
+                "url": self.qdrant_url,
+                "api_key": self.qdrant_api_key,
+            }
+            if "check_compatibility" in inspect.signature(QdrantClient).parameters:
+                client_kwargs["check_compatibility"] = False
+            self.qdrant_client = QdrantClient(**client_kwargs)
         else:
-            print("⚠️ QDRANT_URL or QDRANT_API_KEY not found in environment variables")
+            print("⚠️ QDRANT_LOCAL_URL or QDRANT_LOCAL_API_KEY not found in environment variables")
             self.qdrant_client = None
 
         # Collection name for Qdrant

@@ -51,7 +51,8 @@ class ReviewCrew():
 	def report_enhancement_task(self) -> Task:
 		return Task(
 			config=self.tasks_config['report_enhancement_task'],
-			output_file=f"crew_outputs/{TIMESTAMP}/report_enhancement_task.md"
+			output_file=f"crew_outputs/{TIMESTAMP}/report_enhancement_task.md",
+			context=[self.report_review_task()]
 		)
 
 	@crew
