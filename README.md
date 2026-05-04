@@ -3,7 +3,7 @@
 AI-assisted transit analysis that blends astronomical calculations, research tools, and structured writing crews to deliver polished astrological reports.
 
 [![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/Jasperb3/TransitReader)
-[![Python](https://img.shields.io/badge/python-3.12.9-blue.svg)](https://www.python.org/downloads/)
+[![Python](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/downloads/)
 [![CrewAI](https://img.shields.io/badge/CrewAI-1.3.0-green.svg)](https://www.crewai.com/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -103,8 +103,9 @@ Notes:
    uv run kickoff
    ```
    - Choose a subject or create one.
+   - Opt in or out of generating chart appendices (detailed technical tables appended to the report).
    - Select transit timing: use “now” or enter a custom date/time and location.
-   - Answer optional context questions to enrich interpretations.
+   - Optional biographical context stored in the subject profile is automatically included to enrich interpretations.
 
 3. **Outputs**
    - Markdown: `outputs/<YYYY-MM-DD>/<Name>_<timestamp>.md`
@@ -148,6 +149,8 @@ TransitReader uses a CrewAI `Flow` defined in `src/transit_reader/main.py`:
 - `utils/qdrant_setup.py` – markdown ingestion and Gemini embeddings for Qdrant
 - `utils/convert_to_pdf.py` & `utils/astro_styling.css` – Markdown → PDF
 - `utils/subject_selection.py` & `utils/transit_selection.py` – interactive CLI prompts
+- `utils/biographical_questionnaire.py` – biographical context gathering and formatting
+- `utils/llm_manager.py` + `config/llm_config.yaml` – centralized LLM provider and temperature configuration; swap models by editing the YAML, no code changes needed
 
 ---
 

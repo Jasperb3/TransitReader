@@ -4,7 +4,6 @@ from crewai.project import CrewBase, agent, crew, task
 from transit_reader.tools.google_search_tool import GoogleSearchTool
 from transit_reader.tools.gemini_search_tool import GeminiSearchTool
 from transit_reader.tools.qdrant_search_tool import QdrantSearchTool
-from transit_reader.tools.linkup_search_tool import LinkUpSearchTool
 from transit_reader.utils.constants import TIMESTAMP
 from transit_reader.utils.llm_manager import get_llm_for_agent
 from dotenv import load_dotenv
@@ -36,7 +35,7 @@ class ReviewCrew():
 		return Agent(
 			config=self.agents_config['report_enhancer'],
 			llm=get_llm_for_agent('report_enhancer'),  # Enhancement benefits from moderate temperature
-			tools=[google_search_tool, GeminiSearchTool(), QdrantSearchTool(), LinkUpSearchTool()],
+			tools=[google_search_tool, GeminiSearchTool(), QdrantSearchTool()],
 			verbose=True
 		)
 
