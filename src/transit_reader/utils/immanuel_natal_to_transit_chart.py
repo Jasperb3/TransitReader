@@ -30,6 +30,30 @@ settings.objects.append(chart.LILITH)
 
 
 
+def _find_natal_house(longitude: float, natal_cusps: list) -> int:
+    """
+    Determine which natal house (1-12) contains the given ecliptic longitude.
+
+    Args:
+        longitude: Ecliptic longitude (0-360) of the transiting object
+        natal_cusps: List of 12 natal house cusp longitudes, ordered house 1-12
+
+    Returns:
+        int: Natal house number (1-12) containing the longitude
+    """
+    for i in range(12):
+        start = natal_cusps[i]
+        end = natal_cusps[(i + 1) % 12]
+        if start <= end:
+            if start <= longitude < end:
+                return i + 1
+        else:
+            # House wraps past 0°/360°
+            if longitude >= start or longitude < end:
+                return i + 1
+    return 12
+
+
 def get_transit_natal_aspects(location_latitude: float, location_longitude: float, dob: datetime, birthplace_latitude: float, birthplace_longitude: float, transit_datetime: datetime = None) -> dict:
     """
     Generate transit-to-natal chart showing aspects between transits and natal positions.
@@ -48,6 +72,11 @@ def get_transit_natal_aspects(location_latitude: float, location_longitude: floa
     # Create natal chart
     subject = charts.Subject(dob, birthplace_latitude, birthplace_longitude)
     subject_natal = charts.Natal(subject)
+
+    natal_data = json.dumps(subject_natal, cls=ToJSON, indent=4)
+    natal_chart_data = json.loads(natal_data)
+    natal_houses_sorted = sorted(natal_chart_data['houses'].values(), key=lambda h: h['number'])
+    natal_cusps = [h['longitude']['raw'] for h in natal_houses_sorted]
 
     # Create transit chart
     if transit_datetime is None:
@@ -189,6 +218,31 @@ def get_transit_natal_aspects(location_latitude: float, location_longitude: floa
              output_lines.append(f"  Eclipse Date: {eclipse_date}")
 
 
+    output_lines.append("-" * 25) # Separator
+
+    # --- 3b. Transiting Planets in NATAL Houses ---
+    output_lines.append("--- Transiting Planets in NATAL Houses ---")
+    for obj in sorted_objects:
+        if obj.get('type', {}).get('name') == 'Angle':
+            continue
+        obj_name = obj.get('name', 'Unknown Object')
+        obj_longitude = obj.get('longitude', {}).get('raw')
+        if obj_longitude is None:
+            continue
+        natal_house = _find_natal_house(obj_longitude, natal_cusps)
+        output_lines.append(
+            f"* {obj_name}: Natal House {natal_house} "
+            f"(transit-location house shown above is NOT the natal wheel)"
+        )
+    output_lines.append("-" * 25) # Separator
+
+    # --- 3c. NATAL House Cusps ---
+    output_lines.append("--- NATAL House Cusps ---")
+    for house in natal_houses_sorted:
+        house_name = house.get('name', 'Unknown House')
+        sign_info = house.get('sign', {})
+        sign_long_fmt = house.get('sign_longitude', {}).get('formatted', 'N/A')
+        output_lines.append(f"* {house_name}: {sign_long_fmt} {sign_info.get('name', 'N/A')}")
     output_lines.append("-" * 25) # Separator
 
     # --- 4. Houses ---
