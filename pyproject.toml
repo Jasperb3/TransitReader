@@ -35,3 +35,8 @@ build-backend = "hatchling.build"
 
 [tool.crewai]
 type = "flow"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+]

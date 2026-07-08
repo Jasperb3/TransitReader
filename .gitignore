@@ -9,10 +9,10 @@ outputs/
 astro_docs/
 .venv/
 archive/
-tests/
 crew_outputs/
 src/transit_reader/subjects/
 implementation_docs/
+docs/audit/
 src/transit_reader/crews/crev-project.txt
 CLAUDE.md
 screenshots/
