@@ -1,0 +1,3 @@
+house_system: placidus
+extra_objects: [TRUE_NORTH_NODE, TRUE_SOUTH_NODE, LILITH]
+# orbs: reserved for future use -- document Immanuel defaults here as comments

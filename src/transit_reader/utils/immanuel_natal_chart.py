@@ -1,32 +1,12 @@
 import json
 from immanuel import charts
-from immanuel.const import chart
-from immanuel.setup import settings
 from immanuel.classes.serialize import ToJSON
 from datetime import datetime
 from pathlib import Path
 
-# settings.objects.append(chart.PHOLUS)
-# settings.objects.append(chart.CERES)
-# settings.objects.append(chart.PALLAS)
-# settings.objects.append(chart.JUNO)
-# settings.objects.append(chart.VESTA)
-# settings.objects.append(chart.NORTH_NODE)
-# settings.objects.append(chart.SOUTH_NODE)
-settings.objects.append(chart.TRUE_NORTH_NODE)
-settings.objects.append(chart.TRUE_SOUTH_NODE)
-# settings.objects.append(chart.VERTEX)
-settings.objects.append(chart.LILITH)
-# settings.objects.append(chart.TRUE_LILITH)
-# settings.objects.append(chart.INTERPOLATED_LILITH)
-# settings.objects.append(chart.SYZYGY)
-# settings.objects.append(chart.PART_OF_FORTUNE)
-# settings.objects.append(chart.PART_OF_SPIRIT)
-# settings.objects.append(chart.PART_OF_EROS)
-# settings.objects.append(chart.PRE_NATAL_SOLAR_ECLIPSE)
-# settings.objects.append(chart.PRE_NATAL_LUNAR_ECLIPSE)
-# settings.objects.append(chart.POST_NATAL_SOLAR_ECLIPSE)
-# settings.objects.append(chart.POST_NATAL_LUNAR_ECLIPSE)
+from transit_reader.utils.chart_settings import configure_immanuel, DISPLAY_ORDER
+
+configure_immanuel()
 
 
 def get_natal_chart(dob: datetime, latitude: float, longitude: float) -> str:
@@ -68,21 +48,13 @@ def get_natal_chart(dob: datetime, latitude: float, longitude: float) -> str:
     angles = {k: v for k, v in chart_data['objects'].items() if v['type']['name'] == 'Angle'}
     others = {k: v for k, v in chart_data['objects'].items() if v['type']['name'] != 'Angle'}
     
-    # Define a rough order for display
-    display_order = [
-        'Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 
-        'Uranus', 'Neptune', 'Pluto', 'Chiron', 'True North Node', 
-        'True South Node', 'Asc', 'MC', 'IC', 'Desc', 'Part of Fortune', 
-        'Vertex', 'True Lilith' # Add others as needed
-    ]
-    
     # Create a map for lookup
     obj_by_name = {v['name']: v for v in chart_data['objects'].values()}
     sorted_objects = []
     processed_names = set()
 
-    # Add objects in display_order first
-    for name in display_order:
+    # Add objects in DISPLAY_ORDER first
+    for name in DISPLAY_ORDER:
         if name in obj_by_name:
             sorted_objects.append(obj_by_name[name])
             processed_names.add(name)
