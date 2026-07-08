@@ -9,6 +9,7 @@ from transit_reader.utils.immanuel_transit_chart import get_transit_chart
 from transit_reader.utils.immanuel_natal_chart import get_natal_chart
 from transit_reader.utils.immanuel_natal_to_transit_chart import get_transit_natal_aspects
 from transit_reader.utils.transit_timing import build_timing_table
+from transit_reader.utils.crew_runner import run_crew_with_retry
 from transit_reader.utils.kerykeion_chart_utils import get_kerykeion_subject, get_kerykeion_transit_chart
 from transit_reader.utils.convert_to_pdf import convert_md_to_pdf
 from transit_reader.utils.constants import NOW_DT, OUTPUT_DIR, TIMESTAMP, CHARTS_DIR
@@ -86,10 +87,8 @@ class TransitFlow(Flow[TransitState]):
             "biographical_context": self.state.biographical_context
         }
 
-        transit_analysis = (
-            TransitAnalysisCrew()
-            .crew()
-            .kickoff(inputs=inputs)
+        transit_analysis = run_crew_with_retry(
+            lambda: TransitAnalysisCrew().crew(), inputs, "generate_transit_analysis"
         )
 
         self.state.transit_analysis = transit_analysis.raw
@@ -109,10 +108,8 @@ class TransitFlow(Flow[TransitState]):
             "biographical_context": self.state.biographical_context
         }
 
-        natal_analysis = (
-            NatalAnalysisCrew()
-            .crew()
-            .kickoff(inputs=inputs)
+        natal_analysis = run_crew_with_retry(
+            lambda: NatalAnalysisCrew().crew(), inputs, "generate_natal_analysis"
         )
 
         self.state.natal_analysis = natal_analysis.raw
@@ -130,10 +127,8 @@ class TransitFlow(Flow[TransitState]):
             "biographical_context": self.state.biographical_context
         }
 
-        transit_to_natal_analysis = (
-            TransitToNatalAnalysisCrew()
-            .crew()
-            .kickoff(inputs=inputs)
+        transit_to_natal_analysis = run_crew_with_retry(
+            lambda: TransitToNatalAnalysisCrew().crew(), inputs, "generate_transit_to_natal_analysis"
         )
 
         self.state.transit_to_natal_analysis = transit_to_natal_analysis.raw
@@ -150,10 +145,8 @@ class TransitFlow(Flow[TransitState]):
             "location": self.state.current_location
         }
 
-        enhanced_transit_analysis = (
-            TransitAnalysisReviewCrew()
-            .crew()
-            .kickoff(inputs=inputs)
+        enhanced_transit_analysis = run_crew_with_retry(
+            lambda: TransitAnalysisReviewCrew().crew(), inputs, "review_transit_analysis"
         )
 
         self.state.transit_analysis = enhanced_transit_analysis.raw
@@ -170,10 +163,8 @@ class TransitFlow(Flow[TransitState]):
             "birthplace": self.state.birthplace
         }
 
-        enhanced_natal_analysis = (
-            NatalAnalysisReviewCrew()
-            .crew()
-            .kickoff(inputs=inputs)
+        enhanced_natal_analysis = run_crew_with_retry(
+            lambda: NatalAnalysisReviewCrew().crew(), inputs, "review_natal_analysis"
         )
 
         self.state.natal_analysis = enhanced_natal_analysis.raw
@@ -192,10 +183,8 @@ class TransitFlow(Flow[TransitState]):
             "transit_location": self.state.current_location
         }
 
-        enhanced_transit_to_natal_analysis = (
-            TransitToNatalReviewCrew()
-            .crew()
-            .kickoff(inputs=inputs)
+        enhanced_transit_to_natal_analysis = run_crew_with_retry(
+            lambda: TransitToNatalReviewCrew().crew(), inputs, "review_transit_to_natal_analysis"
         )
 
         self.state.transit_to_natal_analysis = enhanced_transit_to_natal_analysis.raw
@@ -225,10 +214,8 @@ class TransitFlow(Flow[TransitState]):
             "transit_location": self.state.current_location
         }
 
-        appendices_result = (
-            ChartAppendicesCrew()
-            .crew()
-            .kickoff(inputs=inputs)
+        appendices_result = run_crew_with_retry(
+            lambda: ChartAppendicesCrew().crew(), inputs, "generate_chart_appendices"
         )
 
         self.state.chart_appendices = appendices_result.raw
@@ -251,10 +238,8 @@ class TransitFlow(Flow[TransitState]):
             "biographical_context": self.state.biographical_context
         }
 
-        report_draft = (
-            ReportWritingCrew()
-            .crew()
-            .kickoff(inputs=inputs)
+        report_draft = run_crew_with_retry(
+            lambda: ReportWritingCrew().crew(), inputs, "generate_report_draft"
         )
 
         self.state.report_markdown = report_draft.raw
@@ -280,10 +265,8 @@ class TransitFlow(Flow[TransitState]):
             "birthplace": self.state.birthplace
         }
 
-        enhanced_report_draft = (
-            ReviewCrew()
-            .crew()
-            .kickoff(inputs=inputs)
+        enhanced_report_draft = run_crew_with_retry(
+            lambda: ReviewCrew().crew(), inputs, "interrogate_report_draft"
         )
 
         self.state.report_markdown = enhanced_report_draft.raw
@@ -387,10 +370,8 @@ class TransitFlow(Flow[TransitState]):
             "transit_date": self.state.transit_date_formatted
         }
 
-        email_result = (
-            GmailCrew()
-            .crew()
-            .kickoff(inputs=inputs)
+        email_result = run_crew_with_retry(
+            lambda: GmailCrew().crew(), inputs, "send_transit_analysis"
         )
 
         if email_result.raw:
