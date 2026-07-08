@@ -1,3 +1,4 @@
+import hashlib
 import inspect
 import os
 from urllib.parse import urlparse, urlunparse
@@ -79,6 +80,26 @@ class Setup:
         # Keep track of processed files to avoid duplicates
         self.processed_files = set()
 
+    @staticmethod
+    def _compute_content_hash(file_path: Path) -> str:
+        """Compute a sha256 hash of a file's content for edit detection."""
+        with open(file_path, "rb") as f:
+            return hashlib.sha256(f.read()).hexdigest()
+
+    def _get_existing_content_hash(self, source_name: str) -> str | None:
+        """Fetch the stored content_hash for a source's existing points, if any."""
+        records, _ = self.qdrant_client.scroll(
+            collection_name=self.collection_name,
+            scroll_filter=Filter(
+                must=[FieldCondition(key="source", match=MatchValue(value=source_name))]
+            ),
+            limit=1,
+            with_payload=True,
+        )
+        if not records:
+            return None
+        return records[0].payload.get("content_hash")
+
     def process_new_markdown_files(self):
         """Find and process new markdown files in the astro_docs directory."""
         print("Checking for new markdown files...")
@@ -111,6 +132,7 @@ class Setup:
                 self.collection_name
             ):
                 source_name = md_file.name
+                content_hash = self._compute_content_hash(md_file)
                 try:
                     count_result = self.qdrant_client.count(
                         collection_name=self.collection_name,
@@ -125,12 +147,27 @@ class Setup:
                     )
 
                     if count_result.count > 0:
-                        # File already exists in Qdrant, mark as processed
-                        print(
-                            f"File {source_name} already exists in Qdrant with {count_result.count} chunks"
-                        )
-                        self.processed_files.add(str(md_file))
-                        continue
+                        existing_hash = self._get_existing_content_hash(source_name)
+                        if existing_hash == content_hash:
+                            # File already exists and is unchanged, mark as processed
+                            print(
+                                f"File {source_name} already exists in Qdrant with {count_result.count} chunks"
+                            )
+                            self.processed_files.add(str(md_file))
+                            continue
+                        else:
+                            print(f"File {source_name} has changed since last ingest; re-ingesting...")
+                            self.qdrant_client.delete(
+                                collection_name=self.collection_name,
+                                points_selector=Filter(
+                                    must=[
+                                        FieldCondition(
+                                            key="source",
+                                            match=MatchValue(value=source_name),
+                                        )
+                                    ]
+                                ),
+                            )
                 except Exception as e:
                     print(f"Error checking if {source_name} exists in Qdrant: {e}")
 
@@ -206,6 +243,8 @@ class Setup:
                         print(f"⚠️ Empty file: {md_file}")
                         continue
 
+                    content_hash = hashlib.sha256(content.encode("utf-8")).hexdigest()
+
                     # Process the content into chunks with overlap
                     chunk_size = 1500
                     chunk_overlap = 250
@@ -243,6 +282,7 @@ class Setup:
                                 {
                                     "text": chunk,
                                     "source": md_file.name,  # Keep using .name for consistency
+                                    "content_hash": content_hash,
                                 }
                             )
 
@@ -291,33 +331,30 @@ class Setup:
                 end="\r",
             )
 
-            for chunk in batch:
-                try:
-                    # Generate embedding using Gemini
-                    result = self.genai_client.models.embed_content(
-                        model="gemini-embedding-001", contents=chunk["text"]
-                    )
+            try:
+                # Generate embeddings for the whole batch in one request
+                result = self.genai_client.models.embed_content(
+                    model="gemini-embedding-001",
+                    contents=[chunk["text"] for chunk in batch],
+                )
 
-                    # Correctly access the embedding values
-                    embedding_values = result.embeddings[
-                        0
-                    ].values  # Access the first embedding and its values
-
-                    # Add embedding to the chunk data
+                for chunk, embedding in zip(batch, result.embeddings):
                     embeddings_with_text.append(
                         {
                             "text": chunk["text"],
                             "source": chunk["source"],
-                            "embedding": embedding_values,
+                            "content_hash": chunk.get("content_hash"),
+                            "embedding": embedding.values,
                         }
                     )
                     processed_chunks += 1
-                    time.sleep(delay_between_requests)  # delay
-                except Exception as e:
-                    failed_chunks += 1
-                    # Clear the progress line and show error
-                    print(f"\n❌ Error generating embedding for chunk from {chunk['source']}: {e}")
-                    # Continue processing other chunks despite this error
+
+                time.sleep(delay_between_requests)  # delay once per batch
+            except Exception as e:
+                failed_chunks += len(batch)
+                # Clear the progress line and show error
+                print(f"\n❌ Error generating embeddings for batch {current_batch}: {e}")
+                # Continue processing other batches despite this error
 
         # Clear the progress line
         print(" " * 80, end="\r")
@@ -410,7 +447,11 @@ class Setup:
                     PointStruct(
                         id=str(uuid.uuid4()),
                         vector=item["embedding"],
-                        payload={"text": item["text"], "source": item["source"]},
+                        payload={
+                            "text": item["text"],
+                            "source": item["source"],
+                            "content_hash": item.get("content_hash"),
+                        },
                     )
                 )
 
