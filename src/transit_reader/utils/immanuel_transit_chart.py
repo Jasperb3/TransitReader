@@ -29,25 +29,20 @@ settings.objects.append(chart.LILITH)
 # settings.objects.append(chart.POST_NATAL_LUNAR_ECLIPSE)
 
 
-def get_transit_chart(latitude: float, longitude: float, transit_datetime: datetime = None) -> str:
+def get_transit_chart(latitude: float, longitude: float, transit_datetime: datetime) -> str:
     """
     Generate a transit chart for the given location and time.
 
     Args:
         latitude: Latitude coordinate
         longitude: Longitude coordinate
-        transit_datetime: Optional datetime for transits (defaults to now/current transits)
+        transit_datetime: Datetime for transits
 
     Returns:
         str: Formatted transit chart summary
     """
-    if transit_datetime is None:
-        # Use Transits class for current moment
-        transit_chart = charts.Transits(latitude=latitude, longitude=longitude)
-    else:
-        # Use Natal class with custom datetime via Subject
-        transit_subject = charts.Subject(transit_datetime, latitude, longitude)
-        transit_chart = charts.Natal(transit_subject)
+    transit_subject = charts.Subject(transit_datetime, latitude, longitude)
+    transit_chart = charts.Natal(transit_subject)
 
     transit_data = json.dumps(transit_chart, cls=ToJSON, indent=4)
     chart_data = json.loads(transit_data)
@@ -282,9 +277,9 @@ def get_transit_chart(latitude: float, longitude: float, transit_datetime: datet
 
 if __name__ == "__main__":
     location = (51.565131, -0.147709)
-    
-    transit_chart = get_transit_chart(location[0], location[1]  )
+
+    transit_chart = get_transit_chart(location[0], location[1], datetime.now())
     with open("transit_chart.txt", "w") as f:
         f.write(transit_chart)
-    
+
     print(f"Transit chart saved to transit_chart.txt")

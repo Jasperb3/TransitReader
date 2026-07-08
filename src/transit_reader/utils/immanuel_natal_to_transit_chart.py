@@ -54,7 +54,7 @@ def _find_natal_house(longitude: float, natal_cusps: list) -> int:
     return 12
 
 
-def get_transit_natal_aspects(location_latitude: float, location_longitude: float, dob: datetime, birthplace_latitude: float, birthplace_longitude: float, transit_datetime: datetime = None) -> dict:
+def get_transit_natal_aspects(location_latitude: float, location_longitude: float, dob: datetime, birthplace_latitude: float, birthplace_longitude: float, transit_datetime: datetime) -> str:
     """
     Generate transit-to-natal chart showing aspects between transits and natal positions.
 
@@ -64,7 +64,7 @@ def get_transit_natal_aspects(location_latitude: float, location_longitude: floa
         dob: Date of birth
         birthplace_latitude: Birth location latitude
         birthplace_longitude: Birth location longitude
-        transit_datetime: Optional datetime for transits (defaults to now/current transits)
+        transit_datetime: Datetime for transits
 
     Returns:
         str: Formatted transit-to-natal chart summary
@@ -79,17 +79,8 @@ def get_transit_natal_aspects(location_latitude: float, location_longitude: floa
     natal_cusps = [h['longitude']['raw'] for h in natal_houses_sorted]
 
     # Create transit chart
-    if transit_datetime is None:
-        # Use Transits class for current moment
-        transit_chart = charts.Transits(
-            latitude=location_latitude,
-            longitude=location_longitude,
-            aspects_to=subject_natal
-        )
-    else:
-        # Use Natal class with custom datetime via Subject
-        transit_subject = charts.Subject(transit_datetime, location_latitude, location_longitude)
-        transit_chart = charts.Natal(transit_subject, aspects_to=subject_natal)
+    transit_subject = charts.Subject(transit_datetime, location_latitude, location_longitude)
+    transit_chart = charts.Natal(transit_subject, aspects_to=subject_natal)
 
     transit_data = json.dumps(transit_chart, cls=ToJSON, indent=4)
     chart_data = json.loads(transit_data)
@@ -369,7 +360,7 @@ if __name__ == "__main__":
     with open("transit_to_natal_chart.json", "w") as f:
         f.write(transit_data)
     
-    transit_chart = get_transit_natal_aspects(location_latitude, location_longitude, dob, birthplace_latitude, birthplace_longitude)
+    transit_chart = get_transit_natal_aspects(location_latitude, location_longitude, dob, birthplace_latitude, birthplace_longitude, datetime.now())
     with open("transit_chart.txt", "w") as f:
         f.write(transit_chart)
     
