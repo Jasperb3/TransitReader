@@ -34,6 +34,33 @@ distress, please reach out to a qualified professional or support service.
 """
 
 
+def _insert_chart_if_missing(report_markdown: str, chart_image_markdown: str) -> str:
+    """
+    Ensure the transit chart image appears in the report even if the
+    '[transit_chart]' placeholder was dropped by the enhancer LLM.
+
+    Args:
+        report_markdown: The report markdown to check
+        chart_image_markdown: The chart image markdown to insert if missing
+
+    Returns:
+        str: report_markdown unchanged if the placeholder is present,
+            otherwise with the chart image inserted after the first H1
+            (or prepended if there's no H1)
+    """
+    if "[transit_chart]" in report_markdown:
+        return report_markdown
+
+    print("Warning: '[transit_chart]' placeholder not found in report; inserting chart image manually.")
+
+    lines = report_markdown.split("\n", 1)
+    if lines[0].startswith("# "):
+        rest = lines[1] if len(lines) > 1 else ""
+        return f"{lines[0]}\n\n{chart_image_markdown}\n\n{rest}"
+
+    return f"{chart_image_markdown}\n\n{report_markdown}"
+
+
 class TransitFlow(Flow[TransitState]):
 
     @start()
@@ -325,8 +352,10 @@ class TransitFlow(Flow[TransitState]):
         print("Saving transit analysis")
         markdown_file_path = OUTPUT_DIR / f"{self.state.name.replace(' ', '_')}_{TIMESTAMP}.md"
 
-        # Replace chart placeholder and append the appendices
-        self.state.report_markdown = self.state.report_markdown.replace("[transit_chart]", f"![Transit Chart]({self.state.kerykeion_transit_chart})")
+        # Replace chart placeholder (inserting it if the LLM dropped it) and append the appendices
+        chart_image_markdown = f"![Transit Chart]({self.state.kerykeion_transit_chart})"
+        self.state.report_markdown = _insert_chart_if_missing(self.state.report_markdown, chart_image_markdown)
+        self.state.report_markdown = self.state.report_markdown.replace("[transit_chart]", chart_image_markdown)
 
         # Insert appendices at the end of the report (before writing to file)
         if self.state.chart_appendices:
