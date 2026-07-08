@@ -21,6 +21,7 @@ report_review_task:
     - **Technical Validation**:
       - Verify all planetary positions, aspects, dignities, house placements, and transit-to-natal activations against the provided chart data (transit_chart, natal_chart, transit_to_natal_chart).
       - Confirm timing arcs (start, peak, culmination) for major transits and returns are accurately represented.
+      - Flag any calendar date cited in the report that does not appear in the Verified Timing Table in the chart data — such dates must be corrected or removed.
       - Explicitly check that ALL aspect orb measurements are stated numerically in "Orb: X.XX°" format. Flag any vague descriptors like "tight", "moderate", "wide" as violations requiring correction.
       - Verify clarity and accuracy of nodal house references and angular planet positions.
     - **Interpretive Integrity**:

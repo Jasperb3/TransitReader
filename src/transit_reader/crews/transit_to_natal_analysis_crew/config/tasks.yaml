@@ -18,7 +18,7 @@ transits_to_natal_chart_reading_task:
         - Prioritize conjunctions, oppositions, squares, trines, and sextiles.
         - Maintain strict tight orbs: ~2° for outer planets (Saturn–Pluto, Chiron), ~1° for inner planets (Sun–Mars).
         **MANDATORY**: For each aspect, explicitly state the exact orb measurement in this format: "Orb: X.XX°" (e.g., "Orb: 1.23°")
-    - Note aspect status: indicate whether each aspect is applying or separating (e.g., "Applying, will be exact in 3 days" or "Separating, was exact 2 days ago").
+    - Note aspect status: indicate whether each aspect is applying or separating. State exactness dates ONLY from the Verified Timing Table; if an aspect has no table entry, state "applying" or "separating" without a date.
     - Use the "Transiting Planets in NATAL Houses" section of the chart data for all natal house placements — do NOT infer house positions from cusps yourself, and do not use the transit-location houses for personal interpretation.
     - Highlight activation of natal Angles (ASC, DSC, MC, IC) and major natal planets (especially Sun, Moon, chart ruler, and stelliums).
     - Identify if transiting planets complete or trigger natal configuration patterns (e.g., forming a Grand Cross, Kite, or T-square).
@@ -100,6 +100,7 @@ transits_to_natal_chart_interpretation_task:
             - Activation onset
             - Peak intensity (especially at exact aspects or station points)
             - Resolution phase.
+        - Calendar dates within these arcs (exactness, stations, ingresses) MUST come from the Verified Timing Table in the chart data; do not invent or estimate a date.
     - Always anchor interpretation explicitly to technical data (aspect, house, planet, dignity/motion status).
 
     Output Instructions:

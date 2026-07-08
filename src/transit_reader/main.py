@@ -8,6 +8,7 @@ from transit_reader.utils.qdrant_setup import Setup
 from transit_reader.utils.immanuel_transit_chart import get_transit_chart
 from transit_reader.utils.immanuel_natal_chart import get_natal_chart
 from transit_reader.utils.immanuel_natal_to_transit_chart import get_transit_natal_aspects
+from transit_reader.utils.transit_timing import build_timing_table
 from transit_reader.utils.kerykeion_chart_utils import get_kerykeion_subject, get_kerykeion_transit_chart
 from transit_reader.utils.convert_to_pdf import convert_md_to_pdf
 from transit_reader.utils.constants import NOW_DT, OUTPUT_DIR, TIMESTAMP, CHARTS_DIR
@@ -63,7 +64,15 @@ class TransitFlow(Flow[TransitState]):
             self.state.birthplace_longitude,
             self.state.transit_datetime
         )
-        self.state.transit_to_natal_chart = transit_to_natal_chart
+        timing_table = build_timing_table(
+            self.state.date_of_birth,
+            self.state.birthplace_latitude,
+            self.state.birthplace_longitude,
+            self.state.current_location_latitude,
+            self.state.current_location_longitude,
+            self.state.transit_datetime
+        )
+        self.state.transit_to_natal_chart = transit_to_natal_chart + "\n\n" + timing_table
 
     # WAIT FOR ALL CHARTS - Use and_() to wait for all three chart generations
     @listen(and_(generate_current_transits, get_natal_chart_data, get_transit_to_natal_chart_data))
