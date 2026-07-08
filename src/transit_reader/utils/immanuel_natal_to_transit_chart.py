@@ -50,6 +50,11 @@ def get_transit_natal_aspects(location_latitude: float, location_longitude: floa
     """
     # Create natal chart
     subject = charts.Subject(dob, birthplace_latitude, birthplace_longitude)
+    if subject.date_time_ambiguous:
+        print(
+            f"Warning: Birth time {dob} falls in a DST fall-back hour "
+            "(occurs twice); the earlier offset was assumed."
+        )
     subject_natal = charts.Natal(subject)
 
     natal_data = json.dumps(subject_natal, cls=ToJSON, indent=4)

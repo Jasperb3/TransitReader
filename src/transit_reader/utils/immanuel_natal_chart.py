@@ -11,6 +11,11 @@ configure_immanuel()
 
 def get_natal_chart(dob: datetime, latitude: float, longitude: float) -> str:
     subject = charts.Subject(dob, latitude, longitude)
+    if subject.date_time_ambiguous:
+        print(
+            f"Warning: Birth time {dob} falls in a DST fall-back hour "
+            "(occurs twice); the earlier offset was assumed."
+        )
     subject_natal = charts.Natal(subject)
     natal_data = json.dumps(subject_natal, cls=ToJSON, indent=4)
     chart_data = json.loads(natal_data)
