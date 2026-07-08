@@ -83,6 +83,7 @@ QDRANT_COLLECTION_NAME=...
 # Gmail draft delivery (optional)
 SENDER_EMAIL=you@example.com
 CLIENT_EMAIL=recipient@example.com
+REPORT_SENDER_NAME=Your Name
 ```
 
 Notes:

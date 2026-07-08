@@ -1,6 +1,4 @@
 import os
-import json
-from datetime import datetime
 from typing import Tuple
 from crewai.flow import Flow, listen, start, and_
 from transit_reader.utils.models import TransitState, create_transit_state
@@ -12,7 +10,7 @@ from transit_reader.utils.transit_timing import build_timing_table
 from transit_reader.utils.crew_runner import run_crew_with_retry
 from transit_reader.utils.kerykeion_chart_utils import get_kerykeion_subject, get_kerykeion_transit_chart
 from transit_reader.utils.convert_to_pdf import convert_md_to_pdf
-from transit_reader.utils.constants import NOW_DT, OUTPUT_DIR, TIMESTAMP, CHARTS_DIR
+from transit_reader.utils.constants import OUTPUT_DIR, TIMESTAMP, CHARTS_DIR
 from transit_reader.crews.transit_analysis_crew.transit_analysis_crew import TransitAnalysisCrew
 from transit_reader.crews.transit_analysis_review_crew.transit_analysis_review_crew import TransitAnalysisReviewCrew
 from transit_reader.crews.natal_analysis_crew.natal_analysis_crew import NatalAnalysisCrew
@@ -340,31 +338,11 @@ class TransitFlow(Flow[TransitState]):
     def send_transit_analysis(self):
         print("Drafting email...")
 
-        try:
-            token_file_path = "src/transit_reader/utils/token.json"
-            with open(token_file_path, "r") as f:
-                token_data = json.load(f)
-                expiry_date = token_data.get("expiry")
-                if expiry_date:
-                    expiry_date = datetime.fromisoformat(expiry_date)
-                    if expiry_date < NOW_DT:
-                        print("Token expired. Re-authentication required.")
-                        os.remove(token_file_path)
-
-        except FileNotFoundError:
-            print("Token file not found. Re-authentication required.")
-        except json.JSONDecodeError:
-            print("Error decoding token file. Re-authentication required.")
-            os.remove(token_file_path)
-        except Exception as e:
-            print(f"Unexpected error: {str(e)}")
-
-
         inputs = {
-            "report_text": self.state.transit_analysis,
+            "report_text": self.state.report_markdown[:4000],
             "report_pdf": str(self.state.report_pdf),
             "client": self.state.name,
-            "sender": "Ben Jasper",
+            "sender": os.getenv("REPORT_SENDER_NAME", "TransitReader"),
             "email_address": self.state.email,
             "report_date": self.state.today,
             "transit_date": self.state.transit_date_formatted
