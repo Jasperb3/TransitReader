@@ -45,6 +45,7 @@ def _normalize_qdrant_url(raw_url: str) -> str:
 class Setup:
     def __init__(self, state):
         self.state = state
+        DOCS_DIR.mkdir(parents=True, exist_ok=True)
         # Initialize Gemini client
         self.gemini_api_key = os.environ.get("GEMINI_API_KEY")
         if self.gemini_api_key:

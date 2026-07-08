@@ -10,7 +10,7 @@ from transit_reader.utils.transit_timing import build_timing_table
 from transit_reader.utils.crew_runner import run_crew_with_retry
 from transit_reader.utils.kerykeion_chart_utils import get_kerykeion_subject, get_kerykeion_transit_chart
 from transit_reader.utils.convert_to_pdf import convert_md_to_pdf
-from transit_reader.utils.constants import OUTPUT_DIR, TIMESTAMP, CHARTS_DIR
+from transit_reader.utils.constants import OUTPUT_DIR, TIMESTAMP, CHARTS_DIR, ensure_output_dirs
 from transit_reader.crews.transit_analysis_crew.transit_analysis_crew import TransitAnalysisCrew
 from transit_reader.crews.transit_analysis_review_crew.transit_analysis_review_crew import TransitAnalysisReviewCrew
 from transit_reader.crews.natal_analysis_crew.natal_analysis_crew import NatalAnalysisCrew
@@ -66,6 +66,7 @@ class TransitFlow(Flow[TransitState]):
     @start()
     def setup_qdrant(self):
         print("Setting up Qdrant")
+        ensure_output_dirs()
         setup = Setup(self.state)
         setup.process_new_markdown_files()
 
