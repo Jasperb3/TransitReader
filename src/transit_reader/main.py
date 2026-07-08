@@ -23,6 +23,17 @@ from transit_reader.crews.review_crew.review_crew import ReviewCrew
 from transit_reader.crews.gmail_crew.gmail_crew import GmailCrew
 
 
+DISCLAIMER_BLOCK = """
+## About This Report
+
+This report is a symbolic and reflective tool for self-exploration. It is not a
+substitute for professional medical, psychological, legal, or financial advice.
+The practices offered under "Working With This Energy" are general wellbeing
+suggestions, not clinical guidance. If you are experiencing significant
+distress, please reach out to a qualified professional or support service.
+"""
+
+
 class TransitFlow(Flow[TransitState]):
 
     @start()
@@ -323,6 +334,8 @@ class TransitFlow(Flow[TransitState]):
             full_markdown = self.state.report_markdown + "\n\n---\n\n" + self.state.chart_appendices
         else:
             full_markdown = self.state.report_markdown
+
+        full_markdown = full_markdown + "\n\n---\n" + DISCLAIMER_BLOCK
 
         with open(markdown_file_path, "w") as f:
             f.write(full_markdown)
