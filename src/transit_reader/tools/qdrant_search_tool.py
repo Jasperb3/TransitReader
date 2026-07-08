@@ -9,15 +9,11 @@ load_dotenv()
 
 try:
     from qdrant_client import QdrantClient
-    from qdrant_client.http.models import Filter, FieldCondition, MatchValue
 
     QDRANT_AVAILABLE = True
 except ImportError:
     QDRANT_AVAILABLE = False
     QdrantClient = Any  # type placeholder
-    Filter = Any
-    FieldCondition = Any
-    MatchValue = Any
 
 from crewai.tools import BaseTool
 
@@ -29,22 +25,13 @@ class QdrantSearchToolSchema(BaseModel):
         ...,
         description="The word or phrase to search for in the astrology reference docs. Use SHORT, technical astrological terms ONLY to match on similarity.",
     )
-    # filter_by: Optional[str] = Field(
-    #     default=None,
-    #     description="Optional: The name of the metadata field to filter by (e.g., 'source').",
-    # )
-    # filter_value: Optional[str] = Field(
-    #     default=None,
-    #     description="Optional: The value to match for the filter_by field (e.g., 'AAPL_10-K.md').",
-    # )
 
 
 class QdrantSearchTool(BaseTool):
     """
     Custom tool to search a Qdrant database for relevant information,
-    specifically designed for the 'stock_knowledge' collection.
+    specifically designed for the astrology reference docs collection.
     """
-    model_config = {"arbitrary_types_allowed": True}
     client: QdrantClient = None
     name: str = "QdrantSearchTool"
     description: str = (
@@ -134,8 +121,6 @@ class QdrantSearchTool(BaseTool):
     def _run(
         self,
         query: str,
-        # filter_by: Optional[str] = None,
-        # filter_value: Optional[str] = None,
     ) -> str:
         """Execute vector similarity search on Qdrant."""
 
@@ -165,10 +150,6 @@ class QdrantSearchTool(BaseTool):
                 return f"Error checking Qdrant collection: {e}"
 
         search_filter = None
-        # if filter_by and filter_value:
-        #     search_filter = Filter(
-        #         must=[FieldCondition(key=filter_by, match=MatchValue(value=filter_value))]
-        #     )
 
         try:
             if self.custom_embedding_fn:
