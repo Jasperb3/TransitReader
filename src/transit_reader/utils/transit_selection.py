@@ -8,6 +8,7 @@ Allows users to choose between current date/time/location or custom values.
 import os
 import googlemaps
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -20,6 +21,22 @@ BLUE = "\033[94m"
 RESET = "\033[0m"
 
 gmaps = googlemaps.Client(key=os.getenv("GMAPS_API_KEY"))
+
+
+def _now_at_location(timezone_str: str | None) -> datetime:
+    """
+    Get the current naive datetime local to the given IANA timezone.
+
+    Args:
+        timezone_str: IANA timezone string (e.g., 'America/New_York'), or None
+
+    Returns:
+        datetime: Naive datetime representing "now" at that location
+            (or the machine's local "now" if timezone_str is None)
+    """
+    if timezone_str:
+        return datetime.now(ZoneInfo(timezone_str)).replace(tzinfo=None, second=0, microsecond=0)
+    return datetime.now().replace(second=0, microsecond=0)
 
 
 def get_transit_datetime() -> datetime:
@@ -217,13 +234,12 @@ def get_transit_parameters(subject_data: dict, current_location: dict = None) ->
     print(f"\n{GREEN}{'='*60}{RESET}")
     print(f"{GREEN}Transit Analysis Options{RESET}")
     print(f"{GREEN}{'='*60}{RESET}")
-    print(f"  {BLUE}[1]{RESET} Use current date/time and saved location {YELLOW}(DEFAULT){RESET}")
-    print(f"      Date/Time: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    print(f"  {BLUE}[1]{RESET} Use current time at the transit location and saved location {YELLOW}(DEFAULT){RESET}")
+    print(f"      Date/Time: {_now_at_location(current_location.get('timezone')).strftime('%Y-%m-%d %H:%M')}")
     print(f"      Location: {current_location['city']}, {current_location['country']}")
     print(f"\n  {BLUE}[2]{RESET} Specify custom date/time {YELLOW}(keep saved location){RESET}")
     print(f"      Location: {current_location['city']}, {current_location['country']}")
-    print(f"\n  {BLUE}[3]{RESET} Specify custom location {YELLOW}(use current date/time){RESET}")
-    print(f"      Date/Time: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    print(f"\n  {BLUE}[3]{RESET} Specify custom location {YELLOW}(use current time at the transit location){RESET}")
     print(f"\n  {BLUE}[4]{RESET} Specify both custom date/time AND custom location")
     print(f"{GREEN}{'='*60}{RESET}\n")
 
@@ -246,8 +262,8 @@ def get_transit_parameters(subject_data: dict, current_location: dict = None) ->
     is_custom = False
 
     if choice == "1":
-        # Use current date/time and saved location
-        transit_dt = datetime.now()
+        # Use current time at the saved location's timezone
+        transit_dt = _now_at_location(current_location.get("timezone"))
         transit_location = current_location
         print(f"\n{GREEN}Using current date/time and saved location{RESET}")
 
@@ -259,9 +275,9 @@ def get_transit_parameters(subject_data: dict, current_location: dict = None) ->
         print(f"\n{GREEN}Using custom date/time with saved location{RESET}")
 
     elif choice == "3":
-        # Saved date/time, custom location
-        transit_dt = datetime.now()
-        transit_location = get_transit_location(transit_dt)
+        # Custom location, current time at that location
+        transit_location = get_transit_location(datetime.now())
+        transit_dt = _now_at_location(transit_location.get("timezone"))
         is_custom = True
         print(f"\n{GREEN}Using current date/time with custom location{RESET}")
 
@@ -275,7 +291,7 @@ def get_transit_parameters(subject_data: dict, current_location: dict = None) ->
     # Validation
     if transit_location is None or transit_location.get('latitude') is None or transit_location.get('longitude') is None:
         print(f"{RED}Error: Invalid location data. Falling back to current settings.{RESET}")
-        transit_dt = datetime.now()
+        transit_dt = _now_at_location(current_location.get("timezone"))
         transit_location = current_location
         is_custom = False
 
