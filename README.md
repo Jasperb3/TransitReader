@@ -3,9 +3,8 @@
 AI-assisted transit analysis that blends astronomical calculations, research tools, and structured writing crews to deliver polished astrological reports.
 
 [![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/Jasperb3/TransitReader)
-[![Python](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/downloads/)
+[![Python](https://img.shields.io/badge/python-3.12.9-blue.svg)](https://www.python.org/downloads/)
 [![CrewAI](https://img.shields.io/badge/CrewAI-1.3.0-green.svg)](https://www.crewai.com/)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ---
 
@@ -35,7 +34,7 @@ The pipeline relies on:
 
 ## Requirements
 
-- Python **3.12.9**
+- Python **3.12.9** (3.13 is not supported — see `requires-python` in `pyproject.toml`)
 - `uv` (recommended) or `pip` for dependency management
 - Access to required API keys (see **Environment** below)
 
@@ -59,7 +58,11 @@ pip install -e .
 
 ## Environment
 
-Create a `.env` file in the project root with the credentials you need:
+Copy `.env.example` to `.env` in the project root and fill in the credentials you need:
+
+```bash
+cp .env.example .env
+```
 
 ```env
 # OpenAI models for core analysis
@@ -68,9 +71,18 @@ OPENAI_API_KEY=...
 # Gemini embeddings & summarization
 GEMINI_API_KEY=...
 
+# Anthropic Claude models (only if a llm_config.yaml provider uses claude-haiku/claude-sonnet)
+ANTHROPIC_API_KEY=...
+
+# Mistral models (only if a llm_config.yaml provider uses mistral)
+MISTRAL_API_KEY=...
+
 # Google Custom Search
 GOOGLE_SEARCH_API_KEY=...
 SEARCH_ENGINE_ID=...
+
+# Linkup web search tool (only if a Linkup-based tool is assigned to an agent)
+LINKUP_API_KEY=...
 
 # Google Maps Geocoding/Timezone (interactive prompts)
 GMAPS_API_KEY=...
@@ -88,7 +100,9 @@ REPORT_SENDER_NAME=Your Name
 
 Notes:
 
-- The Qdrant setup ingests any markdown files placed in `astro_docs/` at runtime.
+- `ANTHROPIC_API_KEY` and `MISTRAL_API_KEY` are only required if `src/transit_reader/config/llm_config.yaml` assigns an agent to the `claude-haiku`/`claude-sonnet` or `mistral` provider, respectively.
+- `LINKUP_API_KEY` is only required if a Linkup-based search tool is enabled for an agent.
+- The Qdrant setup ingests any markdown files placed in `astro_docs/` at runtime — drop your own astrology reference material there and it will be automatically chunked and embedded on the next run.
 - Gmail OAuth tokens are stored in `src/transit_reader/utils/token.json`; the flow will prompt for re-authentication if the token expires.
 
 ---
@@ -105,7 +119,11 @@ Notes:
    ```
    - Choose a subject or create one.
    - Opt in or out of generating chart appendices (detailed technical tables appended to the report).
-   - Select transit timing: use “now” or enter a custom date/time and location.
+   - Select transit timing — one of four options:
+     1. Current date/time + saved location (default — press Enter)
+     2. Custom date/time + saved location
+     3. Current date/time + custom location
+     4. Custom date/time + custom location
    - Optional biographical context stored in the subject profile is automatically included to enrich interpretations.
 
 3. **Outputs**
@@ -129,9 +147,10 @@ TransitReader uses a CrewAI `Flow` defined in `src/transit_reader/main.py`:
 2. **Analysis crews** – three specialized crews run concurrently for transit, natal, and transit-to-natal readings.
 3. **Review crews** – each analysis is critiqued and enhanced in parallel.
 4. **Appendices** – aggregates technical appendices from all analyses.
-5. **Report writing & interrogation** – synthesizes a full report, then critiques and improves it.
-6. **Chart rendering & export** – renders a Kerykeion chart, replaces placeholders, writes Markdown, and converts to PDF.
-7. **Email drafting** – optionally prepares a Gmail draft with the PDF attached.
+5. **Report writing** – `report_writing_crew` synthesizes a full report from all analyses, reviews, and appendices.
+6. **Report interrogation** – `review_crew` critiques and improves the draft before export.
+7. **Chart rendering & export** – renders a Kerykeion chart, replaces placeholders, writes Markdown, and converts to PDF.
+8. **Email drafting** – optionally prepares a Gmail draft with the PDF attached.
 
 ### Crews at a Glance
 
@@ -152,6 +171,20 @@ TransitReader uses a CrewAI `Flow` defined in `src/transit_reader/main.py`:
 - `utils/subject_selection.py` & `utils/transit_selection.py` – interactive CLI prompts
 - `utils/biographical_questionnaire.py` – biographical context gathering and formatting
 - `utils/llm_manager.py` + `config/llm_config.yaml` – centralized LLM provider and temperature configuration; swap models by editing the YAML, no code changes needed
+
+---
+
+## Testing
+
+```bash
+# Run the full test suite
+uv run pytest
+
+# Run a specific test file
+uv run pytest tests/test_transit_selection.py
+```
+
+The suite covers chart calculations, transit timing/DST edge cases, biographical questionnaire formatting, and crew retry logic.
 
 ---
 
