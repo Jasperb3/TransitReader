@@ -10,6 +10,7 @@ dependencies = [
     "python-dotenv>=1.2.1",
     "trafilatura>=2.0.0",
     "google-auth-oauthlib>=1.2.3",
+    "google-api-python-client>=2.184.0",
     "google-genai>=1.47.0",
     "botocore>=1.40.64",
     "markdown>=3.9",
@@ -35,6 +36,7 @@ build-backend = "hatchling.build"
 
 [tool.crewai]
 type = "flow"
+project_id = "a745d1e6-cb05-4643-9ff8-d1dc4be1b2bb"
 
 [dependency-groups]
 dev = [

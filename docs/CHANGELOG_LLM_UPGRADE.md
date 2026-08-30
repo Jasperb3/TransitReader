@@ -94,14 +94,26 @@ revert just that piece. Intended to be replayable on other crewAI projects.
 - **`litellm`/`anthropic` extras** — not added since those providers are
   unused; add them if that changes (see amendment 2).
 
+### 5. `pyproject.toml` — missing Gmail dependency (pre-existing, found during e2e verification)
+- Changed: added `google-api-python-client>=2.184.0` to dependencies.
+- Why: `uv run kickoff` failed with `ModuleNotFoundError: No module named
+  'googleapiclient'` — `gmail_utility_with_attachment.py` has always imported
+  `googleapiclient.discovery`/`googleapiclient.errors`, but the package that
+  provides that module (`google-api-python-client`) was never declared in
+  `pyproject.toml` or present in `uv.lock`'s git history. Not caused by the
+  GPT-5.6/crewai upgrade — surfaced by it, because this was the first `uv
+  sync` + full flow run in a while. `uv sync` pulled in
+  `google-api-python-client==2.199.0` plus transitive deps; notably bumped
+  `protobuf` 5.29.4 → 6.33.6 with no test breakage observed.
+- Revert: remove the line and `uv sync` (only if you want to go back to the
+  broken-Gmail state — not recommended).
+
 ## Verification performed
 
 1. `python -m transit_reader.utils.llm_manager` — config loads; both new
    providers instantiate; no agent left on a sunset provider.
-2. `uv run pytest` — 22 passed. (2 test files fail to collect due to a
-   missing `googleapiclient`/`google-api-python-client` dependency that has
-   never been in `uv.lock` in this repo's git history — pre-existing,
-   unrelated to this upgrade, not touched here.)
+2. `uv run pytest` — 27 passed (0 failures; includes the 2 files that
+   couldn't even collect before amendment 5).
 3. Live smoke test: real `.call()` against both `gpt5_6_luna` and
    `gpt5_6_terra` via `get_llm_for_agent` — both returned successfully with
    `reasoning_effort` set and no `temperature` passed, confirming no 400.
