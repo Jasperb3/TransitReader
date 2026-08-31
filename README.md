@@ -58,7 +58,7 @@ pip install -e .
 
 ## Project Structure
 
-```
+```text
 transit_reader/
 ├── src/transit_reader/
 │   ├── crews/
@@ -187,21 +187,22 @@ For the Gmail draft delivery step:
    - Subject files live in `src/transit_reader/subjects/*.json` and store birth data, current location, email, and optional biographical context.
    - The CLI can create new subjects and fetch latitude/longitude/timezone via Google Maps when `GMAPS_API_KEY` is set.
    - Example subject JSON:
+
      ```json
      {
        "name": "Jane Doe",
        "date_of_birth": "1990-01-01 12:00:00",
        "birthplace": {
-         "longitude": -0.1093,
-         "latitude": 51.3887,
-         "place": "Croydon",
+         "longitude": -0.1276,
+         "latitude": 51.5072,
+         "place": "London",
          "country": "UK",
          "timezone": "Europe/London"
        },
        "current_location": {
-         "longitude": -0.1472,
-         "latitude": 51.5651,
-         "place": "Highgate, London",
+         "longitude": -0.1276,
+         "latitude": 51.5072,
+         "place": "London",
          "country": "UK",
          "timezone": "Europe/London"
        },
@@ -209,12 +210,15 @@ For the Gmail draft delivery step:
        "email": "jane.doe@example.com"
      }
      ```
+
      `timezone` must be a full IANA zone name (e.g. `Europe/London`), not a fixed-offset abbreviation (`GMT`/`CET`) — the latter lacks DST rules and will produce times that drift an hour off in summer.
 
 2. **Start the pipeline**
+
    ```bash
    uv run kickoff
    ```
+
    - Choose a subject or create one.
    - Opt in or out of generating chart appendices (detailed technical tables appended to the report).
    - Select transit timing — one of four options:
@@ -231,6 +235,7 @@ For the Gmail draft delivery step:
    - Intermediate artifacts from crews live under `crew_outputs/<timestamp>/`.
 
 4. **Plot the flow graph (optional)**
+
    ```bash
    uv run plot
    ```
@@ -241,7 +246,7 @@ For the Gmail draft delivery step:
 
 TransitReader uses a CrewAI `Flow` defined in `src/transit_reader/main.py`, maximizing parallelism at each stage via `and_()`:
 
-```
+```text
 ┌────────────────┐
 │ 1. setup_qdrant│ ─── Index astro_docs/ into Qdrant (if configured)
 └───────┬────────┘
@@ -294,7 +299,7 @@ TransitReader uses a CrewAI `Flow` defined in `src/transit_reader/main.py`, maxi
 ### Crews at a Glance
 
 | Crew | Model(s) | Agents | Purpose |
-|------|----------|--------|---------|
+| --- | --- | --- | --- |
 | `transit_analysis_crew` | Luna (reader) / Terra (interpreter) | current_transits_reader, current_transits_interpreter | Reads and interprets current transits |
 | `transit_analysis_review_crew` | Terra (`review` reasoning_effort) | transits_interpretation_critic, transits_interpretation_enhancer | Critiques & enhances the transit analysis |
 | `natal_analysis_crew` | Luna (reader) / Terra (interpreter) | natal_chart_reader, natal_chart_interpreter | Reads and interprets the natal chart |
@@ -339,7 +344,7 @@ The suite covers chart calculations, transit timing/DST edge cases, biographical
 Key libraries (see `pyproject.toml` for the full, versioned list):
 
 | Package | Purpose |
-|---------|---------|
+| --- | --- |
 | `crewai[tools]` | Multi-agent orchestration framework |
 | `immanuel` | Chart calculation (Swiss Ephemeris) — transits, natal, transit-to-natal |
 | `kerykeion` | Chart wheel/transit chart visualization |
@@ -377,4 +382,4 @@ This project is for personal and research use.
 
 ---
 
-**Built with ❤️ using CrewAI, Immanuel, Kerykeion, and Qdrant**
+Built with ❤️ using CrewAI, Immanuel, Kerykeion, and Qdrant.
