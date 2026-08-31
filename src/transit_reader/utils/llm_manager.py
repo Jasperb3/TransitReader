@@ -137,10 +137,16 @@ def _create_llm_instance(
         raise ValueError(f"No model specified for provider '{provider_name}'")
 
     # Handle provider-specific configurations
-    llm_kwargs = {
-        'model': model,
-        'temperature': temperature
-    }
+    llm_kwargs = {'model': model}
+
+    # Reasoning-effort models (e.g. GPT-5.6) reject the "temperature" param
+    # unless reasoning.effort="none", so providers that define reasoning_effort
+    # use that instead of the agent's temperature preset.
+    reasoning_effort = provider_config.get('reasoning_effort')
+    if reasoning_effort:
+        llm_kwargs['reasoning_effort'] = reasoning_effort
+    else:
+        llm_kwargs['temperature'] = temperature
 
     # Get API key if required
     api_key_env = provider_config.get('api_key_env')
@@ -217,66 +223,6 @@ def get_temperature_presets() -> Dict[str, float]:
     """
     config = _load_llm_config()
     return config.get('temperatures', {})
-
-
-# Legacy compatibility - create preset LLM instances
-# These can be imported by crews that haven't been refactored yet
-def _create_legacy_llms():
-    """Create legacy LLM instances for backward compatibility."""
-    try:
-        config = _load_llm_config()
-        temps = config.get('temperatures', {})
-
-        # Find a gpt provider
-        providers = config.get('providers', {})
-        gpt_provider = None
-        for name, provider in providers.items():
-            if name.startswith('gpt') and provider.get('model') == 'gpt-4.1':
-                gpt_provider = provider
-                break
-
-        if not gpt_provider:
-            # Fallback to hardcoded if config fails
-            return _create_fallback_llms()
-
-        api_key = os.getenv(gpt_provider.get('api_key_env', 'OPENAI_API_KEY'))
-
-        return {
-            'gpt41_deterministic': LLM(
-                model=gpt_provider['model'],
-                api_key=api_key,
-                temperature=temps.get('deterministic', 0.1)
-            ),
-            'gpt41_creative': LLM(
-                model=gpt_provider['model'],
-                api_key=api_key,
-                temperature=temps.get('creative', 0.9)
-            ),
-            'gpt41': LLM(
-                model=gpt_provider['model'],
-                api_key=api_key,
-                temperature=temps.get('creative', 0.9)
-            )
-        }
-    except:
-        return _create_fallback_llms()
-
-
-def _create_fallback_llms():
-    """Fallback LLM creation if config fails."""
-    api_key = os.getenv('OPENAI_API_KEY')
-    return {
-        'gpt41_deterministic': LLM(model="gpt-4.1", api_key=api_key, temperature=0.1),
-        'gpt41_creative': LLM(model="gpt-4.1", api_key=api_key, temperature=0.9),
-        'gpt41': LLM(model="gpt-4.1", api_key=api_key, temperature=0.9)
-    }
-
-
-# Create legacy instances
-_legacy = _create_legacy_llms()
-gpt41_deterministic = _legacy['gpt41_deterministic']
-gpt41_creative = _legacy['gpt41_creative']
-gpt41 = _legacy['gpt41']
 
 
 if __name__ == "__main__":
