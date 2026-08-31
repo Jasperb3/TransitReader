@@ -4,7 +4,7 @@ AI-assisted transit analysis that blends astronomical calculations, research too
 
 [![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/Jasperb3/TransitReader)
 [![Python](https://img.shields.io/badge/python-3.12.9-blue.svg)](https://www.python.org/downloads/)
-[![CrewAI](https://img.shields.io/badge/CrewAI-1.3.0-green.svg)](https://www.crewai.com/)
+[![CrewAI](https://img.shields.io/badge/CrewAI-1.15.18-green.svg)](https://www.crewai.com/)
 
 ---
 
@@ -65,7 +65,7 @@ cp .env.example .env
 ```
 
 ```env
-# OpenAI models for core analysis
+# OpenAI models for core analysis (GPT-5.6 Terra/Luna reasoning models by default)
 OPENAI_API_KEY=...
 
 # Gemini embeddings & summarization
@@ -101,6 +101,7 @@ REPORT_SENDER_NAME=Your Name
 Notes:
 
 - `ANTHROPIC_API_KEY` and `MISTRAL_API_KEY` are only required if `src/transit_reader/config/llm_config.yaml` assigns an agent to the `claude-haiku`/`claude-sonnet` or `mistral` provider, respectively.
+- The default `gpt5_6_terra`/`gpt5_6_luna` providers are reasoning-effort models: they use a `reasoning_effort` setting (`low`/`medium`/etc.) instead of a temperature preset, since these models reject the `temperature` parameter unless `reasoning.effort="none"`.
 - `LINKUP_API_KEY` is only required if a Linkup-based search tool is enabled for an agent.
 - The Qdrant setup ingests any markdown files placed in `astro_docs/` at runtime — drop your own astrology reference material there and it will be automatically chunked and embedded on the next run.
 - Gmail OAuth tokens are stored in `src/transit_reader/utils/token.json`; the flow will prompt for re-authentication if the token expires.
@@ -170,7 +171,7 @@ TransitReader uses a CrewAI `Flow` defined in `src/transit_reader/main.py`:
 - `utils/convert_to_pdf.py` & `utils/astro_styling.css` – Markdown → PDF
 - `utils/subject_selection.py` & `utils/transit_selection.py` – interactive CLI prompts
 - `utils/biographical_questionnaire.py` – biographical context gathering and formatting
-- `utils/llm_manager.py` + `config/llm_config.yaml` – centralized LLM provider and temperature configuration; swap models by editing the YAML, no code changes needed
+- `utils/llm_manager.py` + `config/llm_config.yaml` – centralized LLM provider and temperature configuration; swap models by editing the YAML, no code changes needed. Providers can define `reasoning_effort` instead of a temperature preset for reasoning models like GPT-5.6.
 
 ---
 

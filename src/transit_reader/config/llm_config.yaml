@@ -41,7 +41,7 @@ providers:
     description: "Google Gemini 2.5 Pro - Strong reasoning"
 
   gemini_flash:
-    model: "gemini/gemini-2.5-flash"
+    model: "gemini/gemini-3.7-flash"
     api_key_env: "GEMINI_API_KEY"
     description: "Google Gemini Flash - Fast, cost-effective"
 
